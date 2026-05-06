@@ -1,0 +1,24 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/entityType/1.0.0/schema.json",
+  "id": "7000000005",
+  "namespace": "usertypes",
+  "baseEntityTypeId": null,
+  "name": "PatientDiagnosis",
+  "entityIdParts": ["7100000000000000501"],
+  "displayNamePropertyId": null,
+  "namespaceType": "Imported",
+  "visibility": "Visible",
+  "properties": [
+    {"id": "7100000000000000501", "name": "fact_diagnosis_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000502", "name": "diagnosis_id", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000503", "name": "encounter_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000504", "name": "diagnosis_date_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000505", "name": "patient_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000506", "name": "diagnosis_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000507", "name": "facility_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000508", "name": "icd_code", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000509", "name": "diagnosis_sequence", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000510", "name": "diagnosis_type", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000511", "name": "present_on_admission", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"}
+  ]
+}

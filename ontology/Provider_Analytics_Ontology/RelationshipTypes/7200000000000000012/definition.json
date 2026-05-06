@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/relationshipType/1.0.0/schema.json",
+  "id": "7200000000000000012",
+  "namespace": "usertypes",
+  "name": "originatesFrom",
+  "sourceEntityTypeId": "7000000007",
+  "targetEntityTypeId": "7000000003",
+  "namespaceType": "Imported",
+  "visibility": "Visible",
+  "cardinality": "ManyToMany",
+  "properties": []
+}

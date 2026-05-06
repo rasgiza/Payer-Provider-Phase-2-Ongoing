@@ -1,0 +1,81 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "v_bar1",
+  "position": {
+    "x": 20,
+    "y": 166,
+    "z": 0,
+    "width": 400,
+    "height": 260,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_patient"
+                    }
+                  },
+                  "Property": "age_group"
+                }
+              },
+              "queryRef": "dim_patient.age_group",
+              "nativeQueryRef": "age_group"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_patient"
+                    }
+                  },
+                  "Property": "Total Patients"
+                }
+              },
+              "queryRef": "dim_patient.Total Patients",
+              "nativeQueryRef": "Total Patients"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "isDefaultSort": true,
+        "sort": []
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Members by Age Group'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/dataBinding/1.0.0/schema.json",
+  "id": "a1000001-0001-4000-a001-000000000006",
+  "dataBindingConfiguration": {
+    "dataBindingType": "NonTimeSeries",
+    "propertyBindings": [
+      {"sourceColumnName": "diagnosis_key", "targetPropertyId": "7100000000000000601"},
+      {"sourceColumnName": "icd_code", "targetPropertyId": "7100000000000000602"},
+      {"sourceColumnName": "icd_description", "targetPropertyId": "7100000000000000603"},
+      {"sourceColumnName": "icd_category", "targetPropertyId": "7100000000000000604"},
+      {"sourceColumnName": "is_chronic", "targetPropertyId": "7100000000000000605"}
+    ],
+    "sourceTableProperties": {
+      "sourceType": "LakehouseTable",
+      "workspaceId": "00000000-0000-0000-0000-000000000000",
+      "itemId": "00000000-0000-0000-0000-000000000000",
+      "sourceTableName": "dim_diagnosis",
+      "sourceSchema": null
+    }
+  }
+}

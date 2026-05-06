@@ -1,0 +1,1537 @@
+{
+  "schema_version": 74,
+  "tiles": [
+    {
+      "id": "ee33085f-cc3a-4bca-b1d2-1955eeb9036e",
+      "title": "Live Claims Count ",
+      "visualType": "card",
+      "pageId": "7c960b6d-3bf1-4bdd-8666-eaeda5f1d2e9",
+      "layout": {
+        "x": 4,
+        "y": 0,
+        "width": 4,
+        "height": 4
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "496907c5-6bf0-4ae5-b7de-7686ebb219dd"
+      },
+      "visualOptions": {
+        "multiStat__textSize": "auto",
+        "multiStat__valueColumn": null,
+        "colorRulesDisabled": true,
+        "colorRules": []
+      }
+    },
+    {
+      "id": "ad3e421d-b023-4e8e-b4f3-b2312ba2e401",
+      "title": "ADT Event Count",
+      "visualType": "card",
+      "pageId": "7c960b6d-3bf1-4bdd-8666-eaeda5f1d2e9",
+      "layout": {
+        "x": 8,
+        "y": 0,
+        "width": 4,
+        "height": 4
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "f673fa56-36c6-445e-ac73-be4d0c9324f5"
+      },
+      "visualOptions": {
+        "multiStat__textSize": "auto",
+        "multiStat__valueColumn": null,
+        "colorRulesDisabled": false,
+        "colorRules": []
+      }
+    },
+    {
+      "id": "2b2650a7-6d85-4022-bbc1-73d043d875c2",
+      "title": "Rx Event Count",
+      "visualType": "card",
+      "pageId": "7c960b6d-3bf1-4bdd-8666-eaeda5f1d2e9",
+      "layout": {
+        "x": 12,
+        "y": 0,
+        "width": 4,
+        "height": 4
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "bac55cd0-fe2e-4de9-b5ca-f986c02c9b21"
+      },
+      "visualOptions": {
+        "multiStat__textSize": "auto",
+        "multiStat__valueColumn": null,
+        "colorRulesDisabled": false,
+        "colorRules": []
+      }
+    },
+    {
+      "id": "5da15296-c36c-41f4-8082-f6e2ef6ca8c7",
+      "title": "Event Volume Trend ",
+      "visualType": "line",
+      "pageId": "7c960b6d-3bf1-4bdd-8666-eaeda5f1d2e9",
+      "layout": {
+        "x": 0,
+        "y": 4,
+        "width": 9,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "cc1164cb-a173-48c7-978d-255b8b11a371"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "seriesColors": {},
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "xColumnTitle": "",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "forceAxisTicks": false,
+        "crossFilter": [],
+        "drillthrough": []
+      }
+    },
+    {
+      "id": "e0c4f1cd-4ba8-456c-b805-038cef6c9e48",
+      "title": "Claims by Type",
+      "visualType": "pie",
+      "pageId": "7c960b6d-3bf1-4bdd-8666-eaeda5f1d2e9",
+      "layout": {
+        "x": 16,
+        "y": 0,
+        "width": 7,
+        "height": 4
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "3ce11331-5b62-4cab-a8d5-4c8980497ac8"
+      },
+      "visualOptions": {
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "labelDisabled": false,
+        "pie__label": [
+          "name",
+          "percentage"
+        ],
+        "tooltipDisabled": false,
+        "pie__tooltip": [
+          "name",
+          "percentage",
+          "value"
+        ],
+        "pie__orderBy": "size",
+        "pie__kind": "pie",
+        "pie__topNSlices": null,
+        "seriesColors": {},
+        "crossFilter": [],
+        "drillthrough": []
+      }
+    },
+    {
+      "id": "2a6d9eb9-169b-4270-9ac8-37d429c18068",
+      "title": "ADT Events by Type",
+      "visualType": "table",
+      "pageId": "7c960b6d-3bf1-4bdd-8666-eaeda5f1d2e9",
+      "layout": {
+        "x": 9,
+        "y": 4,
+        "width": 6,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "68bab384-6e8a-4bd4-ae60-ebbe542d8904"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": true,
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
+    },
+    {
+      "id": "5ea6781e-cbe2-4d51-9b34-babd9975125d",
+      "title": "Data Freshness",
+      "visualType": "table",
+      "pageId": "7c960b6d-3bf1-4bdd-8666-eaeda5f1d2e9",
+      "layout": {
+        "x": 0,
+        "y": 11,
+        "width": 22,
+        "height": 4
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "f0a6f3d3-3936-41bb-ad77-e477aebf2b32"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": true,
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
+    },
+    {
+      "id": "536bb9a1-13a9-42ad-8788-1cfb3e8611e2",
+      "title": "Claims Volume Map",
+      "visualType": "map",
+      "pageId": "7c960b6d-3bf1-4bdd-8666-eaeda5f1d2e9",
+      "layout": {
+        "x": 0,
+        "y": 15,
+        "width": 23,
+        "height": 6
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "f1ca1759-8c10-4627-8f7f-4269ec66023d"
+      },
+      "visualOptions": {
+        "map__latitudeColumn": "latitude",
+        "map__longitudeColumn": null,
+        "map__labelColumn": "Facility",
+        "map__sizeColumn": null,
+        "map__sizeDisabled": true,
+        "map__geoType": "numeric",
+        "map__geoPointColumn": null
+      }
+    },
+    {
+      "id": "b735a78e-09c8-40e8-9a2f-8fdc4544694a",
+      "title": "Total Fraud Alerts",
+      "visualType": "card",
+      "pageId": "34fe0db5-e1a2-44f0-87aa-78c1e6133390",
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 4,
+        "height": 3
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "6e86d17d-c897-43e1-979f-69f06a2d9423"
+      },
+      "visualOptions": {
+        "multiStat__textSize": "auto",
+        "multiStat__valueColumn": null,
+        "colorRulesDisabled": false,
+        "colorRules": []
+      }
+    },
+    {
+      "id": "898628c5-9e7a-414b-9fb2-55679d13468b",
+      "title": "Fraud Score Distribution",
+      "visualType": "column",
+      "pageId": "34fe0db5-e1a2-44f0-87aa-78c1e6133390",
+      "layout": {
+        "x": 6,
+        "y": 0,
+        "width": 9,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "beb54197-6581-467e-bba8-dcfbe662fbad"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "seriesColors": {},
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "xColumnTitle": "",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "forceAxisTicks": false,
+        "crossFilter": [],
+        "drillthrough": []
+      }
+    },
+    {
+      "id": "bd35742d-64a9-4e13-a0e8-83e8a11d34ff",
+      "title": "Top 10 Highest Fraud Scores",
+      "visualType": "table",
+      "pageId": "34fe0db5-e1a2-44f0-87aa-78c1e6133390",
+      "layout": {
+        "x": 8,
+        "y": 7,
+        "width": 16,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "b03593fe-022d-4e1c-a0b4-c7319d39c3cb"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": true,
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
+    },
+    {
+      "id": "19ad59dd-2154-46e4-b047-aecaa87275aa",
+      "title": "Fraud Trend Over Time",
+      "visualType": "timechart",
+      "pageId": "34fe0db5-e1a2-44f0-87aa-78c1e6133390",
+      "layout": {
+        "x": 15,
+        "y": 0,
+        "width": 9,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "c1d8484a-1ee0-4710-9c2e-19e39d5b4cc6"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "seriesColors": {},
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "xColumnTitle": "",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "forceAxisTicks": false,
+        "crossFilter": [],
+        "drillthrough": []
+      }
+    },
+    {
+      "id": "b50dd7b0-fa9f-4c6d-9185-9c9294c377d7",
+      "title": "Fraud by Flag",
+      "visualType": "bar",
+      "pageId": "34fe0db5-e1a2-44f0-87aa-78c1e6133390",
+      "layout": {
+        "x": 0,
+        "y": 7,
+        "width": 8,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "1895b935-e829-4c84-94b3-a4a94dabd1b6"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "seriesColors": {},
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "xColumnTitle": "",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "forceAxisTicks": false,
+        "crossFilter": [],
+        "drillthrough": []
+      }
+    },
+    {
+      "id": "bbd3473a-cba6-4e10-90d3-f13d9871de23",
+      "title": "Fraud Hotspot Map",
+      "visualType": "map",
+      "pageId": "34fe0db5-e1a2-44f0-87aa-78c1e6133390",
+      "layout": {
+        "x": 0,
+        "y": 14,
+        "width": 24,
+        "height": 9
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "bedc65d6-22e9-4d00-b343-d81415bc2abc"
+      },
+      "visualOptions": {
+        "map__latitudeColumn": "latitude",
+        "map__longitudeColumn": null,
+        "map__labelColumn": null,
+        "map__sizeColumn": null,
+        "map__sizeDisabled": true,
+        "map__geoType": "numeric",
+        "map__geoPointColumn": null
+      }
+    },
+    {
+      "id": "c62a58e0-64c3-4549-ae0d-59587bebf659",
+      "title": "Total Care Gap Alerts",
+      "visualType": "card",
+      "pageId": "515852e0-1dda-45d1-9ff6-cf9ad61c08d1",
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 4,
+        "height": 3
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "e3bf868d-4e8c-4413-b606-2b0aaace12ef"
+      },
+      "visualOptions": {
+        "multiStat__textSize": "auto",
+        "multiStat__valueColumn": null,
+        "colorRulesDisabled": false,
+        "colorRules": []
+      }
+    },
+    {
+      "id": "d6509ee6-62e1-4ba1-a93b-1d7ba9531ec4",
+      "title": "Alerts by Measure",
+      "visualType": "table",
+      "pageId": "515852e0-1dda-45d1-9ff6-cf9ad61c08d1",
+      "layout": {
+        "x": 4,
+        "y": 0,
+        "width": 6,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "ab3c5af0-698d-4328-9707-bea970d0cbaf"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": true,
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
+    },
+    {
+      "id": "aed2ba91-1d9d-4afc-989a-b9ba3f07d41e",
+      "title": "Alerts by Priority",
+      "visualType": "pie",
+      "pageId": "515852e0-1dda-45d1-9ff6-cf9ad61c08d1",
+      "layout": {
+        "x": 10,
+        "y": 0,
+        "width": 6,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "329bcc03-9aef-4a5b-b9ea-43fb718f4672"
+      },
+      "visualOptions": {
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "labelDisabled": false,
+        "pie__label": [
+          "name",
+          "percentage"
+        ],
+        "tooltipDisabled": false,
+        "pie__tooltip": [
+          "name",
+          "percentage",
+          "value"
+        ],
+        "pie__orderBy": "size",
+        "pie__kind": "pie",
+        "pie__topNSlices": null,
+        "seriesColors": {},
+        "crossFilter": [],
+        "drillthrough": []
+      }
+    },
+    {
+      "id": "4e069a14-7dcd-4394-ac90-81c293a2d13b",
+      "title": "Care Gap Alert Trend",
+      "visualType": "timechart",
+      "pageId": "515852e0-1dda-45d1-9ff6-cf9ad61c08d1",
+      "layout": {
+        "x": 0,
+        "y": 7,
+        "width": 8,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "77af2e44-a06a-4ee7-ab71-6ad7c34b8d6f"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "seriesColors": {},
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "xColumnTitle": "",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "forceAxisTicks": false,
+        "crossFilter": [],
+        "drillthrough": []
+      }
+    },
+    {
+      "id": "abaef166-8fdb-4a03-9365-8b91641c176a",
+      "title": "Care Gap Alert Map",
+      "visualType": "map",
+      "pageId": "515852e0-1dda-45d1-9ff6-cf9ad61c08d1",
+      "layout": {
+        "x": 8,
+        "y": 7,
+        "width": 16,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "11e990e4-6b15-432d-949d-d98ae3566cc4"
+      },
+      "visualOptions": {
+        "map__latitudeColumn": "latitude",
+        "map__longitudeColumn": null,
+        "map__labelColumn": null,
+        "map__sizeColumn": null,
+        "map__sizeDisabled": true,
+        "map__geoType": "numeric",
+        "map__geoPointColumn": null
+      }
+    },
+    {
+      "id": "94a30e65-98db-4a59-a46c-d41228157fd3",
+      "title": "Dollars at Risk($)",
+      "visualType": "card",
+      "pageId": "34fe0db5-e1a2-44f0-87aa-78c1e6133390",
+      "layout": {
+        "x": 0,
+        "y": 3,
+        "width": 5,
+        "height": 4
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "75181de9-f4cf-4cbf-a877-24e02eb98e92"
+      },
+      "visualOptions": {
+        "multiStat__textSize": "auto",
+        "multiStat__valueColumn": null,
+        "colorRulesDisabled": true,
+        "colorRules": []
+      }
+    },
+    {
+      "id": "73660f5a-42e5-4f24-9bb7-d914311abe46",
+      "title": "Total High-Cost Alerts",
+      "visualType": "card",
+      "pageId": "927df46d-2fad-4752-849a-d4ea6aa200ee",
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 3,
+        "height": 3
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "c8042b4b-520b-4d7c-8a97-69a1047968f3"
+      },
+      "visualOptions": {
+        "multiStat__textSize": "auto",
+        "multiStat__valueColumn": null,
+        "colorRulesDisabled": false,
+        "colorRules": []
+      }
+    },
+    {
+      "id": "15e32215-c1b7-462b-900c-4e7512d05eca",
+      "title": "Risk Tier Distribution",
+      "visualType": "pie",
+      "pageId": "927df46d-2fad-4752-849a-d4ea6aa200ee",
+      "layout": {
+        "x": 3,
+        "y": 0,
+        "width": 9,
+        "height": 6
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "a8e72a07-4e62-43b7-9f2d-752eff41f3d5"
+      },
+      "visualOptions": {
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "labelDisabled": false,
+        "pie__label": [
+          "name",
+          "percentage"
+        ],
+        "tooltipDisabled": false,
+        "pie__tooltip": [
+          "name",
+          "percentage",
+          "value"
+        ],
+        "pie__orderBy": "size",
+        "pie__kind": "pie",
+        "pie__topNSlices": null,
+        "seriesColors": {},
+        "crossFilter": [],
+        "drillthrough": []
+      }
+    },
+    {
+      "id": "2251e4bc-cb83-46f5-836e-3ad5cc49d149",
+      "title": "Top 10 Highest Spend",
+      "visualType": "table",
+      "pageId": "927df46d-2fad-4752-849a-d4ea6aa200ee",
+      "layout": {
+        "x": 0,
+        "y": 7,
+        "width": 24,
+        "height": 5
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "0c45bd64-1b46-4aa3-8188-f1c44f092424"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": true,
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
+    },
+    {
+      "id": "1db144f1-e1f0-45e7-8296-8b42b4c7dfe4",
+      "title": "High-Cost Alert Trend",
+      "visualType": "timechart",
+      "pageId": "927df46d-2fad-4752-849a-d4ea6aa200ee",
+      "layout": {
+        "x": 0,
+        "y": 12,
+        "width": 9,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "b9633d26-14c0-456c-be1b-9c2b8a00e6d2"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "seriesColors": {},
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "xColumnTitle": "",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "forceAxisTicks": false,
+        "crossFilter": [],
+        "drillthrough": []
+      }
+    },
+    {
+      "id": "957d06aa-30a0-4f98-b89f-a30a3b7b321f",
+      "title": "High-Cost Patient Map",
+      "visualType": "map",
+      "pageId": "927df46d-2fad-4752-849a-d4ea6aa200ee",
+      "layout": {
+        "x": 9,
+        "y": 12,
+        "width": 15,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "2a8f890d-44de-4a60-817d-27ad2efc32aa"
+      },
+      "visualOptions": {
+        "map__latitudeColumn": "latitude",
+        "map__longitudeColumn": null,
+        "map__labelColumn": null,
+        "map__sizeColumn": null,
+        "map__sizeDisabled": true,
+        "map__geoType": "numeric",
+        "map__geoPointColumn": null
+      }
+    },
+    {
+      "id": "21d00915-0eec-46c4-a21a-0bb4a134a184",
+      "title": "Facility Detail Table",
+      "visualType": "table",
+      "pageId": "927df46d-2fad-4752-849a-d4ea6aa200ee",
+      "layout": {
+        "x": 12,
+        "y": 3,
+        "width": 10,
+        "height": 4
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "7d66da77-d7b9-4d84-97c6-fdb9312060ea"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": true,
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
+    },
+    {
+      "id": "6c5d0806-98ef-4aa8-9279-366e29734494",
+      "title": "Total 30d Spend at Risk($)",
+      "visualType": "card",
+      "pageId": "927df46d-2fad-4752-849a-d4ea6aa200ee",
+      "layout": {
+        "x": 12,
+        "y": 0,
+        "width": 6,
+        "height": 3
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "66d98e26-55ba-4cb7-9eda-db5492e3dc72"
+      },
+      "visualOptions": {
+        "multiStat__textSize": "auto",
+        "multiStat__valueColumn": null,
+        "colorRulesDisabled": false,
+        "colorRules": []
+      }
+    },
+    {
+      "id": "fb193d77-e082-4d48-9555-d729f3962e6c",
+      "title": "Throughput Rate",
+      "visualType": "card",
+      "pageId": "7c960b6d-3bf1-4bdd-8666-eaeda5f1d2e9",
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 4,
+        "height": 4
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "3ac176f7-9c7b-4cf8-bc65-7740adee3db2"
+      },
+      "visualOptions": {
+        "multiStat__textSize": "auto",
+        "multiStat__valueColumn": null,
+        "colorRulesDisabled": false,
+        "colorRules": []
+      }
+    },
+    {
+      "id": "c0e5116e-59ee-49ac-a105-a7091442f58d",
+      "title": "Provider Concentration",
+      "visualType": "table",
+      "pageId": "34fe0db5-e1a2-44f0-87aa-78c1e6133390",
+      "layout": {
+        "x": 0,
+        "y": 23,
+        "width": 11,
+        "height": 6
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "a84bdcef-57d8-4fb3-ae8e-c67794dd048e"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": true,
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
+    },
+    {
+      "id": "17435f37-1db3-4282-ad28-8edb98055a28",
+      "title": "Anomaly Detection",
+      "visualType": "anomalychart",
+      "pageId": "34fe0db5-e1a2-44f0-87aa-78c1e6133390",
+      "layout": {
+        "x": 11,
+        "y": 23,
+        "width": 13,
+        "height": 6
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "c6548072-777d-40f5-8948-67041f8ec40c"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "seriesColors": {},
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "xColumnTitle": "",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "forceAxisTicks": false,
+        "anomalyColumns": [],
+        "crossFilter": [],
+        "drillthrough": []
+      }
+    },
+    {
+      "id": "7949c522-2e63-450f-9eb4-c8a7c4fccf29",
+      "title": "Overdue Distribution",
+      "visualType": "pie",
+      "pageId": "515852e0-1dda-45d1-9ff6-cf9ad61c08d1",
+      "layout": {
+        "x": 16,
+        "y": 0,
+        "width": 8,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "e0c7f239-2429-4e3a-9298-7f7b8a679948"
+      },
+      "visualOptions": {
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "labelDisabled": false,
+        "pie__label": [
+          "name",
+          "percentage"
+        ],
+        "tooltipDisabled": false,
+        "pie__tooltip": [
+          "name",
+          "percentage",
+          "value"
+        ],
+        "pie__orderBy": "size",
+        "pie__kind": "pie",
+        "pie__topNSlices": null,
+        "seriesColors": {},
+        "crossFilter": [],
+        "drillthrough": []
+      }
+    },
+    {
+      "id": "e01176a9-81e1-4e3a-a79f-11a5dbcd3d1a",
+      "title": "Network Overview",
+      "visualType": "table",
+      "pageId": "7c960b6d-3bf1-4bdd-8666-eaeda5f1d2e9",
+      "layout": {
+        "x": 15,
+        "y": 4,
+        "width": 9,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "a6706ba1-ee05-463f-ab26-cec50048be56"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": true,
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
+    }
+  ],
+  "baseQueries": [],
+  "parameters": [
+    {
+      "kind": "duration",
+      "id": "88bbbd9e-05fa-4bcd-aa8a-0e11d0e64204",
+      "displayName": "Time range",
+      "description": "",
+      "beginVariableName": "_startTime",
+      "endVariableName": "_endTime",
+      "defaultValue": {
+        "kind": "dynamic",
+        "count": 1,
+        "unit": "hours"
+      },
+      "showOnPages": {
+        "kind": "all"
+      }
+    },
+    {
+      "kind": "string",
+      "id": "09a15445-6a60-4472-9ed2-fc168d52a711",
+      "displayName": "_facility",
+      "description": "",
+      "variableName": "_facility",
+      "selectionType": "array",
+      "includeAllOption": true,
+      "defaultValue": {
+        "kind": "all"
+      },
+      "dataSource": {
+        "kind": "query",
+        "columns": {
+          "value": "facility_name"
+        },
+        "queryRef": {
+          "kind": "query",
+          "queryId": "d21a0f33-2e9a-4b2b-9274-4cf4f2aff5d3"
+        }
+      },
+      "showOnPages": {
+        "kind": "all"
+      }
+    },
+    {
+      "kind": "string",
+      "id": "80eab982-3a4d-467e-8019-f73cf08e52df",
+      "displayName": "_riskTier",
+      "description": "",
+      "variableName": "_riskTier",
+      "selectionType": "array",
+      "includeAllOption": false,
+      "defaultValue": {
+        "kind": "values",
+        "values": [
+          "CRITICAL",
+          "HIGH",
+          "MEDIUM"
+        ]
+      },
+      "dataSource": {
+        "kind": "static",
+        "values": [
+          {
+            "value": "CRITICAL"
+          },
+          {
+            "value": "HIGH"
+          },
+          {
+            "value": "MEDIUM"
+          }
+        ]
+      },
+      "showOnPages": {
+        "kind": "all"
+      }
+    }
+  ],
+  "dataSources": [
+    {
+      "kind": "kusto-trident",
+      "name": "__KQL_DB_NAME__",
+      "clusterUri": "__EVENTHOUSE_QUERY_URI__",
+      "databaseArtifactId": "__KQL_DB_ID__",
+      "database": "__KQL_DB_ID__",
+      "workspace": "00000000-0000-0000-0000-000000000000",
+      "id": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+    }
+  ],
+  "pages": [
+    {
+      "name": "Overview",
+      "id": "7c960b6d-3bf1-4bdd-8666-eaeda5f1d2e9"
+    },
+    {
+      "name": "Fraud Detection",
+      "id": "34fe0db5-e1a2-44f0-87aa-78c1e6133390"
+    },
+    {
+      "name": "Care Gap Alerts",
+      "id": "515852e0-1dda-45d1-9ff6-cf9ad61c08d1"
+    },
+    {
+      "name": "High-Cost Trajectory",
+      "id": "927df46d-2fad-4752-849a-d4ea6aa200ee"
+    }
+  ],
+  "queries": [
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "claims_events\r\n| where event_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| count",
+      "id": "496907c5-6bf0-4ae5-b7de-7686ebb219dd",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "adt_events\r\n| where event_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_name in~ (_facility)\r\n| count",
+      "id": "f673fa56-36c6-445e-ac73-be4d0c9324f5",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "rx_events\r\n| where event_timestamp between (_startTime .. _endTime)\r\n| count",
+      "id": "bac55cd0-fe2e-4de9-b5ca-f986c02c9b21",
+      "usedVariables": [
+        "_endTime",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "let claims = claims_events | where event_timestamp between (_startTime .. _endTime) | summarize Claims=count() by bin(event_timestamp, 1h);\r\nlet adt = adt_events | where event_timestamp between (_startTime .. _endTime) | summarize ADT=count() by bin(event_timestamp, 1h);\r\nlet rx = rx_events | where event_timestamp between (_startTime .. _endTime) | summarize Rx=count() by bin(event_timestamp, 1h);\r\nclaims\r\n| join kind=fullouter adt on event_timestamp\r\n| join kind=fullouter rx on event_timestamp\r\n| project Timestamp=coalesce(event_timestamp, event_timestamp1, event_timestamp2), Claims, ADT, Rx\r\n| order by Timestamp asc",
+      "id": "cc1164cb-a173-48c7-978d-255b8b11a371",
+      "usedVariables": [
+        "_endTime",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "claims_events\r\n| where event_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| summarize Count=count() by claim_type\r\n| order by Count desc",
+      "id": "3ce11331-5b62-4cab-a8d5-4c8980497ac8",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "adt_events\r\n| where event_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_name in~ (_facility)\r\n| summarize Count=count() by event_type\r\n| order by Count desc",
+      "id": "68bab384-6e8a-4bd4-ae60-ebbe542d8904",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "let c = claims_events | where event_timestamp between (_startTime .. _endTime) | summarize LastClaim=max(event_timestamp);\r\nlet a = adt_events | where event_timestamp between (_startTime .. _endTime) | summarize LastADT=max(event_timestamp);\r\nlet r = rx_events | where event_timestamp between (_startTime .. _endTime) | summarize LastRx=max(event_timestamp);\r\nc | extend LastADT=toscalar(a | project LastADT), LastRx=toscalar(r | project LastRx)",
+      "id": "f0a6f3d3-3936-41bb-ad77-e477aebf2b32",
+      "usedVariables": [
+        "_endTime",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "claims_events\r\n| where event_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| join kind=leftouter (\r\n    adt_events | summarize arg_max(event_timestamp, facility_name) by facility_id\r\n) on facility_id\r\n| summarize Claims=count(), AvgAmount=round(avg(claim_amount), 2)\r\n    by latitude, longitude, facility_id, Facility=facility_name\r\n| where isnotnull(latitude) and isnotnull(longitude)",
+      "id": "f1ca1759-8c10-4627-8f7f-4269ec66023d",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where fraud_score >= 0.7\r\n| count",
+      "id": "6e86d17d-c897-43e1-979f-69f06a2d9423",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| summarize Count=count() by Bucket=case(\r\n    fraud_score < 0.3, \"Low (0-0.3)\",\r\n    fraud_score < 0.7, \"Medium (0.3-0.7)\",\r\n    \"High (0.7+)\")\r\n| order by Bucket asc",
+      "id": "beb54197-6581-467e-bba8-dcfbe662fbad",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| top 10 by fraud_score desc\r\n| project patient_id, claim_id, fraud_score, fraud_flags, risk_tier, score_timestamp",
+      "id": "b03593fe-022d-4e1c-a0b4-c7319d39c3cb",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where fraud_score >= 0.7\r\n| summarize Alerts=count() by bin(score_timestamp, 1h)\r\n| order by score_timestamp asc",
+      "id": "c1d8484a-1ee0-4710-9c2e-19e39d5b4cc6",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where fraud_score >= 0.7\r\n| mv-expand flag=parse_json(fraud_flags)\r\n| summarize Count=count() by tostring(flag)\r\n| top 10 by Count desc",
+      "id": "1895b935-e829-4c84-94b3-a4a94dabd1b6",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where fraud_score >= 0.7\r\n| join kind=leftouter (\r\n    adt_events | summarize arg_max(event_timestamp, facility_name) by facility_id\r\n) on facility_id\r\n| summarize AlertCount=count(), AvgScore=round(avg(fraud_score), 2)\r\n    by latitude, longitude, Facility=facility_name\r\n| where isnotnull(latitude) and isnotnull(longitude)",
+      "id": "bedc65d6-22e9-4d00-b343-d81415bc2abc",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "care_gap_alerts\r\n| where alert_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_name in~ (_facility)\r\n| where isempty(_riskTier) or alert_priority in~ (_riskTier)\r\n| count",
+      "id": "e3bf868d-4e8c-4413-b606-2b0aaace12ef",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "care_gap_alerts\r\n| where alert_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_name in~ (_facility)\r\n| where isempty(_riskTier) or alert_priority in~ (_riskTier)\r\n| summarize Count=count() by measure_name\r\n| order by Count desc",
+      "id": "ab3c5af0-698d-4328-9707-bea970d0cbaf",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "care_gap_alerts\r\n| where alert_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_name in~ (_facility)\r\n| where isempty(_riskTier) or alert_priority in~ (_riskTier)\r\n| summarize Count=count() by alert_priority\r\n| order by Count desc",
+      "id": "329bcc03-9aef-4a5b-b9ea-43fb718f4672",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "care_gap_alerts\r\n| where alert_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_name in~ (_facility)\r\n| where isempty(_riskTier) or alert_priority in~ (_riskTier)\r\n| summarize Alerts=count() by bin(alert_timestamp, 1h)\r\n| order by alert_timestamp asc",
+      "id": "77af2e44-a06a-4ee7-ab71-6ad7c34b8d6f",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "care_gap_alerts\r\n| where alert_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_name in~ (_facility)\r\n| where isempty(_riskTier) or alert_priority in~ (_riskTier)\r\n| summarize Gaps=count(), Measures=make_set(measure_name)\r\n    by latitude, longitude, Facility=facility_name\r\n| where isnotnull(latitude) and isnotnull(longitude)",
+      "id": "11e990e4-6b15-432d-949d-d98ae3566cc4",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where fraud_score >= 0.7\r\n| summarize DollarsAtRisk=round(sum(claim_amount), 0)",
+      "id": "75181de9-f4cf-4cbf-a877-24e02eb98e92",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "highcost_alerts\r\n| where alert_timestamp between (_startTime .. _endTime)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where isempty(_facility) or facility_name in~ (_facility)\r\n| count",
+      "id": "c8042b4b-520b-4d7c-8a97-69a1047968f3",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "highcost_alerts\r\n| where alert_timestamp between (_startTime .. _endTime)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where isempty(_facility) or facility_name in~ (_facility)\r\n| summarize Count=count() by risk_tier\r\n| order by Count desc",
+      "id": "a8e72a07-4e62-43b7-9f2d-752eff41f3d5",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "highcost_alerts\r\n| where alert_timestamp between (_startTime .. _endTime)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where isempty(_facility) or facility_name in~ (_facility)\r\n| top 10 by rolling_spend_30d desc\r\n| project patient_id, facility_name, risk_tier, rolling_spend_30d, rolling_spend_90d, cost_trend, alert_timestamp",
+      "id": "0c45bd64-1b46-4aa3-8188-f1c44f092424",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "highcost_alerts\r\n| where alert_timestamp between (_startTime .. _endTime)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where isempty(_facility) or facility_name in~ (_facility)\r\n| summarize Alerts=count() by bin(alert_timestamp, 1h)\r\n| order by alert_timestamp asc",
+      "id": "b9633d26-14c0-456c-be1b-9c2b8a00e6d2",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "highcost_alerts\r\n| where alert_timestamp between (_startTime .. _endTime)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where isempty(_facility) or facility_name in~ (_facility)\r\n| summarize Patients=count(), AvgSpend=round(avg(rolling_spend_30d), 2), RiskTier=take_any(risk_tier)\r\n    by latitude, longitude, Facility=facility_name\r\n| where isnotnull(latitude) and isnotnull(longitude) and isnotempty(Facility)",
+      "id": "2a8f890d-44de-4a60-817d-27ad2efc32aa",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "highcost_alerts\r\n| where alert_timestamp between (_startTime .. _endTime)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where isempty(_facility) or facility_name in~ (_facility)\r\n| summarize Patients=count(), AvgSpend=round(avg(rolling_spend_30d), 2), RiskTier=take_any(risk_tier)\r\n    by Facility=facility_name\r\n| order by Patients desc",
+      "id": "7d66da77-d7b9-4d84-97c6-fdb9312060ea",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "highcost_alerts\r\n| where alert_timestamp between (_startTime .. _endTime)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where isempty(_facility) or facility_name in~ (_facility)\r\n| summarize TotalSpendAtRisk=round(sum(rolling_spend_30d), 0)",
+      "id": "66d98e26-55ba-4cb7-9eda-db5492e3dc72",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_riskTier",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "claims_events\r\n| where event_timestamp > ago(5m)\r\n| summarize EventsPerMin=round(count() / 5.0, 1)",
+      "id": "3ac176f7-9c7b-4cf8-bc65-7740adee3db2",
+      "usedVariables": []
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where fraud_score >= 0.7\r\n| summarize FraudAlerts=count(), AvgScore=round(avg(fraud_score), 2), TotalDollars=round(sum(claim_amount), 0)\r\n    by provider_id\r\n| top 10 by FraudAlerts desc",
+      "id": "a84bdcef-57d8-4fb3-ae8e-c67794dd048e",
+      "usedVariables": [
+        "_endTime",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "claims_events\r\n| where event_timestamp between (_startTime .. _endTime)\r\n| summarize ClaimCount=count() by bin(event_timestamp, 1h)\r\n| make-series Claims=sum(ClaimCount) on event_timestamp step 1h\r\n| extend (anomalies, score, baseline) = series_decompose_anomalies(Claims)\r\n| mv-expand event_timestamp to typeof(datetime), Claims to typeof(long), anomalies to typeof(int), baseline to typeof(double)\r\n| where anomalies != 0\r\n| project event_timestamp, Claims, anomalies, baseline",
+      "id": "c6548072-777d-40f5-8948-67041f8ec40c",
+      "usedVariables": [
+        "_endTime",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "care_gap_alerts\r\n| where alert_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_name in~ (_facility)\r\n| summarize Count=count() by Urgency=case(\r\n    gap_days_overdue > 180, \"Critical (180+ days)\",\r\n    gap_days_overdue > 90, \"Urgent (90-180 days)\",\r\n    gap_days_overdue > 30, \"Watch (30-90 days)\",\r\n    \"Recent (<30 days)\")\r\n| order by Count desc",
+      "id": "e0c7f239-2429-4e3a-9298-7f7b8a679948",
+      "usedVariables": [
+        "_endTime",
+        "_facility",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "claims_events\r\n| where event_timestamp between (_startTime .. _endTime)\r\n| join kind=leftouter (adt_events | summarize arg_max(event_timestamp, facility_name) by facility_id) on facility_id\r\n| summarize Claims=count(), TotalBilled=round(sum(claim_amount), 0)\r\n    by Facility=facility_name\r\n| order by Claims desc",
+      "id": "a6706ba1-ee05-463f-ab26-cec50048be56",
+      "usedVariables": [
+        "_endTime",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "adt_events | distinct facility_name | order by facility_name asc\n",
+      "id": "d21a0f33-2e9a-4b2b-9274-4cf4f2aff5d3",
+      "usedVariables": []
+    }
+  ]
+}

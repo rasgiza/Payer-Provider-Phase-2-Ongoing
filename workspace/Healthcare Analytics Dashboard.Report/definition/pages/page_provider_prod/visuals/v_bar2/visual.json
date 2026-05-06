@@ -1,0 +1,81 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "v_bar2",
+  "position": {
+    "x": 430,
+    "y": 166,
+    "z": 0,
+    "width": 400,
+    "height": 260,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_provider"
+                    }
+                  },
+                  "Property": "specialty"
+                }
+              },
+              "queryRef": "dim_provider.specialty",
+              "nativeQueryRef": "specialty"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_provider"
+                    }
+                  },
+                  "Property": "Avg Documentation Score"
+                }
+              },
+              "queryRef": "dim_provider.Avg Documentation Score",
+              "nativeQueryRef": "Avg Documentation Score"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "isDefaultSort": true,
+        "sort": []
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Documentation Score by Specialty'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

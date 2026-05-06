@@ -1,0 +1,81 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "v_bar2",
+  "position": {
+    "x": 750,
+    "y": 166,
+    "z": 0,
+    "width": 510,
+    "height": 260,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_diagnosis"
+                    }
+                  },
+                  "Property": "icd_category"
+                }
+              },
+              "queryRef": "dim_diagnosis.icd_category",
+              "nativeQueryRef": "icd_category"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_diagnosis"
+                    }
+                  },
+                  "Property": "Patients with Chronic Conditions"
+                }
+              },
+              "queryRef": "fact_diagnosis.Patients with Chronic Conditions",
+              "nativeQueryRef": "Patients with Chronic Conditions"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "isDefaultSort": true,
+        "sort": []
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Top Chronic Conditions'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

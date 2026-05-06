@@ -1,0 +1,313 @@
+table fact_encounter
+	lineageTag: b1070001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[fact_encounter]
+
+	measure 'Total Encounters' = COUNTROWS(fact_encounter)
+		formatString: 0
+		lineageTag: b1070001-0001-0001-0001-000000000011
+
+	measure 'Readmission Rate' =
+			VAR _num = CALCULATE(COUNTROWS(fact_encounter), fact_encounter[readmission_flag] = 1)
+			VAR _den = COUNTROWS(fact_encounter)
+			RETURN DIVIDE(_num, _den)
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: b1070001-0001-0001-0001-000000000012
+
+	measure 'High Risk Readmissions' = CALCULATE(COUNTROWS(fact_encounter), fact_encounter[readmission_risk_category] = "High")
+		formatString: 0
+		lineageTag: b1070001-0001-0001-0001-000000000013
+
+	measure 'Avg Length of Stay' = AVERAGE(fact_encounter[length_of_stay])
+		lineageTag: b1070001-0001-0001-0001-000000000014
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Readmission Risk' = AVERAGE(fact_encounter[readmission_risk_score])
+		lineageTag: b1070001-0001-0001-0001-000000000015
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Charges' = SUM(fact_encounter[total_charges])
+		lineageTag: b1070001-0001-0001-0001-000000000016
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Cost' = SUM(fact_encounter[total_cost])
+		lineageTag: b1070001-0001-0001-0001-000000000017
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Cost Per Encounter' = DIVIDE([Total Cost], [Total Encounters])
+		lineageTag: b1070001-0001-0001-0001-000000000018
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg DRG Weight' = AVERAGE(fact_encounter[drg_weight])
+		lineageTag: b1070001-0001-0001-0001-000000000019
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Expected Reimbursement' = SUM(fact_encounter[expected_reimbursement])
+		lineageTag: b1070001-0001-0001-0001-00000000001a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'DRG Margin' =
+			VAR _reimburse = [Total Expected Reimbursement]
+			VAR _cost = [Total Cost]
+			RETURN DIVIDE(_reimburse - _cost, _reimburse)
+		lineageTag: b1070001-0001-0001-0001-00000000001b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Quality Score' =
+			VAR _readmit_score = 1 - [Readmission Rate]
+			VAR _adherent_score = [Adherent Rate]
+			VAR _denial_score = 1 - [Denial Rate]
+			RETURN DIVIDE(_readmit_score + _adherent_score + _denial_score, 3)
+		lineageTag: b1070001-0001-0001-0001-00000000001c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Inpatient Encounters' = CALCULATE(COUNTROWS(fact_encounter), fact_encounter[encounter_type] = "Inpatient")
+		formatString: 0
+		lineageTag: b1070001-0001-0001-0001-00000000001d
+
+	measure 'Emergency Encounters' = CALCULATE(COUNTROWS(fact_encounter), fact_encounter[encounter_type] = "Emergency")
+		formatString: 0
+		lineageTag: b1070001-0001-0001-0001-00000000001e
+
+	measure 'PY Charges' = CALCULATE(SUM(fact_encounter[total_charges]), SAMEPERIODLASTYEAR(dim_date[full_date]))
+		lineageTag: b1070001-0001-0001-0001-00000000001f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'YoY Charge Growth' =
+			VAR _cy = [Total Charges]
+			VAR _py = [PY Charges]
+			RETURN DIVIDE(_cy - _py, _py)
+		lineageTag: b1070001-0001-0001-0001-000000000020
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Telehealth Encounters' = CALCULATE(COUNTROWS(fact_encounter), fact_encounter[encounter_type] = "Telehealth")
+		formatString: 0
+		lineageTag: b1070001-0001-0001-0001-000000000021
+
+	measure 'Telehealth Rate' = DIVIDE([Telehealth Encounters], [Total Encounters])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: b1070001-0001-0001-0001-000000000022
+
+	column encounter_id
+		dataType: string
+		lineageTag: b1070001-0001-0001-0001-000000000031
+		sourceLineageTag: encounter_id
+		summarizeBy: none
+		sourceColumn: encounter_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column encounter_date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: b1070001-0001-0001-0001-000000000032
+		sourceLineageTag: encounter_date_key
+		summarizeBy: sum
+		sourceColumn: encounter_date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column discharge_date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: b1070001-0001-0001-0001-000000000033
+		sourceLineageTag: discharge_date_key
+		summarizeBy: none
+		sourceColumn: discharge_date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column patient_key
+		dataType: int64
+		formatString: 0
+		lineageTag: b1070001-0001-0001-0001-000000000034
+		sourceLineageTag: patient_key
+		summarizeBy: none
+		sourceColumn: patient_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column provider_key
+		dataType: int64
+		formatString: 0
+		lineageTag: b1070001-0001-0001-0001-000000000035
+		sourceLineageTag: provider_key
+		summarizeBy: none
+		sourceColumn: provider_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column facility_key
+		dataType: int64
+		formatString: 0
+		lineageTag: b1070001-0001-0001-0001-000000000036
+		sourceLineageTag: facility_key
+		summarizeBy: sum
+		sourceColumn: facility_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column encounter_type
+		dataType: string
+		lineageTag: b1070001-0001-0001-0001-000000000037
+		sourceLineageTag: encounter_type
+		summarizeBy: none
+		sourceColumn: encounter_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column admission_type
+		dataType: string
+		lineageTag: b1070001-0001-0001-0001-000000000038
+		sourceLineageTag: admission_type
+		summarizeBy: none
+		sourceColumn: admission_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column discharge_disposition
+		dataType: string
+		lineageTag: b1070001-0001-0001-0001-000000000039
+		sourceLineageTag: discharge_disposition
+		summarizeBy: none
+		sourceColumn: discharge_disposition
+
+		annotation SummarizationSetBy = Automatic
+
+	column length_of_stay
+		dataType: int64
+		formatString: 0
+		lineageTag: b1070001-0001-0001-0001-00000000003a
+		sourceLineageTag: length_of_stay
+		summarizeBy: sum
+		sourceColumn: length_of_stay
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_charges
+		dataType: double
+		lineageTag: b1070001-0001-0001-0001-00000000003b
+		sourceLineageTag: total_charges
+		summarizeBy: sum
+		sourceColumn: total_charges
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_cost
+		dataType: double
+		lineageTag: b1070001-0001-0001-0001-00000000003c
+		sourceLineageTag: total_cost
+		summarizeBy: sum
+		sourceColumn: total_cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column readmission_flag
+		dataType: int64
+		formatString: 0
+		lineageTag: b1070001-0001-0001-0001-00000000003d
+		sourceLineageTag: readmission_flag
+		summarizeBy: sum
+		sourceColumn: readmission_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column readmission_risk_score
+		dataType: double
+		lineageTag: b1070001-0001-0001-0001-00000000003e
+		sourceLineageTag: readmission_risk_score
+		summarizeBy: sum
+		sourceColumn: readmission_risk_score
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column readmission_risk_category
+		dataType: string
+		lineageTag: b1070001-0001-0001-0001-00000000003f
+		sourceLineageTag: readmission_risk_category
+		summarizeBy: none
+		sourceColumn: readmission_risk_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column drg_code
+		dataType: string
+		lineageTag: b1070001-0001-0001-0001-000000000040
+		sourceLineageTag: drg_code
+		summarizeBy: none
+		sourceColumn: drg_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column drg_description
+		dataType: string
+		lineageTag: b1070001-0001-0001-0001-000000000041
+		sourceLineageTag: drg_description
+		summarizeBy: none
+		sourceColumn: drg_description
+
+		annotation SummarizationSetBy = Automatic
+
+	column drg_weight
+		dataType: double
+		lineageTag: b1070001-0001-0001-0001-000000000042
+		sourceLineageTag: drg_weight
+		summarizeBy: sum
+		sourceColumn: drg_weight
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column expected_reimbursement
+		dataType: double
+		lineageTag: b1070001-0001-0001-0001-000000000043
+		sourceLineageTag: expected_reimbursement
+		summarizeBy: sum
+		sourceColumn: expected_reimbursement
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column _load_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: b1070001-0001-0001-0001-000000000044
+		sourceLineageTag: _load_timestamp
+		summarizeBy: none
+		sourceColumn: _load_timestamp
+
+		annotation SummarizationSetBy = Automatic
+
+	column encounter_key
+		dataType: int64
+		formatString: 0
+		lineageTag: b1070001-0001-0001-0001-000000000045
+		sourceLineageTag: encounter_key
+		summarizeBy: sum
+		sourceColumn: encounter_key
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_encounter = entity
+		mode: directLake
+		source
+			entityName: fact_encounter
+			expressionSource: 'DirectLake - lh_gold_curated'

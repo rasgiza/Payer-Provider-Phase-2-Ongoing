@@ -1,0 +1,81 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "v_bar2",
+  "position": {
+    "x": 950,
+    "y": 166,
+    "z": 0,
+    "width": 310,
+    "height": 260,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_medication"
+                    }
+                  },
+                  "Property": "drug_class"
+                }
+              },
+              "queryRef": "dim_medication.drug_class",
+              "nativeQueryRef": "drug_class"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_prescription"
+                    }
+                  },
+                  "Property": "Total Rx Cost"
+                }
+              },
+              "queryRef": "fact_prescription.Total Rx Cost",
+              "nativeQueryRef": "Total Rx Cost"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "isDefaultSort": true,
+        "sort": []
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Rx Cost by Drug Class'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

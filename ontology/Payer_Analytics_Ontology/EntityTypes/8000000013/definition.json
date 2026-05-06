@@ -1,0 +1,20 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/entityType/1.0.0/schema.json",
+  "id": "8000000013",
+  "namespace": "usertypes",
+  "baseEntityTypeId": null,
+  "name": "AppealOutcomes",
+  "entityIdParts": ["8100000000000001301"],
+  "displayNamePropertyId": "8100000000000001302",
+  "namespaceType": "Imported",
+  "visibility": "Visible",
+  "properties": [
+    {"id": "8100000000000001301", "name": "appeal_agg_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000001302", "name": "payer_name", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000001303", "name": "denial_reason", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000001304", "name": "appeal_outcome", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000001305", "name": "appeal_count", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000001306", "name": "total_amount_recovered", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "8100000000000001307", "name": "avg_amount_recovered", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"}
+  ]
+}

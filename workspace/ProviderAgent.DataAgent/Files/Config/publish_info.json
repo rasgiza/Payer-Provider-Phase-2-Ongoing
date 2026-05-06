@@ -1,0 +1,4 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/dataAgent/definition/publishInfo/1.0.0/schema.json",
+  "description": "Provider-focused healthcare analytics agent. Answers questions about preventable readmissions, clinical quality, provider productivity (RVU, panel size, board certification, satisfaction scores), medication adherence, social determinants of health, diagnoses, and encounter patterns. Queries 13 curated gold-layer tables covering patients, encounters, diagnoses, medications, providers, and SDOH data. Does NOT cover payer-side revenue cycle analytics — use the PayerAgent for denials, collections, appeals, and days-in-AR."
+}

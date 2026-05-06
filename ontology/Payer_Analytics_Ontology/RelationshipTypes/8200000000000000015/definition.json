@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/relationshipType/1.0.0/schema.json",
+  "name": "occursIn",
+  "namespace": "usertypes",
+  "namespaceType": "Imported",
+  "visibility": "Visible",
+  "cardinality": "ManyToMany",
+  "sourceEntityTypeId": "8000000005",
+  "targetEntityTypeId": "8000000003",
+  "properties": []
+}

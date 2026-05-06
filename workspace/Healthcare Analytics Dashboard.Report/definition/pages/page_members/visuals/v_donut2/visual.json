@@ -1,0 +1,77 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "v_donut2",
+  "position": {
+    "x": 20,
+    "y": 436,
+    "z": 0,
+    "width": 300,
+    "height": 260,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "donutChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_patient"
+                    }
+                  },
+                  "Property": "insurance_type"
+                }
+              },
+              "queryRef": "dim_patient.insurance_type",
+              "nativeQueryRef": "insurance_type"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_patient"
+                    }
+                  },
+                  "Property": "Total Patients"
+                }
+              },
+              "queryRef": "dim_patient.Total Patients",
+              "nativeQueryRef": "Total Patients"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Insurance Mix'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

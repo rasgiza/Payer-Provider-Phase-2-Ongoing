@@ -1,0 +1,121 @@
+table dim_provider
+	lineageTag: c1020001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[dim_provider]
+
+	column provider_id
+		dataType: string
+		lineageTag: c1020001-0001-0001-0001-000000000011
+		sourceLineageTag: provider_id
+		summarizeBy: none
+		sourceColumn: provider_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column first_name
+		dataType: string
+		lineageTag: c1020001-0001-0001-0001-000000000012
+		sourceLineageTag: first_name
+		summarizeBy: none
+		sourceColumn: first_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column last_name
+		dataType: string
+		lineageTag: c1020001-0001-0001-0001-000000000013
+		sourceLineageTag: last_name
+		summarizeBy: none
+		sourceColumn: last_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column display_name
+		dataType: string
+		lineageTag: c1020001-0001-0001-0001-000000000014
+		sourceLineageTag: display_name
+		summarizeBy: none
+		sourceColumn: display_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column npi_number
+		dataType: string
+		lineageTag: c1020001-0001-0001-0001-000000000015
+		sourceLineageTag: npi_number
+		summarizeBy: none
+		sourceColumn: npi_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column specialty
+		dataType: string
+		lineageTag: c1020001-0001-0001-0001-000000000016
+		sourceLineageTag: specialty
+		summarizeBy: none
+		sourceColumn: specialty
+
+		annotation SummarizationSetBy = Automatic
+
+	column department
+		dataType: string
+		lineageTag: c1020001-0001-0001-0001-000000000017
+		sourceLineageTag: department
+		summarizeBy: none
+		sourceColumn: department
+
+		annotation SummarizationSetBy = Automatic
+
+	column facility_id
+		dataType: string
+		lineageTag: c1020001-0001-0001-0001-000000000018
+		sourceLineageTag: facility_id
+		summarizeBy: none
+		sourceColumn: facility_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_active
+		dataType: int64
+		formatString: 0
+		lineageTag: c1020001-0001-0001-0001-000000000019
+		sourceLineageTag: is_active
+		summarizeBy: sum
+		sourceColumn: is_active
+
+		annotation SummarizationSetBy = Automatic
+
+	column provider_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1020001-0001-0001-0001-00000000001a
+		sourceLineageTag: provider_key
+		summarizeBy: none
+		sourceColumn: provider_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_current
+		dataType: int64
+		formatString: 0
+		lineageTag: c1020001-0001-0001-0001-00000000001b
+		sourceLineageTag: is_current
+		summarizeBy: sum
+		sourceColumn: is_current
+
+		annotation SummarizationSetBy = Automatic
+
+	column _load_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c1020001-0001-0001-0001-00000000001c
+		sourceLineageTag: _load_timestamp
+		summarizeBy: none
+		sourceColumn: _load_timestamp
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_provider = entity
+		mode: directLake
+		source
+			entityName: dim_provider
+			expressionSource: 'DirectLake - lh_gold_curated'

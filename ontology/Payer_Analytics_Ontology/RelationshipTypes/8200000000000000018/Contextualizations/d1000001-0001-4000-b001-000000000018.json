@@ -1,0 +1,21 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/contextualization/1.0.0/schema.json",
+  "id": "d1000001-0001-4000-b001-000000000018",
+  "workspaceId": "00000000-0000-0000-0000-000000000000",
+  "itemId": "00000000-0000-0000-0000-000000000000",
+  "sourceType": "LakehouseTable",
+  "sourceSchema": null,
+  "sourceTableName": "agg_days_in_ar",
+  "sourceKeyRefBindings": [
+    {
+      "sourceColumnName": "payer_name",
+      "targetPropertyId": "8100000000000001201"
+    }
+  ],
+  "targetKeyRefBindings": [
+    {
+      "sourceColumnName": "payer_name",
+      "targetPropertyId": "8100000000000001101"
+    }
+  ]
+}

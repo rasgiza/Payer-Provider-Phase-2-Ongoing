@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/relationshipType/1.0.0/schema.json",
+  "id": "7200000000000000014",
+  "namespace": "usertypes",
+  "name": "adherenceFor",
+  "sourceEntityTypeId": "7000000010",
+  "targetEntityTypeId": "7000000001",
+  "namespaceType": "Imported",
+  "visibility": "Visible",
+  "cardinality": "ManyToMany",
+  "properties": []
+}

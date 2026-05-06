@@ -1,0 +1,56 @@
+table dim_diagnosis
+	lineageTag: b1040001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[dim_diagnosis]
+
+	column diagnosis_key
+		dataType: int64
+		formatString: 0
+		lineageTag: b1040001-0001-0001-0001-000000000011
+		sourceLineageTag: diagnosis_key
+		summarizeBy: none
+		sourceColumn: diagnosis_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column icd_code
+		dataType: string
+		lineageTag: b1040001-0001-0001-0001-000000000012
+		sourceLineageTag: icd_code
+		summarizeBy: none
+		sourceColumn: icd_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column icd_description
+		dataType: string
+		lineageTag: b1040001-0001-0001-0001-000000000013
+		sourceLineageTag: icd_description
+		summarizeBy: none
+		sourceColumn: icd_description
+
+		annotation SummarizationSetBy = Automatic
+
+	column icd_category
+		dataType: string
+		lineageTag: b1040001-0001-0001-0001-000000000014
+		sourceLineageTag: icd_category
+		summarizeBy: none
+		sourceColumn: icd_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_chronic
+		dataType: int64
+		formatString: 0
+		lineageTag: b1040001-0001-0001-0001-000000000015
+		sourceLineageTag: is_chronic
+		summarizeBy: sum
+		sourceColumn: is_chronic
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_diagnosis = entity
+		mode: directLake
+		source
+			entityName: dim_diagnosis
+			expressionSource: 'DirectLake - lh_gold_curated'

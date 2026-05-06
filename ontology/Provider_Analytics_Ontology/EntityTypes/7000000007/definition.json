@@ -1,0 +1,27 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/entityType/1.0.0/schema.json",
+  "id": "7000000007",
+  "namespace": "usertypes",
+  "baseEntityTypeId": null,
+  "name": "Prescription",
+  "entityIdParts": ["7100000000000000701"],
+  "displayNamePropertyId": "7100000000000000702",
+  "namespaceType": "Imported",
+  "visibility": "Visible",
+  "properties": [
+    {"id": "7100000000000000701", "name": "prescription_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000702", "name": "prescription_id", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000703", "name": "fill_date_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000704", "name": "patient_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000705", "name": "provider_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000706", "name": "encounter_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000707", "name": "medication_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000708", "name": "facility_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000709", "name": "fill_number", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000710", "name": "days_supply", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000711", "name": "quantity_dispensed", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000712", "name": "is_generic", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000713", "name": "pharmacy_type", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000714", "name": "total_cost", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"}
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "v_line1",
+  "position": {
+    "x": 950,
+    "y": 166,
+    "z": 0,
+    "width": 310,
+    "height": 260,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_date"
+                    }
+                  },
+                  "Property": "month_name"
+                }
+              },
+              "queryRef": "dim_date.month_name",
+              "nativeQueryRef": "month_name"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_encounter"
+                    }
+                  },
+                  "Property": "Total Charges"
+                }
+              },
+              "queryRef": "fact_encounter.Total Charges",
+              "nativeQueryRef": "Total Charges"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_encounter"
+                    }
+                  },
+                  "Property": "PY Charges"
+                }
+              },
+              "queryRef": "fact_encounter.PY Charges",
+              "nativeQueryRef": "PY Charges"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Charges: CY vs PY'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

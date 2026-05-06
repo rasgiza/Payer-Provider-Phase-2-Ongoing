@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/entityType/1.0.0/schema.json",
+  "id": "8000000003",
+  "namespace": "usertypes",
+  "baseEntityTypeId": null,
+  "name": "Encounter",
+  "entityIdParts": ["8100000000000000301"],
+  "displayNamePropertyId": "8100000000000000302",
+  "namespaceType": "Imported",
+  "visibility": "Visible",
+  "properties": [
+    {"id": "8100000000000000301", "name": "encounter_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000302", "name": "encounter_id", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000303", "name": "encounter_date_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000304", "name": "discharge_date_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000305", "name": "patient_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000306", "name": "provider_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000307", "name": "facility_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000308", "name": "encounter_type", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000309", "name": "admission_type", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000310", "name": "discharge_disposition", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000311", "name": "length_of_stay", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000312", "name": "total_charges", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "8100000000000000313", "name": "total_cost", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "8100000000000000314", "name": "readmission_flag", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000315", "name": "readmission_risk_score", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "8100000000000000316", "name": "readmission_risk_category", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000317", "name": "drg_code", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000318", "name": "drg_description", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000319", "name": "drg_weight", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "8100000000000000320", "name": "expected_reimbursement", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"}
+  ]
+}

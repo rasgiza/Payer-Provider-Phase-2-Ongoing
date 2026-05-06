@@ -1,0 +1,81 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "v_bar3",
+  "position": {
+    "x": 970,
+    "y": 436,
+    "z": 0,
+    "width": 290,
+    "height": 260,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_payer"
+                    }
+                  },
+                  "Property": "payer_name"
+                }
+              },
+              "queryRef": "dim_payer.payer_name",
+              "nativeQueryRef": "payer_name"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_claim"
+                    }
+                  },
+                  "Property": "Collection Rate"
+                }
+              },
+              "queryRef": "fact_claim.Collection Rate",
+              "nativeQueryRef": "Collection Rate"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "isDefaultSort": true,
+        "sort": []
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Collection Rate by Payer'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/dataBinding/1.0.0/schema.json",
+  "id": "a1000001-0001-4000-a001-000000000005",
+  "dataBindingConfiguration": {
+    "dataBindingType": "NonTimeSeries",
+    "propertyBindings": [
+      {"sourceColumnName": "fact_diagnosis_key", "targetPropertyId": "7100000000000000501"},
+      {"sourceColumnName": "diagnosis_id", "targetPropertyId": "7100000000000000502"},
+      {"sourceColumnName": "encounter_key", "targetPropertyId": "7100000000000000503"},
+      {"sourceColumnName": "diagnosis_date_key", "targetPropertyId": "7100000000000000504"},
+      {"sourceColumnName": "patient_key", "targetPropertyId": "7100000000000000505"},
+      {"sourceColumnName": "diagnosis_key", "targetPropertyId": "7100000000000000506"},
+      {"sourceColumnName": "facility_key", "targetPropertyId": "7100000000000000507"},
+      {"sourceColumnName": "icd_code", "targetPropertyId": "7100000000000000508"},
+      {"sourceColumnName": "diagnosis_sequence", "targetPropertyId": "7100000000000000509"},
+      {"sourceColumnName": "diagnosis_type", "targetPropertyId": "7100000000000000510"},
+      {"sourceColumnName": "present_on_admission", "targetPropertyId": "7100000000000000511"}
+    ],
+    "sourceTableProperties": {
+      "sourceType": "LakehouseTable",
+      "workspaceId": "00000000-0000-0000-0000-000000000000",
+      "itemId": "00000000-0000-0000-0000-000000000000",
+      "sourceTableName": "fact_diagnosis",
+      "sourceSchema": null
+    }
+  }
+}

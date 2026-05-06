@@ -1,0 +1,24 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/entityType/1.0.0/schema.json",
+  "id": "8000000002",
+  "namespace": "usertypes",
+  "baseEntityTypeId": null,
+  "name": "Provider",
+  "entityIdParts": ["8100000000000000201"],
+  "displayNamePropertyId": "8100000000000000202",
+  "namespaceType": "Imported",
+  "visibility": "Visible",
+  "properties": [
+    {"id": "8100000000000000201", "name": "provider_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000202", "name": "provider_id", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000203", "name": "first_name", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000204", "name": "last_name", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000205", "name": "display_name", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000206", "name": "npi_number", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000207", "name": "specialty", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000208", "name": "department", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000209", "name": "facility_id", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000210", "name": "is_active", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000211", "name": "is_current", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"}
+  ]
+}

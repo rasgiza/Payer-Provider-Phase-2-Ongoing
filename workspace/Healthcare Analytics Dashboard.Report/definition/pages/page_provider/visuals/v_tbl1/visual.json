@@ -1,0 +1,143 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "v_tbl1",
+  "position": {
+    "x": 20,
+    "y": 436,
+    "z": 0,
+    "width": 620,
+    "height": 260,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_provider"
+                    }
+                  },
+                  "Property": "display_name"
+                }
+              },
+              "queryRef": "dim_provider.display_name",
+              "nativeQueryRef": "display_name"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_provider"
+                    }
+                  },
+                  "Property": "specialty"
+                }
+              },
+              "queryRef": "dim_provider.specialty",
+              "nativeQueryRef": "specialty"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_claim"
+                    }
+                  },
+                  "Property": "Total Claims"
+                }
+              },
+              "queryRef": "fact_claim.Total Claims",
+              "nativeQueryRef": "Total Claims"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_claim"
+                    }
+                  },
+                  "Property": "Denial Rate"
+                }
+              },
+              "queryRef": "fact_claim.Denial Rate",
+              "nativeQueryRef": "Denial Rate"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_encounter"
+                    }
+                  },
+                  "Property": "Avg Length of Stay"
+                }
+              },
+              "queryRef": "fact_encounter.Avg Length of Stay",
+              "nativeQueryRef": "Avg Length of Stay"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_provider"
+                    }
+                  },
+                  "Property": "contract_type"
+                }
+              },
+              "queryRef": "dim_provider.contract_type",
+              "nativeQueryRef": "contract_type"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_provider"
+                    }
+                  },
+                  "Property": "patient_satisfaction_score"
+                }
+              },
+              "queryRef": "dim_provider.patient_satisfaction_score",
+              "nativeQueryRef": "patient_satisfaction_score"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Provider Quality Metrics'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

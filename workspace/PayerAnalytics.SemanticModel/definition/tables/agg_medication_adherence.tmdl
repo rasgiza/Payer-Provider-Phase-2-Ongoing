@@ -1,0 +1,203 @@
+table agg_medication_adherence
+	lineageTag: c10d0001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[agg_medication_adherence]
+
+	measure 'Adherent Rate' =
+			VAR _num = CALCULATE(COUNTROWS(agg_medication_adherence), agg_medication_adherence[adherence_category] = "Adherent")
+			VAR _den = COUNTROWS(agg_medication_adherence)
+			RETURN DIVIDE(_num, _den)
+		lineageTag: c10d0001-0001-0001-0001-000000000051
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg PDC Score' = AVERAGE(agg_medication_adherence[pdc_score])
+		lineageTag: c10d0001-0001-0001-0001-000000000052
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column patient_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c10d0001-0001-0001-0001-000000000011
+		sourceLineageTag: patient_key
+		summarizeBy: none
+		sourceColumn: patient_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column medication_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c10d0001-0001-0001-0001-000000000012
+		sourceLineageTag: medication_key
+		summarizeBy: none
+		sourceColumn: medication_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column drug_class
+		dataType: string
+		lineageTag: c10d0001-0001-0001-0001-000000000013
+		sourceLineageTag: drug_class
+		summarizeBy: none
+		sourceColumn: drug_class
+
+		annotation SummarizationSetBy = Automatic
+
+	column therapeutic_area
+		dataType: string
+		lineageTag: c10d0001-0001-0001-0001-000000000014
+		sourceLineageTag: therapeutic_area
+		summarizeBy: none
+		sourceColumn: therapeutic_area
+
+		annotation SummarizationSetBy = Automatic
+
+	column measurement_period_start
+		dataType: int64
+		formatString: 0
+		lineageTag: c10d0001-0001-0001-0001-000000000015
+		sourceLineageTag: measurement_period_start
+		summarizeBy: sum
+		sourceColumn: measurement_period_start
+
+		annotation SummarizationSetBy = Automatic
+
+	column measurement_period_end
+		dataType: int64
+		formatString: 0
+		lineageTag: c10d0001-0001-0001-0001-000000000016
+		sourceLineageTag: measurement_period_end
+		summarizeBy: sum
+		sourceColumn: measurement_period_end
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_fills
+		dataType: int64
+		formatString: 0
+		lineageTag: c10d0001-0001-0001-0001-000000000017
+		sourceLineageTag: total_fills
+		summarizeBy: sum
+		sourceColumn: total_fills
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_days_supply
+		dataType: int64
+		formatString: 0
+		lineageTag: c10d0001-0001-0001-0001-000000000018
+		sourceLineageTag: total_days_supply
+		summarizeBy: sum
+		sourceColumn: total_days_supply
+
+		annotation SummarizationSetBy = Automatic
+
+	column days_in_period
+		dataType: int64
+		formatString: 0
+		lineageTag: c10d0001-0001-0001-0001-000000000019
+		sourceLineageTag: days_in_period
+		summarizeBy: sum
+		sourceColumn: days_in_period
+
+		annotation SummarizationSetBy = Automatic
+
+	column covered_days
+		dataType: int64
+		formatString: 0
+		lineageTag: c10d0001-0001-0001-0001-00000000001a
+		sourceLineageTag: covered_days
+		summarizeBy: sum
+		sourceColumn: covered_days
+
+		annotation SummarizationSetBy = Automatic
+
+	column pdc_score
+		dataType: double
+		lineageTag: c10d0001-0001-0001-0001-00000000001b
+		sourceLineageTag: pdc_score
+		summarizeBy: sum
+		sourceColumn: pdc_score
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column adherence_category
+		dataType: string
+		lineageTag: c10d0001-0001-0001-0001-00000000001c
+		sourceLineageTag: adherence_category
+		summarizeBy: none
+		sourceColumn: adherence_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_medication_cost
+		dataType: double
+		lineageTag: c10d0001-0001-0001-0001-00000000001d
+		sourceLineageTag: total_medication_cost
+		summarizeBy: sum
+		sourceColumn: total_medication_cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_payer_cost
+		dataType: double
+		lineageTag: c10d0001-0001-0001-0001-00000000001e
+		sourceLineageTag: total_payer_cost
+		summarizeBy: sum
+		sourceColumn: total_payer_cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_patient_cost
+		dataType: double
+		lineageTag: c10d0001-0001-0001-0001-00000000001f
+		sourceLineageTag: total_patient_cost
+		summarizeBy: sum
+		sourceColumn: total_patient_cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column gap_days
+		dataType: int64
+		formatString: 0
+		lineageTag: c10d0001-0001-0001-0001-000000000020
+		sourceLineageTag: gap_days
+		summarizeBy: sum
+		sourceColumn: gap_days
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_chronic
+		dataType: int64
+		formatString: 0
+		lineageTag: c10d0001-0001-0001-0001-000000000021
+		sourceLineageTag: is_chronic
+		summarizeBy: sum
+		sourceColumn: is_chronic
+
+		annotation SummarizationSetBy = Automatic
+
+	column _load_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c10d0001-0001-0001-0001-000000000022
+		sourceLineageTag: _load_timestamp
+		summarizeBy: none
+		sourceColumn: _load_timestamp
+
+		annotation SummarizationSetBy = Automatic
+
+	partition agg_medication_adherence = entity
+		mode: directLake
+		source
+			entityName: agg_medication_adherence
+			expressionSource: 'DirectLake - lh_gold_curated'

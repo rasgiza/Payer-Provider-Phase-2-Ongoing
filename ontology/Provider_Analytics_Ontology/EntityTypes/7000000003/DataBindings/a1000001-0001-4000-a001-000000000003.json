@@ -1,0 +1,36 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/dataBinding/1.0.0/schema.json",
+  "id": "a1000001-0001-4000-a001-000000000003",
+  "dataBindingConfiguration": {
+    "dataBindingType": "NonTimeSeries",
+    "propertyBindings": [
+      {"sourceColumnName": "encounter_key", "targetPropertyId": "7100000000000000301"},
+      {"sourceColumnName": "encounter_id", "targetPropertyId": "7100000000000000302"},
+      {"sourceColumnName": "encounter_date_key", "targetPropertyId": "7100000000000000303"},
+      {"sourceColumnName": "discharge_date_key", "targetPropertyId": "7100000000000000304"},
+      {"sourceColumnName": "patient_key", "targetPropertyId": "7100000000000000305"},
+      {"sourceColumnName": "provider_key", "targetPropertyId": "7100000000000000306"},
+      {"sourceColumnName": "facility_key", "targetPropertyId": "7100000000000000307"},
+      {"sourceColumnName": "encounter_type", "targetPropertyId": "7100000000000000308"},
+      {"sourceColumnName": "admission_type", "targetPropertyId": "7100000000000000309"},
+      {"sourceColumnName": "discharge_disposition", "targetPropertyId": "7100000000000000310"},
+      {"sourceColumnName": "length_of_stay", "targetPropertyId": "7100000000000000311"},
+      {"sourceColumnName": "total_charges", "targetPropertyId": "7100000000000000312"},
+      {"sourceColumnName": "total_cost", "targetPropertyId": "7100000000000000313"},
+      {"sourceColumnName": "readmission_flag", "targetPropertyId": "7100000000000000314"},
+      {"sourceColumnName": "readmission_risk_score", "targetPropertyId": "7100000000000000315"},
+      {"sourceColumnName": "readmission_risk_category", "targetPropertyId": "7100000000000000316"},
+      {"sourceColumnName": "drg_code", "targetPropertyId": "7100000000000000317"},
+      {"sourceColumnName": "drg_description", "targetPropertyId": "7100000000000000318"},
+      {"sourceColumnName": "drg_weight", "targetPropertyId": "7100000000000000319"},
+      {"sourceColumnName": "expected_reimbursement", "targetPropertyId": "7100000000000000320"}
+    ],
+    "sourceTableProperties": {
+      "sourceType": "LakehouseTable",
+      "workspaceId": "00000000-0000-0000-0000-000000000000",
+      "itemId": "00000000-0000-0000-0000-000000000000",
+      "sourceTableName": "fact_encounter",
+      "sourceSchema": null
+    }
+  }
+}

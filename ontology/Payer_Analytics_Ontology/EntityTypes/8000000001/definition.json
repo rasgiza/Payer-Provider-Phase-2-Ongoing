@@ -1,0 +1,27 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/entityType/1.0.0/schema.json",
+  "id": "8000000001",
+  "namespace": "usertypes",
+  "baseEntityTypeId": null,
+  "name": "Patient",
+  "entityIdParts": ["8100000000000000101"],
+  "displayNamePropertyId": "8100000000000000102",
+  "namespaceType": "Imported",
+  "visibility": "Visible",
+  "properties": [
+    {"id": "8100000000000000101", "name": "patient_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000102", "name": "patient_id", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000103", "name": "first_name", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000104", "name": "last_name", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000105", "name": "date_of_birth", "redefines": null, "baseTypeNamespaceType": null, "valueType": "DateTime"},
+    {"id": "8100000000000000106", "name": "gender", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000107", "name": "city", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000108", "name": "state", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000109", "name": "zip_code", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000110", "name": "insurance_type", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000111", "name": "insurance_provider", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000112", "name": "age", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000113", "name": "age_group", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000114", "name": "is_current", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"}
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/dataBinding/1.0.0/schema.json",
+  "id": "a1000001-0001-4000-a001-000000000004",
+  "dataBindingConfiguration": {
+    "dataBindingType": "NonTimeSeries",
+    "propertyBindings": [
+      {"sourceColumnName": "claim_key", "targetPropertyId": "7100000000000000401"},
+      {"sourceColumnName": "claim_id", "targetPropertyId": "7100000000000000402"},
+      {"sourceColumnName": "claim_date_key", "targetPropertyId": "7100000000000000403"},
+      {"sourceColumnName": "patient_key", "targetPropertyId": "7100000000000000404"},
+      {"sourceColumnName": "provider_key", "targetPropertyId": "7100000000000000405"},
+      {"sourceColumnName": "encounter_key", "targetPropertyId": "7100000000000000406"},
+      {"sourceColumnName": "facility_key", "targetPropertyId": "7100000000000000407"},
+      {"sourceColumnName": "claim_type", "targetPropertyId": "7100000000000000408"},
+      {"sourceColumnName": "claim_status", "targetPropertyId": "7100000000000000409"},
+      {"sourceColumnName": "billed_amount", "targetPropertyId": "7100000000000000410"},
+      {"sourceColumnName": "allowed_amount", "targetPropertyId": "7100000000000000411"},
+      {"sourceColumnName": "paid_amount", "targetPropertyId": "7100000000000000412"},
+      {"sourceColumnName": "denial_flag", "targetPropertyId": "7100000000000000413"},
+      {"sourceColumnName": "denial_risk_score", "targetPropertyId": "7100000000000000414"},
+      {"sourceColumnName": "denial_risk_category", "targetPropertyId": "7100000000000000415"},
+      {"sourceColumnName": "primary_denial_reason", "targetPropertyId": "7100000000000000416"},
+      {"sourceColumnName": "recommended_action", "targetPropertyId": "7100000000000000417"}
+    ],
+    "sourceTableProperties": {
+      "sourceType": "LakehouseTable",
+      "workspaceId": "00000000-0000-0000-0000-000000000000",
+      "itemId": "00000000-0000-0000-0000-000000000000",
+      "sourceTableName": "fact_claim",
+      "sourceSchema": null
+    }
+  }
+}

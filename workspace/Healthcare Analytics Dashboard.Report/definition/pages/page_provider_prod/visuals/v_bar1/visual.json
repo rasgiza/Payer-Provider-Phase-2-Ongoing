@@ -1,0 +1,95 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "v_bar1",
+  "position": {
+    "x": 20,
+    "y": 166,
+    "z": 0,
+    "width": 400,
+    "height": 260,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_provider"
+                    }
+                  },
+                  "Property": "specialty"
+                }
+              },
+              "queryRef": "dim_provider.specialty",
+              "nativeQueryRef": "specialty"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_provider"
+                    }
+                  },
+                  "Property": "Avg RVU Target"
+                }
+              },
+              "queryRef": "dim_provider.Avg RVU Target",
+              "nativeQueryRef": "Avg RVU Target"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_provider"
+                    }
+                  },
+                  "Property": "Avg Actual RVU"
+                }
+              },
+              "queryRef": "dim_provider.Avg Actual RVU",
+              "nativeQueryRef": "Avg Actual RVU"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "isDefaultSort": true,
+        "sort": []
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'RVU Target vs Actual by Specialty'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

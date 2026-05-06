@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/dataBinding/1.0.0/schema.json",
+  "id": "a1000001-0001-4000-a001-000000000002",
+  "dataBindingConfiguration": {
+    "dataBindingType": "NonTimeSeries",
+    "propertyBindings": [
+      {"sourceColumnName": "provider_key", "targetPropertyId": "7100000000000000201"},
+      {"sourceColumnName": "provider_id", "targetPropertyId": "7100000000000000202"},
+      {"sourceColumnName": "first_name", "targetPropertyId": "7100000000000000203"},
+      {"sourceColumnName": "last_name", "targetPropertyId": "7100000000000000204"},
+      {"sourceColumnName": "display_name", "targetPropertyId": "7100000000000000205"},
+      {"sourceColumnName": "npi_number", "targetPropertyId": "7100000000000000206"},
+      {"sourceColumnName": "specialty", "targetPropertyId": "7100000000000000207"},
+      {"sourceColumnName": "department", "targetPropertyId": "7100000000000000208"},
+      {"sourceColumnName": "facility_id", "targetPropertyId": "7100000000000000209"},
+      {"sourceColumnName": "is_active", "targetPropertyId": "7100000000000000210"},
+      {"sourceColumnName": "is_current", "targetPropertyId": "7100000000000000211"},
+      {"sourceColumnName": "contract_type", "targetPropertyId": "7100000000000000212"},
+      {"sourceColumnName": "fte_status", "targetPropertyId": "7100000000000000213"},
+      {"sourceColumnName": "years_experience", "targetPropertyId": "7100000000000000214"},
+      {"sourceColumnName": "board_certified", "targetPropertyId": "7100000000000000215"},
+      {"sourceColumnName": "patient_panel_size", "targetPropertyId": "7100000000000000216"},
+      {"sourceColumnName": "annual_rvu_target", "targetPropertyId": "7100000000000000217"},
+      {"sourceColumnName": "actual_rvu", "targetPropertyId": "7100000000000000218"},
+      {"sourceColumnName": "patient_satisfaction_score", "targetPropertyId": "7100000000000000219"},
+      {"sourceColumnName": "telehealth_enabled", "targetPropertyId": "7100000000000000220"},
+      {"sourceColumnName": "documentation_score", "targetPropertyId": "7100000000000000221"},
+      {"sourceColumnName": "ehr_adoption_score", "targetPropertyId": "7100000000000000222"}
+    ],
+    "sourceTableProperties": {
+      "sourceType": "LakehouseTable",
+      "workspaceId": "00000000-0000-0000-0000-000000000000",
+      "itemId": "00000000-0000-0000-0000-000000000000",
+      "sourceTableName": "dim_provider",
+      "sourceSchema": null
+    }
+  }
+}

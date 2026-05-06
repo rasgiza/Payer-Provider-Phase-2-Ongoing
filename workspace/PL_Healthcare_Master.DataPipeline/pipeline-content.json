@@ -1,0 +1,96 @@
+{
+    "properties": {
+        "description": "Master orchestrator pipeline. Set load_mode to 'full' (initial deployment) or 'incremental' (day-2+ CSV batches). Both modes run the same notebook chain. No human intervention required — schedule with a trigger for automated daily incremental loads.",
+        "activities": [
+            {
+                "name": "Check_Load_Mode",
+                "description": "Branch based on the load_mode parameter — full or incremental",
+                "type": "IfCondition",
+                "dependsOn": [],
+                "typeProperties": {
+                    "expression": {
+                        "value": "@equals(pipeline().parameters.load_mode, 'incremental')",
+                        "type": "Expression"
+                    },
+                    "ifTrueActivities": [
+                        {
+                            "name": "Generate_Incremental_Data",
+                            "description": "Auto-generate today's incremental CSV batch (encounters, claims, prescriptions, diagnoses, patient updates) before running the ETL pipeline",
+                            "type": "TridentNotebook",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "0.01:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "typeProperties": {
+                                "notebookId": "b2000002-0002-0002-0002-000000000007",
+                                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                                "parameters": {}
+                            }
+                        },
+                        {
+                            "name": "Execute_Incremental_Load",
+                            "description": "Run the ETL pipeline with load_mode=incremental (Bronze append → Silver dedup → Gold MERGE → SM Refresh)",
+                            "type": "ExecutePipeline",
+                            "dependsOn": [
+                                {
+                                    "activity": "Generate_Incremental_Data",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "typeProperties": {
+                                "pipeline": {
+                                    "referenceName": "c3000003-0003-0003-0003-000000000001",
+                                    "type": "PipelineReference"
+                                },
+                                "waitOnCompletion": true,
+                                "parameters": {
+                                    "load_mode": "incremental"
+                                }
+                            }
+                        }
+                    ],
+                    "ifFalseActivities": [
+                        {
+                            "name": "Execute_Full_Load",
+                            "description": "Run the ETL pipeline with load_mode=full (Bronze overwrite → Silver → Gold → SM Refresh)",
+                            "type": "ExecutePipeline",
+                            "dependsOn": [],
+                            "policy": {
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "typeProperties": {
+                                "pipeline": {
+                                    "referenceName": "c3000003-0003-0003-0003-000000000001",
+                                    "type": "PipelineReference"
+                                },
+                                "waitOnCompletion": true,
+                                "parameters": {
+                                    "load_mode": "full"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "parameters": {
+            "load_mode": {
+                "type": "string",
+                "defaultValue": "full"
+            }
+        },
+        "annotations": [],
+        "lastPublishTime": "2025-01-01T00:00:00Z"
+    }
+}

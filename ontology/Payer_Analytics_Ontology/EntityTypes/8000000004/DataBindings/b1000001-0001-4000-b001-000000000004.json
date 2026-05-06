@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/dataBinding/1.0.0/schema.json",
+  "id": "b1000001-0001-4000-b001-000000000004",
+  "dataBindingConfiguration": {
+    "dataBindingType": "NonTimeSeries",
+    "propertyBindings": [
+      {"sourceColumnName": "claim_key", "targetPropertyId": "8100000000000000401"},
+      {"sourceColumnName": "claim_id", "targetPropertyId": "8100000000000000402"},
+      {"sourceColumnName": "claim_date_key", "targetPropertyId": "8100000000000000403"},
+      {"sourceColumnName": "payment_date_key", "targetPropertyId": "8100000000000000404"},
+      {"sourceColumnName": "patient_key", "targetPropertyId": "8100000000000000405"},
+      {"sourceColumnName": "provider_key", "targetPropertyId": "8100000000000000406"},
+      {"sourceColumnName": "payer_key", "targetPropertyId": "8100000000000000407"},
+      {"sourceColumnName": "encounter_key", "targetPropertyId": "8100000000000000408"},
+      {"sourceColumnName": "facility_key", "targetPropertyId": "8100000000000000409"},
+      {"sourceColumnName": "claim_type", "targetPropertyId": "8100000000000000410"},
+      {"sourceColumnName": "claim_status", "targetPropertyId": "8100000000000000411"},
+      {"sourceColumnName": "billed_amount", "targetPropertyId": "8100000000000000412"},
+      {"sourceColumnName": "allowed_amount", "targetPropertyId": "8100000000000000413"},
+      {"sourceColumnName": "paid_amount", "targetPropertyId": "8100000000000000414"},
+      {"sourceColumnName": "denial_flag", "targetPropertyId": "8100000000000000415"},
+      {"sourceColumnName": "denial_risk_score", "targetPropertyId": "8100000000000000416"},
+      {"sourceColumnName": "denial_risk_category", "targetPropertyId": "8100000000000000417"},
+      {"sourceColumnName": "primary_denial_reason", "targetPropertyId": "8100000000000000418"},
+      {"sourceColumnName": "recommended_action", "targetPropertyId": "8100000000000000419"},
+      {"sourceColumnName": "days_to_payment", "targetPropertyId": "8100000000000000420"},
+      {"sourceColumnName": "net_collection_rate", "targetPropertyId": "8100000000000000421"},
+      {"sourceColumnName": "appeal_date", "targetPropertyId": "8100000000000000422"},
+      {"sourceColumnName": "appeal_outcome", "targetPropertyId": "8100000000000000423"},
+      {"sourceColumnName": "appeal_amount_recovered", "targetPropertyId": "8100000000000000424"}
+    ],
+    "sourceTableProperties": {
+      "sourceType": "LakehouseTable",
+      "workspaceId": "00000000-0000-0000-0000-000000000000",
+      "itemId": "00000000-0000-0000-0000-000000000000",
+      "sourceTableName": "fact_claim",
+      "sourceSchema": null
+    }
+  }
+}

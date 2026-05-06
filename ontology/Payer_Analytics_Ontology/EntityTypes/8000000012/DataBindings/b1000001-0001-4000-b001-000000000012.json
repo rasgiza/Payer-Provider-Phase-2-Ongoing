@@ -1,0 +1,24 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/dataBinding/1.0.0/schema.json",
+  "id": "b1000001-0001-4000-b001-000000000012",
+  "dataBindingConfiguration": {
+    "dataBindingType": "NonTimeSeries",
+    "propertyBindings": [
+      {"sourceColumnName": "ar_key", "targetPropertyId": "8100000000000001201"},
+      {"sourceColumnName": "claim_date_key", "targetPropertyId": "8100000000000001202"},
+      {"sourceColumnName": "payer_name", "targetPropertyId": "8100000000000001203"},
+      {"sourceColumnName": "claim_count", "targetPropertyId": "8100000000000001204"},
+      {"sourceColumnName": "avg_days_to_payment", "targetPropertyId": "8100000000000001205"},
+      {"sourceColumnName": "median_days_to_payment", "targetPropertyId": "8100000000000001206"},
+      {"sourceColumnName": "p90_days_to_payment", "targetPropertyId": "8100000000000001207"},
+      {"sourceColumnName": "avg_net_collection_rate", "targetPropertyId": "8100000000000001208"}
+    ],
+    "sourceTableProperties": {
+      "sourceType": "LakehouseTable",
+      "workspaceId": "00000000-0000-0000-0000-000000000000",
+      "itemId": "00000000-0000-0000-0000-000000000000",
+      "sourceTableName": "agg_days_in_ar",
+      "sourceSchema": null
+    }
+  }
+}

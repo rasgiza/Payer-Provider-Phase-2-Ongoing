@@ -1,0 +1,26 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/entityType/1.0.0/schema.json",
+  "id": "8000000009",
+  "namespace": "usertypes",
+  "baseEntityTypeId": null,
+  "name": "CommunityHealth",
+  "entityIdParts": ["8100000000000000902"],
+  "displayNamePropertyId": "8100000000000000902",
+  "namespaceType": "Imported",
+  "visibility": "Visible",
+  "properties": [
+    {"id": "8100000000000000901", "name": "sdoh_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000902", "name": "zip_code", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000903", "name": "state", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000904", "name": "poverty_rate", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "8100000000000000905", "name": "food_desert_flag", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000906", "name": "transportation_score", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "8100000000000000907", "name": "housing_instability_rate", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "8100000000000000908", "name": "uninsured_rate", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "8100000000000000909", "name": "broadband_access_pct", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "8100000000000000910", "name": "median_household_income", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000911", "name": "population", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000912", "name": "social_vulnerability_index", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "8100000000000000913", "name": "risk_tier", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"}
+  ]
+}

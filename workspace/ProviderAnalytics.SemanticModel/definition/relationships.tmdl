@@ -1,0 +1,73 @@
+relationship b1000001-0001-0001-0001-000000000010
+	fromColumn: fact_encounter.patient_key
+	toColumn: dim_patient.patient_key
+
+relationship b1000001-0001-0001-0001-000000000011
+	fromColumn: fact_encounter.provider_key
+	toColumn: dim_provider.provider_key
+
+relationship b1000001-0001-0001-0001-000000000012
+	fromColumn: fact_encounter.encounter_date_key
+	toColumn: dim_date.date_key
+
+relationship b1000001-0001-0001-0001-000000000013
+	isActive: false
+	fromColumn: fact_encounter.discharge_date_key
+	toColumn: dim_date.date_key
+
+relationship b1000001-0001-0001-0001-000000000014
+	fromColumn: fact_claim.patient_key
+	toColumn: dim_patient.patient_key
+
+relationship b1000001-0001-0001-0001-000000000015
+	fromColumn: fact_claim.provider_key
+	toColumn: dim_provider.provider_key
+
+relationship b1000001-0001-0001-0001-000000000016
+	fromColumn: fact_claim.claim_date_key
+	toColumn: dim_date.date_key
+
+relationship b1000001-0001-0001-0001-000000000017
+	fromColumn: fact_prescription.patient_key
+	toColumn: dim_patient.patient_key
+
+relationship b1000001-0001-0001-0001-000000000018
+	fromColumn: fact_prescription.provider_key
+	toColumn: dim_provider.provider_key
+
+relationship b1000001-0001-0001-0001-000000000019
+	fromColumn: fact_prescription.medication_key
+	toColumn: dim_medication.medication_key
+
+relationship b1000001-0001-0001-0001-00000000001a
+	fromColumn: fact_prescription.fill_date_key
+	toColumn: dim_date.date_key
+
+relationship b1000001-0001-0001-0001-00000000001b
+	fromColumn: fact_diagnosis.patient_key
+	toColumn: dim_patient.patient_key
+
+relationship b1000001-0001-0001-0001-00000000001c
+	fromColumn: fact_diagnosis.diagnosis_key
+	toColumn: dim_diagnosis.diagnosis_key
+
+relationship b1000001-0001-0001-0001-00000000001d
+	fromColumn: agg_medication_adherence.patient_key
+	toColumn: dim_patient.patient_key
+
+relationship b1000001-0001-0001-0001-00000000001e
+	fromColumn: agg_medication_adherence.medication_key
+	toColumn: dim_medication.medication_key
+
+relationship b1000001-0001-0001-0001-00000000001f
+	fromColumn: dim_patient.zip_code
+	toColumn: dim_sdoh.zip_code
+
+relationship b1000001-0001-0001-0001-000000000020
+	fromColumn: dim_date.date_key
+	toColumn: agg_readmission_by_date.encounter_date_key
+
+relationship b1000001-0001-0001-0001-000000000021
+	isActive: false
+	fromColumn: fact_diagnosis.diagnosis_date_key
+	toColumn: dim_date.date_key

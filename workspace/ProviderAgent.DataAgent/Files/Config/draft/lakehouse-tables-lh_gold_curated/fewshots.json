@@ -1,0 +1,160 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/dataAgent/definition/fewShots/1.0.0/schema.json",
+  "fewShots": [
+    {
+      "id": "prov-cmo-01-executive-summary-readmission",
+      "question": "CMO executive summary: what's our readmission rate this month vs the 15% benchmark and how many high-risk patients haven't been readmitted yet?",
+      "query": "SELECT (SELECT CAST(SUM(actual_readmissions) AS FLOAT) / NULLIF(SUM(total_encounters),0) * 100 FROM agg_readmission_by_date) AS readmission_rate_pct, 15.0 AS benchmark_pct, (SELECT COUNT(*) FROM fact_encounter WHERE readmission_risk_category = 'High' AND readmission_flag = 0) AS high_risk_not_yet_readmitted, (SELECT COUNT(*) FROM fact_encounter WHERE readmission_risk_category = 'High') AS total_high_risk"
+    },
+    {
+      "id": "prov-cmo-02-what-should-i-worry-about",
+      "question": "What should I be worried about today as CMO?",
+      "query": "SELECT 'readmission_rate_pct' AS metric, CAST(SUM(actual_readmissions) AS FLOAT) / NULLIF(SUM(total_encounters),0) * 100 AS value, 15.0 AS benchmark FROM agg_readmission_by_date UNION ALL SELECT 'high_risk_patients', CAST(COUNT(*) AS FLOAT), NULL FROM fact_encounter WHERE readmission_risk_category = 'High' AND readmission_flag = 0 UNION ALL SELECT 'denial_rate_pct', CAST(SUM(CAST(denial_flag AS INT)) AS FLOAT) / NULLIF(COUNT(*),0) * 100, 8.0 FROM fact_claim UNION ALL SELECT 'non_adherent_pct', CAST(SUM(CASE WHEN adherence_category='Non-Adherent' THEN 1 ELSE 0 END) AS FLOAT) / NULLIF(COUNT(*),0) * 100, 20.0 FROM agg_medication_adherence UNION ALL SELECT 'avg_los_inpatient', AVG(length_of_stay), 5.0 FROM fact_encounter WHERE encounter_type='Inpatient' UNION ALL SELECT 'rvu_attainment_pct', CAST(SUM(actual_rvu) AS FLOAT) / NULLIF(SUM(annual_rvu_target),0) * 100, 95.0 FROM dim_provider WHERE is_current=1"
+    },
+    {
+      "id": "prov-cmo-03-readmission-drivers-by-icd",
+      "question": "What's driving readmissions — which chronic conditions?",
+      "query": "SELECT TOP 10 dd.icd_category, COUNT(*) AS readmission_encounters, AVG(fe.readmission_risk_score) AS avg_risk_score FROM fact_encounter fe JOIN fact_diagnosis fd ON fe.encounter_key = fd.encounter_key JOIN dim_diagnosis dd ON fd.diagnosis_key = dd.diagnosis_key WHERE fe.readmission_flag = 1 AND dd.is_chronic = 1 GROUP BY dd.icd_category ORDER BY readmission_encounters DESC"
+    },
+    {
+      "id": "prov-cmo-04-intervention-list-readmit-non-adherent",
+      "question": "Show me intervention candidates: high-risk readmission patients who are also medication non-adherent",
+      "query": "SELECT TOP 25 dp.first_name, dp.last_name, dp.age, dp.insurance_type, fe.encounter_id, fe.readmission_risk_score, ama.pdc_score, ama.adherence_category, dm.drug_class FROM fact_encounter fe JOIN dim_patient dp ON fe.patient_key = dp.patient_key AND dp.is_current = 1 JOIN agg_medication_adherence ama ON ama.patient_key = dp.patient_key JOIN dim_medication dm ON ama.medication_key = dm.medication_key WHERE fe.readmission_risk_category = 'High' AND ama.adherence_category = 'Non-Adherent' AND fe.readmission_flag = 0 ORDER BY fe.readmission_risk_score DESC"
+    },
+    {
+      "id": "prov-cmo-05-sdoh-equity-view",
+      "question": "How does SDOH risk tier affect our readmission rate? Are we delivering equitable care?",
+      "query": "SELECT ds.risk_tier AS sdoh_risk_tier, COUNT(*) AS total_encounters, SUM(fe.readmission_flag) AS readmissions, CAST(SUM(fe.readmission_flag) AS FLOAT) / NULLIF(COUNT(*),0) * 100 AS readmission_rate_pct, AVG(fe.readmission_risk_score) AS avg_risk_score FROM fact_encounter fe JOIN dim_patient dp ON fe.patient_key = dp.patient_key AND dp.is_current = 1 JOIN dim_sdoh ds ON ds.zip_code = dp.zip_code GROUP BY ds.risk_tier ORDER BY readmission_rate_pct DESC"
+    },
+    {
+      "id": "prov-cmo-06-provider-quality-watchlist",
+      "question": "Which providers should I peer-review this week — high denial rate or low documentation score?",
+      "query": "SELECT TOP 15 dpr.display_name, dpr.specialty, dpr.documentation_score, dpr.ehr_adoption_score, COUNT(fc.claim_key) AS total_claims, SUM(CAST(fc.denial_flag AS INT)) AS denials, CAST(SUM(CAST(fc.denial_flag AS INT)) AS FLOAT) / NULLIF(COUNT(fc.claim_key),0) * 100 AS denial_rate_pct FROM dim_provider dpr LEFT JOIN fact_claim fc ON fc.provider_key = dpr.provider_key WHERE dpr.is_current = 1 GROUP BY dpr.display_name, dpr.specialty, dpr.documentation_score, dpr.ehr_adoption_score HAVING COUNT(fc.claim_key) > 5 AND (CAST(SUM(CAST(fc.denial_flag AS INT)) AS FLOAT) / NULLIF(COUNT(fc.claim_key),0) * 100 > 8.0 OR dpr.documentation_score < 80) ORDER BY denial_rate_pct DESC"
+    },
+    {
+      "id": "prov-01-readmission-risk-distribution",
+      "question": "How many encounters are in each readmission risk category?",
+      "query": "SELECT readmission_risk_category, COUNT(*) as encounter_count FROM fact_encounter GROUP BY readmission_risk_category ORDER BY encounter_count DESC"
+    },
+    {
+      "id": "prov-02-top10-readmission-risk",
+      "question": "Show me the top 10 patients with highest readmission risk scores",
+      "query": "SELECT TOP 10 dp.first_name, dp.last_name, dp.age, fe.encounter_id, fe.encounter_type, fe.readmission_risk_score, fe.readmission_risk_category, fe.length_of_stay, fe.discharge_disposition FROM fact_encounter fe JOIN dim_patient dp ON fe.patient_key = dp.patient_key AND dp.is_current = 1 ORDER BY fe.readmission_risk_score DESC"
+    },
+    {
+      "id": "prov-03-readmission-rate",
+      "question": "What is our current readmission rate?",
+      "query": "SELECT SUM(total_encounters) AS eligible_discharges, SUM(actual_readmissions) AS readmissions, CAST(SUM(actual_readmissions) AS FLOAT) / NULLIF(SUM(total_encounters), 0) * 100 AS readmission_rate_pct FROM agg_readmission_by_date"
+    },
+    {
+      "id": "prov-04-readmission-trend-monthly",
+      "question": "Show me readmission trends by month",
+      "query": "SELECT dd.month_name, dd.year, dd.month_number, SUM(ar.total_encounters) as total_encounters, SUM(ar.actual_readmissions) as readmissions, CAST(SUM(ar.actual_readmissions) AS FLOAT) / NULLIF(SUM(ar.total_encounters), 0) * 100 as readmission_rate_pct FROM agg_readmission_by_date ar JOIN dim_date dd ON ar.encounter_date_key = dd.date_key GROUP BY dd.month_name, dd.year, dd.month_number ORDER BY dd.year, dd.month_number"
+    },
+    {
+      "id": "prov-05-readmission-by-encounter-type",
+      "question": "Which encounter types have the highest readmission rates?",
+      "query": "SELECT encounter_type, SUM(total_encounters) as total_encounters, SUM(actual_readmissions) as readmissions, CAST(SUM(actual_readmissions) AS FLOAT) / NULLIF(SUM(total_encounters), 0) * 100 as readmission_rate_pct, AVG(avg_risk_score) as avg_risk_score FROM agg_readmission_by_date GROUP BY encounter_type ORDER BY readmission_rate_pct DESC"
+    },
+    {
+      "id": "prov-06-rvu-attainment-by-specialty",
+      "question": "What is the RVU attainment rate by specialty?",
+      "query": "SELECT specialty, COUNT(*) as provider_count, SUM(actual_rvu) as total_actual_rvu, SUM(annual_rvu_target) as total_target_rvu, CAST(SUM(actual_rvu) AS FLOAT) / NULLIF(SUM(annual_rvu_target), 0) * 100 as rvu_attainment_pct FROM dim_provider WHERE is_current = 1 GROUP BY specialty ORDER BY rvu_attainment_pct DESC"
+    },
+    {
+      "id": "prov-07-provider-productivity-dashboard",
+      "question": "Show me a provider productivity dashboard with RVU, panel size, and satisfaction",
+      "query": "SELECT display_name, specialty, department, contract_type, fte_status, patient_panel_size, annual_rvu_target, actual_rvu, CAST(actual_rvu AS FLOAT) / NULLIF(annual_rvu_target, 0) * 100 as rvu_attainment_pct, patient_satisfaction_score, documentation_score, ehr_adoption_score FROM dim_provider WHERE is_current = 1 ORDER BY rvu_attainment_pct DESC"
+    },
+    {
+      "id": "prov-08-board-certification-rate",
+      "question": "What is our board certification rate by specialty?",
+      "query": "SELECT specialty, COUNT(*) as provider_count, SUM(CAST(board_certified AS INT)) as board_certified_count, CAST(SUM(CAST(board_certified AS INT)) AS FLOAT) / NULLIF(COUNT(*), 0) * 100 as board_cert_rate_pct FROM dim_provider WHERE is_current = 1 GROUP BY specialty ORDER BY board_cert_rate_pct DESC"
+    },
+    {
+      "id": "prov-09-telehealth-adoption",
+      "question": "Which specialties have the highest telehealth adoption?",
+      "query": "SELECT specialty, COUNT(*) as provider_count, SUM(CAST(telehealth_enabled AS INT)) as telehealth_count, CAST(SUM(CAST(telehealth_enabled AS INT)) AS FLOAT) / NULLIF(COUNT(*), 0) * 100 as telehealth_rate_pct FROM dim_provider WHERE is_current = 1 GROUP BY specialty ORDER BY telehealth_rate_pct DESC"
+    },
+    {
+      "id": "prov-10-provider-denial-rates",
+      "question": "Which providers have the highest denial rates?",
+      "query": "SELECT TOP 10 dpr.display_name, dpr.specialty, COUNT(*) as total_claims, SUM(CASE WHEN fc.denial_flag = 1 THEN 1 ELSE 0 END) as denial_count, CAST(SUM(CASE WHEN fc.denial_flag = 1 THEN 1 ELSE 0 END) AS FLOAT) / NULLIF(COUNT(*), 0) * 100 as denial_rate_pct, SUM(CASE WHEN fc.denial_flag = 1 THEN fc.billed_amount ELSE 0 END) as denied_amount FROM fact_claim fc JOIN dim_provider dpr ON fc.provider_key = dpr.provider_key AND dpr.is_current = 1 GROUP BY dpr.display_name, dpr.specialty ORDER BY denial_rate_pct DESC"
+    },
+    {
+      "id": "prov-11-los-by-encounter-type",
+      "question": "What is the average length of stay by encounter type?",
+      "query": "SELECT encounter_type, AVG(length_of_stay) as avg_length_of_stay, COUNT(*) as total_encounters, SUM(total_charges) as total_charges FROM fact_encounter GROUP BY encounter_type ORDER BY avg_length_of_stay DESC"
+    },
+    {
+      "id": "prov-12-los-by-risk",
+      "question": "What is the average length of stay for high-risk vs low-risk patients?",
+      "query": "SELECT readmission_risk_category, AVG(length_of_stay) as avg_length_of_stay, COUNT(*) as total_encounters, AVG(readmission_risk_score) as avg_risk_score, SUM(total_charges) as total_charges FROM fact_encounter GROUP BY readmission_risk_category ORDER BY avg_length_of_stay DESC"
+    },
+    {
+      "id": "prov-13-non-adherent-patients",
+      "question": "Show me patients who are non-adherent to their medications",
+      "query": "SELECT dp.first_name, dp.last_name, dp.age, dm.medication_name, dm.drug_class, ma.pdc_score, ma.adherence_category, ma.gap_days, ma.total_fills FROM agg_medication_adherence ma JOIN dim_patient dp ON ma.patient_key = dp.patient_key AND dp.is_current = 1 JOIN dim_medication dm ON ma.medication_key = dm.medication_key WHERE ma.adherence_category = 'Non-Adherent' ORDER BY ma.pdc_score ASC"
+    },
+    {
+      "id": "prov-14-adherence-by-drug-class",
+      "question": "Show me medication adherence rates by drug class",
+      "query": "SELECT dm.drug_class, dm.therapeutic_area, COUNT(*) as member_medication_pairs, AVG(ma.pdc_score) as avg_pdc, SUM(CASE WHEN ma.adherence_category = 'Adherent' THEN 1 ELSE 0 END) as adherent_count, SUM(CASE WHEN ma.adherence_category = 'Non-Adherent' THEN 1 ELSE 0 END) as non_adherent_count, CAST(SUM(CASE WHEN ma.adherence_category = 'Adherent' THEN 1 ELSE 0 END) AS FLOAT) / NULLIF(COUNT(*), 0) * 100 as adherence_rate_pct FROM agg_medication_adherence ma JOIN dim_medication dm ON ma.medication_key = dm.medication_key GROUP BY dm.drug_class, dm.therapeutic_area ORDER BY avg_pdc ASC"
+    },
+    {
+      "id": "prov-15-high-risk-non-adherent",
+      "question": "Show me high-risk patients who are also medication non-adherent",
+      "query": "SELECT DISTINCT dp.first_name, dp.last_name, dp.age, fe.readmission_risk_score, fe.readmission_risk_category, ma.pdc_score, ma.adherence_category, dm.drug_class FROM fact_encounter fe JOIN dim_patient dp ON fe.patient_key = dp.patient_key AND dp.is_current = 1 JOIN agg_medication_adherence ma ON dp.patient_key = ma.patient_key JOIN dim_medication dm ON ma.medication_key = dm.medication_key WHERE fe.readmission_risk_category = 'High' AND ma.adherence_category = 'Non-Adherent' ORDER BY fe.readmission_risk_score DESC"
+    },
+    {
+      "id": "prov-16-sdoh-readmission-impact",
+      "question": "How does SDOH risk tier affect readmission risk?",
+      "query": "SELECT s.risk_tier as sdoh_risk_tier, COUNT(*) as total_encounters, AVG(fe.readmission_risk_score) as avg_risk_score, SUM(fe.readmission_flag) as actual_readmissions, CAST(SUM(fe.readmission_flag) AS FLOAT) / NULLIF(COUNT(*), 0) * 100 as readmission_rate_pct FROM fact_encounter fe JOIN dim_patient dp ON fe.patient_key = dp.patient_key AND dp.is_current = 1 JOIN dim_sdoh s ON dp.zip_code = s.zip_code GROUP BY s.risk_tier ORDER BY avg_risk_score DESC"
+    },
+    {
+      "id": "prov-17-high-svi-patients",
+      "question": "Show me members living in high social vulnerability zip codes",
+      "query": "SELECT dp.first_name, dp.last_name, dp.age, dp.city, dp.zip_code, s.risk_tier, s.social_vulnerability_index, s.poverty_rate, s.food_desert_flag, s.transportation_score, s.median_household_income FROM dim_patient dp JOIN dim_sdoh s ON dp.zip_code = s.zip_code WHERE dp.is_current = 1 AND s.risk_tier = 'High' ORDER BY s.social_vulnerability_index DESC"
+    },
+    {
+      "id": "prov-18-chronic-conditions",
+      "question": "Which chronic conditions are most prevalent?",
+      "query": "SELECT dd.icd_code, dd.icd_description, dd.icd_category, COUNT(DISTINCT fd.patient_key) as unique_patients, COUNT(*) as diagnosis_count FROM fact_diagnosis fd JOIN dim_diagnosis dd ON fd.diagnosis_key = dd.diagnosis_key WHERE dd.is_chronic = 1 GROUP BY dd.icd_code, dd.icd_description, dd.icd_category ORDER BY unique_patients DESC"
+    },
+    {
+      "id": "prov-19-drg-margin-analysis",
+      "question": "Which DRGs have the best and worst margins?",
+      "query": "SELECT drg_code, drg_description, encounter_count, avg_charges, avg_cost_to_deliver, avg_expected_reimbursement, margin_per_case, margin_pct FROM agg_revenue_by_drg ORDER BY margin_pct DESC"
+    },
+    {
+      "id": "prov-20-provider-charges-top10",
+      "question": "Which providers have the highest total charges?",
+      "query": "SELECT TOP 10 dpr.display_name, dpr.specialty, dpr.department, COUNT(*) as total_encounters, SUM(fe.total_charges) as total_charges, AVG(fe.total_charges) as avg_charges FROM fact_encounter fe JOIN dim_provider dpr ON fe.provider_key = dpr.provider_key AND dpr.is_current = 1 GROUP BY dpr.display_name, dpr.specialty, dpr.department ORDER BY total_charges DESC"
+    },
+    {
+      "id": "prov-21-readmission-by-provider",
+      "question": "Which providers have the highest readmission rates?",
+      "query": "SELECT dpr.display_name, dpr.specialty, COUNT(*) as total_encounters, SUM(fe.readmission_flag) as readmissions, CAST(SUM(fe.readmission_flag) AS FLOAT) / NULLIF(COUNT(*), 0) * 100 as readmission_rate_pct, AVG(fe.readmission_risk_score) as avg_risk_score FROM fact_encounter fe JOIN dim_provider dpr ON fe.provider_key = dpr.provider_key AND dpr.is_current = 1 GROUP BY dpr.display_name, dpr.specialty ORDER BY readmission_rate_pct DESC"
+    },
+    {
+      "id": "prov-22-encounters-by-month",
+      "question": "How many encounters occurred this year by month?",
+      "query": "SELECT dd.month_name, dd.month_number, COUNT(*) as encounter_count, SUM(fe.total_charges) as total_charges, AVG(fe.length_of_stay) as avg_los FROM fact_encounter fe JOIN dim_date dd ON fe.encounter_date_key = dd.date_key WHERE dd.year = YEAR(GETDATE()) GROUP BY dd.month_name, dd.month_number ORDER BY dd.month_number"
+    },
+    {
+      "id": "prov-23-chronic-readmission",
+      "question": "Which chronic conditions have the highest readmission rates?",
+      "query": "SELECT TOP 5 dd_diag.icd_category, dd_diag.icd_description, COUNT(DISTINCT fe.encounter_key) as total_encounters, SUM(fe.readmission_flag) as readmissions, CAST(SUM(fe.readmission_flag) AS FLOAT) / NULLIF(COUNT(DISTINCT fe.encounter_key), 0) * 100 as readmission_rate_pct FROM fact_encounter fe JOIN fact_diagnosis fd ON fe.encounter_key = fd.encounter_key JOIN dim_diagnosis dd_diag ON fd.diagnosis_key = dd_diag.diagnosis_key WHERE dd_diag.is_chronic = 1 GROUP BY dd_diag.icd_category, dd_diag.icd_description ORDER BY readmission_rate_pct DESC"
+    },
+    {
+      "id": "prov-24-ehr-documentation-scores",
+      "question": "Show me EHR adoption and documentation scores by department",
+      "query": "SELECT department, COUNT(*) as provider_count, AVG(documentation_score) as avg_doc_score, AVG(ehr_adoption_score) as avg_ehr_score, AVG(patient_satisfaction_score) as avg_satisfaction FROM dim_provider WHERE is_current = 1 GROUP BY department ORDER BY avg_doc_score DESC"
+    },
+    {
+      "id": "prov-25-value-based-providers",
+      "question": "How do value-based providers compare to fee-for-service on quality metrics?",
+      "query": "SELECT contract_type, COUNT(*) as provider_count, AVG(patient_satisfaction_score) as avg_satisfaction, AVG(documentation_score) as avg_doc_score, CAST(SUM(actual_rvu) AS FLOAT) / NULLIF(SUM(annual_rvu_target), 0) * 100 as rvu_attainment_pct, CAST(SUM(CAST(board_certified AS INT)) AS FLOAT) / NULLIF(COUNT(*), 0) * 100 as board_cert_rate FROM dim_provider WHERE is_current = 1 GROUP BY contract_type ORDER BY avg_satisfaction DESC"
+    }
+  ]
+}

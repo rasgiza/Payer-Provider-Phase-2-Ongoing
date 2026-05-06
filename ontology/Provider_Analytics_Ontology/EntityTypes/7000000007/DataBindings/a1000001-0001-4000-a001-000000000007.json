@@ -1,0 +1,30 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/dataBinding/1.0.0/schema.json",
+  "id": "a1000001-0001-4000-a001-000000000007",
+  "dataBindingConfiguration": {
+    "dataBindingType": "NonTimeSeries",
+    "propertyBindings": [
+      {"sourceColumnName": "prescription_key", "targetPropertyId": "7100000000000000701"},
+      {"sourceColumnName": "prescription_id", "targetPropertyId": "7100000000000000702"},
+      {"sourceColumnName": "fill_date_key", "targetPropertyId": "7100000000000000703"},
+      {"sourceColumnName": "patient_key", "targetPropertyId": "7100000000000000704"},
+      {"sourceColumnName": "provider_key", "targetPropertyId": "7100000000000000705"},
+      {"sourceColumnName": "encounter_key", "targetPropertyId": "7100000000000000706"},
+      {"sourceColumnName": "medication_key", "targetPropertyId": "7100000000000000707"},
+      {"sourceColumnName": "facility_key", "targetPropertyId": "7100000000000000708"},
+      {"sourceColumnName": "fill_number", "targetPropertyId": "7100000000000000709"},
+      {"sourceColumnName": "days_supply", "targetPropertyId": "7100000000000000710"},
+      {"sourceColumnName": "quantity_dispensed", "targetPropertyId": "7100000000000000711"},
+      {"sourceColumnName": "is_generic", "targetPropertyId": "7100000000000000712"},
+      {"sourceColumnName": "pharmacy_type", "targetPropertyId": "7100000000000000713"},
+      {"sourceColumnName": "total_cost", "targetPropertyId": "7100000000000000714"}
+    ],
+    "sourceTableProperties": {
+      "sourceType": "LakehouseTable",
+      "workspaceId": "00000000-0000-0000-0000-000000000000",
+      "itemId": "00000000-0000-0000-0000-000000000000",
+      "sourceTableName": "fact_prescription",
+      "sourceSchema": null
+    }
+  }
+}

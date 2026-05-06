@@ -1,0 +1,22 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/entityType/1.0.0/schema.json",
+  "id": "8000000011",
+  "namespace": "usertypes",
+  "baseEntityTypeId": null,
+  "name": "Payer",
+  "entityIdParts": ["8100000000000001101"],
+  "displayNamePropertyId": "8100000000000001103",
+  "namespaceType": "Imported",
+  "visibility": "Visible",
+  "properties": [
+    {"id": "8100000000000001101", "name": "payer_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000001102", "name": "payer_id", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000001103", "name": "payer_name", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000001104", "name": "payer_type", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000001105", "name": "plan_type", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000001106", "name": "state", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000001107", "name": "network_size", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000001108", "name": "avg_reimbursement_pct", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "8100000000000001109", "name": "is_active", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"}
+  ]
+}

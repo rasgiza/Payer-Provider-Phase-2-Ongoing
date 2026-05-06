@@ -1,0 +1,27 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/dataBinding/1.0.0/schema.json",
+  "id": "a1000001-0001-4000-a001-000000000008",
+  "dataBindingConfiguration": {
+    "dataBindingType": "NonTimeSeries",
+    "propertyBindings": [
+      {"sourceColumnName": "medication_key", "targetPropertyId": "7100000000000000801"},
+      {"sourceColumnName": "rxnorm_code", "targetPropertyId": "7100000000000000802"},
+      {"sourceColumnName": "medication_name", "targetPropertyId": "7100000000000000803"},
+      {"sourceColumnName": "generic_name", "targetPropertyId": "7100000000000000804"},
+      {"sourceColumnName": "drug_class", "targetPropertyId": "7100000000000000805"},
+      {"sourceColumnName": "therapeutic_area", "targetPropertyId": "7100000000000000806"},
+      {"sourceColumnName": "route", "targetPropertyId": "7100000000000000807"},
+      {"sourceColumnName": "form", "targetPropertyId": "7100000000000000808"},
+      {"sourceColumnName": "strength", "targetPropertyId": "7100000000000000809"},
+      {"sourceColumnName": "is_chronic", "targetPropertyId": "7100000000000000810"},
+      {"sourceColumnName": "is_active", "targetPropertyId": "7100000000000000811"}
+    ],
+    "sourceTableProperties": {
+      "sourceType": "LakehouseTable",
+      "workspaceId": "00000000-0000-0000-0000-000000000000",
+      "itemId": "00000000-0000-0000-0000-000000000000",
+      "sourceTableName": "dim_medication",
+      "sourceSchema": null
+    }
+  }
+}

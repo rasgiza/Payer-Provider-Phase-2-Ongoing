@@ -1,0 +1,25 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/dataBinding/1.0.0/schema.json",
+  "id": "b1000001-0001-4000-b001-000000000011",
+  "dataBindingConfiguration": {
+    "dataBindingType": "NonTimeSeries",
+    "propertyBindings": [
+      {"sourceColumnName": "payer_key", "targetPropertyId": "8100000000000001101"},
+      {"sourceColumnName": "payer_id", "targetPropertyId": "8100000000000001102"},
+      {"sourceColumnName": "payer_name", "targetPropertyId": "8100000000000001103"},
+      {"sourceColumnName": "payer_type", "targetPropertyId": "8100000000000001104"},
+      {"sourceColumnName": "plan_type", "targetPropertyId": "8100000000000001105"},
+      {"sourceColumnName": "state", "targetPropertyId": "8100000000000001106"},
+      {"sourceColumnName": "network_size", "targetPropertyId": "8100000000000001107"},
+      {"sourceColumnName": "avg_reimbursement_pct", "targetPropertyId": "8100000000000001108"},
+      {"sourceColumnName": "is_active", "targetPropertyId": "8100000000000001109"}
+    ],
+    "sourceTableProperties": {
+      "sourceType": "LakehouseTable",
+      "workspaceId": "00000000-0000-0000-0000-000000000000",
+      "itemId": "00000000-0000-0000-0000-000000000000",
+      "sourceTableName": "dim_payer",
+      "sourceSchema": null
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/dataBinding/1.0.0/schema.json",
+  "id": "b1000001-0001-4000-b001-000000000002",
+  "dataBindingConfiguration": {
+    "dataBindingType": "NonTimeSeries",
+    "propertyBindings": [
+      {"sourceColumnName": "provider_key", "targetPropertyId": "8100000000000000201"},
+      {"sourceColumnName": "provider_id", "targetPropertyId": "8100000000000000202"},
+      {"sourceColumnName": "first_name", "targetPropertyId": "8100000000000000203"},
+      {"sourceColumnName": "last_name", "targetPropertyId": "8100000000000000204"},
+      {"sourceColumnName": "display_name", "targetPropertyId": "8100000000000000205"},
+      {"sourceColumnName": "npi_number", "targetPropertyId": "8100000000000000206"},
+      {"sourceColumnName": "specialty", "targetPropertyId": "8100000000000000207"},
+      {"sourceColumnName": "department", "targetPropertyId": "8100000000000000208"},
+      {"sourceColumnName": "facility_id", "targetPropertyId": "8100000000000000209"},
+      {"sourceColumnName": "is_active", "targetPropertyId": "8100000000000000210"},
+      {"sourceColumnName": "is_current", "targetPropertyId": "8100000000000000211"}
+    ],
+    "sourceTableProperties": {
+      "sourceType": "LakehouseTable",
+      "workspaceId": "00000000-0000-0000-0000-000000000000",
+      "itemId": "00000000-0000-0000-0000-000000000000",
+      "sourceTableName": "dim_provider",
+      "sourceSchema": null
+    }
+  }
+}

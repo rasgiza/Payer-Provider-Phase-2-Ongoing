@@ -1,0 +1,29 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/dataBinding/1.0.0/schema.json",
+  "id": "a1000001-0001-4000-a001-000000000009",
+  "dataBindingConfiguration": {
+    "dataBindingType": "NonTimeSeries",
+    "propertyBindings": [
+      {"sourceColumnName": "sdoh_key", "targetPropertyId": "7100000000000000901"},
+      {"sourceColumnName": "zip_code", "targetPropertyId": "7100000000000000902"},
+      {"sourceColumnName": "state", "targetPropertyId": "7100000000000000903"},
+      {"sourceColumnName": "poverty_rate", "targetPropertyId": "7100000000000000904"},
+      {"sourceColumnName": "food_desert_flag", "targetPropertyId": "7100000000000000905"},
+      {"sourceColumnName": "transportation_score", "targetPropertyId": "7100000000000000906"},
+      {"sourceColumnName": "housing_instability_rate", "targetPropertyId": "7100000000000000907"},
+      {"sourceColumnName": "uninsured_rate", "targetPropertyId": "7100000000000000908"},
+      {"sourceColumnName": "broadband_access_pct", "targetPropertyId": "7100000000000000909"},
+      {"sourceColumnName": "median_household_income", "targetPropertyId": "7100000000000000910"},
+      {"sourceColumnName": "population", "targetPropertyId": "7100000000000000911"},
+      {"sourceColumnName": "social_vulnerability_index", "targetPropertyId": "7100000000000000912"},
+      {"sourceColumnName": "risk_tier", "targetPropertyId": "7100000000000000913"}
+    ],
+    "sourceTableProperties": {
+      "sourceType": "LakehouseTable",
+      "workspaceId": "00000000-0000-0000-0000-000000000000",
+      "itemId": "00000000-0000-0000-0000-000000000000",
+      "sourceTableName": "dim_sdoh",
+      "sourceSchema": null
+    }
+  }
+}

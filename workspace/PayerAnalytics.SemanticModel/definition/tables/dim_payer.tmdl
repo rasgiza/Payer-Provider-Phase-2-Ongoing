@@ -1,0 +1,124 @@
+table dim_payer
+	lineageTag: c1010001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[dim_payer]
+
+	measure 'Total Payers' = CALCULATE(COUNTROWS(dim_payer), dim_payer[is_active] = 1)
+		formatString: 0
+		lineageTag: c1010001-0001-0001-0001-000000000051
+
+	measure 'Avg Reimbursement Rate' = AVERAGE(dim_payer[avg_reimbursement_pct])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: c1010001-0001-0001-0001-000000000052
+
+	measure 'Large Network Payers' = CALCULATE(COUNTROWS(dim_payer), dim_payer[network_size] = "Large", dim_payer[is_active] = 1)
+		formatString: 0
+		lineageTag: c1010001-0001-0001-0001-000000000053
+
+	measure 'Commercial Payers' = CALCULATE(COUNTROWS(dim_payer), dim_payer[payer_type] = "Commercial", dim_payer[is_active] = 1)
+		formatString: 0
+		lineageTag: c1010001-0001-0001-0001-000000000054
+
+	measure 'Government Payers' = CALCULATE(COUNTROWS(dim_payer), dim_payer[payer_type] = "Government", dim_payer[is_active] = 1)
+		formatString: 0
+		lineageTag: c1010001-0001-0001-0001-000000000055
+
+	column payer_id
+		dataType: string
+		lineageTag: c1010001-0001-0001-0001-000000000011
+		sourceLineageTag: payer_id
+		summarizeBy: none
+		sourceColumn: payer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column payer_name
+		dataType: string
+		lineageTag: c1010001-0001-0001-0001-000000000012
+		sourceLineageTag: payer_name
+		summarizeBy: none
+		sourceColumn: payer_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column payer_type
+		dataType: string
+		lineageTag: c1010001-0001-0001-0001-000000000013
+		sourceLineageTag: payer_type
+		summarizeBy: none
+		sourceColumn: payer_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column plan_type
+		dataType: string
+		lineageTag: c1010001-0001-0001-0001-000000000014
+		sourceLineageTag: plan_type
+		summarizeBy: none
+		sourceColumn: plan_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column state
+		dataType: string
+		lineageTag: c1010001-0001-0001-0001-000000000015
+		sourceLineageTag: state
+		summarizeBy: none
+		sourceColumn: state
+
+		annotation SummarizationSetBy = Automatic
+
+	column network_size
+		dataType: string
+		lineageTag: c1010001-0001-0001-0001-000000000016
+		sourceLineageTag: network_size
+		summarizeBy: none
+		sourceColumn: network_size
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_reimbursement_pct
+		dataType: double
+		lineageTag: c1010001-0001-0001-0001-000000000017
+		sourceLineageTag: avg_reimbursement_pct
+		summarizeBy: average
+		sourceColumn: avg_reimbursement_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column payer_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1010001-0001-0001-0001-000000000018
+		sourceLineageTag: payer_key
+		summarizeBy: none
+		sourceColumn: payer_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_active
+		dataType: int64
+		formatString: 0
+		lineageTag: c1010001-0001-0001-0001-000000000019
+		sourceLineageTag: is_active
+		summarizeBy: sum
+		sourceColumn: is_active
+
+		annotation SummarizationSetBy = Automatic
+
+	column _load_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c1010001-0001-0001-0001-00000000001a
+		sourceLineageTag: _load_timestamp
+		summarizeBy: none
+		sourceColumn: _load_timestamp
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_payer = entity
+		mode: directLake
+		source
+			entityName: dim_payer
+			expressionSource: 'DirectLake - lh_gold_curated'

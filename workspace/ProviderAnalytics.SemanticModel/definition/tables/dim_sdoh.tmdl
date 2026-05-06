@@ -1,0 +1,176 @@
+table dim_sdoh
+	lineageTag: b1060001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[dim_sdoh]
+
+	measure 'High Risk SDOH Patients' =
+			CALCULATE(
+				COUNTROWS(dim_patient),
+				dim_patient[is_current] = 1,
+				dim_sdoh[risk_tier] = "High"
+			)
+		formatString: 0
+		lineageTag: b1060001-0001-0001-0001-000000000051
+
+	measure 'Avg SVI' = AVERAGE(dim_sdoh[social_vulnerability_index])
+		lineageTag: b1060001-0001-0001-0001-000000000052
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column sdoh_key
+		dataType: int64
+		formatString: 0
+		lineageTag: b1060001-0001-0001-0001-000000000011
+		sourceLineageTag: sdoh_key
+		summarizeBy: none
+		sourceColumn: sdoh_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column zip_code
+		dataType: string
+		lineageTag: b1060001-0001-0001-0001-000000000012
+		sourceLineageTag: zip_code
+		summarizeBy: none
+		sourceColumn: zip_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column state
+		dataType: string
+		lineageTag: b1060001-0001-0001-0001-000000000013
+		sourceLineageTag: state
+		summarizeBy: none
+		sourceColumn: state
+
+		annotation SummarizationSetBy = Automatic
+
+	column poverty_rate
+		dataType: double
+		lineageTag: b1060001-0001-0001-0001-000000000014
+		sourceLineageTag: poverty_rate
+		summarizeBy: none
+		sourceColumn: poverty_rate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column food_desert_flag
+		dataType: int64
+		formatString: 0
+		lineageTag: b1060001-0001-0001-0001-000000000015
+		sourceLineageTag: food_desert_flag
+		summarizeBy: none
+		sourceColumn: food_desert_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column transportation_score
+		dataType: double
+		lineageTag: b1060001-0001-0001-0001-000000000016
+		sourceLineageTag: transportation_score
+		summarizeBy: none
+		sourceColumn: transportation_score
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column housing_instability_rate
+		dataType: double
+		lineageTag: b1060001-0001-0001-0001-000000000017
+		sourceLineageTag: housing_instability_rate
+		summarizeBy: none
+		sourceColumn: housing_instability_rate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column uninsured_rate
+		dataType: double
+		lineageTag: b1060001-0001-0001-0001-000000000018
+		sourceLineageTag: uninsured_rate
+		summarizeBy: none
+		sourceColumn: uninsured_rate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column broadband_access_pct
+		dataType: double
+		lineageTag: b1060001-0001-0001-0001-000000000019
+		sourceLineageTag: broadband_access_pct
+		summarizeBy: none
+		sourceColumn: broadband_access_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column median_household_income
+		dataType: int64
+		formatString: 0
+		lineageTag: b1060001-0001-0001-0001-00000000001a
+		sourceLineageTag: median_household_income
+		summarizeBy: none
+		sourceColumn: median_household_income
+
+		annotation SummarizationSetBy = Automatic
+
+	column population
+		dataType: int64
+		formatString: 0
+		lineageTag: b1060001-0001-0001-0001-00000000001b
+		sourceLineageTag: population
+		summarizeBy: none
+		sourceColumn: population
+
+		annotation SummarizationSetBy = Automatic
+
+	column social_vulnerability_index
+		dataType: double
+		lineageTag: b1060001-0001-0001-0001-00000000001c
+		sourceLineageTag: social_vulnerability_index
+		summarizeBy: none
+		sourceColumn: social_vulnerability_index
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column risk_tier
+		dataType: string
+		lineageTag: b1060001-0001-0001-0001-00000000001d
+		sourceLineageTag: risk_tier
+		summarizeBy: none
+		sourceColumn: risk_tier
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_active
+		dataType: int64
+		formatString: 0
+		lineageTag: b1060001-0001-0001-0001-00000000001e
+		sourceLineageTag: is_active
+		summarizeBy: none
+		sourceColumn: is_active
+
+		annotation SummarizationSetBy = Automatic
+
+	column _load_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: b1060001-0001-0001-0001-00000000001f
+		sourceLineageTag: _load_timestamp
+		summarizeBy: none
+		sourceColumn: _load_timestamp
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_sdoh = entity
+		mode: directLake
+		source
+			entityName: dim_sdoh
+			expressionSource: 'DirectLake - lh_gold_curated'

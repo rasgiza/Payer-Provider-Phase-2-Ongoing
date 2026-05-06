@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/entityType/1.0.0/schema.json",
+  "id": "8000000006",
+  "namespace": "usertypes",
+  "baseEntityTypeId": null,
+  "name": "Diagnosis",
+  "entityIdParts": ["8100000000000000601"],
+  "displayNamePropertyId": "8100000000000000603",
+  "namespaceType": "Imported",
+  "visibility": "Visible",
+  "properties": [
+    {"id": "8100000000000000601", "name": "diagnosis_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000000602", "name": "icd_code", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000603", "name": "icd_description", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000604", "name": "icd_category", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000000605", "name": "is_chronic", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"}
+  ]
+}

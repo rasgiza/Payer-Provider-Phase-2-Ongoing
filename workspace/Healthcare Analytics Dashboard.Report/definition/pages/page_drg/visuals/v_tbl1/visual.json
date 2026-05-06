@@ -1,0 +1,143 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "v_tbl1",
+  "position": {
+    "x": 20,
+    "y": 436,
+    "z": 0,
+    "width": 1240,
+    "height": 260,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_encounter"
+                    }
+                  },
+                  "Property": "drg_code"
+                }
+              },
+              "queryRef": "fact_encounter.drg_code",
+              "nativeQueryRef": "drg_code"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_encounter"
+                    }
+                  },
+                  "Property": "drg_description"
+                }
+              },
+              "queryRef": "fact_encounter.drg_description",
+              "nativeQueryRef": "drg_description"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_encounter"
+                    }
+                  },
+                  "Property": "Total Encounters"
+                }
+              },
+              "queryRef": "fact_encounter.Total Encounters",
+              "nativeQueryRef": "Total Encounters"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_encounter"
+                    }
+                  },
+                  "Property": "Avg DRG Weight"
+                }
+              },
+              "queryRef": "fact_encounter.Avg DRG Weight",
+              "nativeQueryRef": "Avg DRG Weight"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_encounter"
+                    }
+                  },
+                  "Property": "Total Expected Reimbursement"
+                }
+              },
+              "queryRef": "fact_encounter.Total Expected Reimbursement",
+              "nativeQueryRef": "Total Expected Reimbursement"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_encounter"
+                    }
+                  },
+                  "Property": "Total Charges"
+                }
+              },
+              "queryRef": "fact_encounter.Total Charges",
+              "nativeQueryRef": "Total Charges"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_encounter"
+                    }
+                  },
+                  "Property": "DRG Margin"
+                }
+              },
+              "queryRef": "fact_encounter.DRG Margin",
+              "nativeQueryRef": "DRG Margin"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'DRG Revenue Detail'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

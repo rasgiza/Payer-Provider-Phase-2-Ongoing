@@ -1,0 +1,143 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "v_tbl1",
+  "position": {
+    "x": 20,
+    "y": 436,
+    "z": 0,
+    "width": 840,
+    "height": 260,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_payer"
+                    }
+                  },
+                  "Property": "payer_name"
+                }
+              },
+              "queryRef": "dim_payer.payer_name",
+              "nativeQueryRef": "payer_name"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_payer"
+                    }
+                  },
+                  "Property": "plan_type"
+                }
+              },
+              "queryRef": "dim_payer.plan_type",
+              "nativeQueryRef": "plan_type"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_payer"
+                    }
+                  },
+                  "Property": "state"
+                }
+              },
+              "queryRef": "dim_payer.state",
+              "nativeQueryRef": "state"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_claim"
+                    }
+                  },
+                  "Property": "Avg Days to Payment"
+                }
+              },
+              "queryRef": "fact_claim.Avg Days to Payment",
+              "nativeQueryRef": "Avg Days to Payment"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_claim"
+                    }
+                  },
+                  "Property": "Net Collection Rate"
+                }
+              },
+              "queryRef": "fact_claim.Net Collection Rate",
+              "nativeQueryRef": "Net Collection Rate"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_claim"
+                    }
+                  },
+                  "Property": "Appeal Success Rate"
+                }
+              },
+              "queryRef": "fact_claim.Appeal Success Rate",
+              "nativeQueryRef": "Appeal Success Rate"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_claim"
+                    }
+                  },
+                  "Property": "Total Appeal Recovery"
+                }
+              },
+              "queryRef": "fact_claim.Total Appeal Recovery",
+              "nativeQueryRef": "Total Appeal Recovery"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Payer Revenue Cycle Performance'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

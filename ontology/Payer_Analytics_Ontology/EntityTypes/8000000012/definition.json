@@ -1,0 +1,21 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/entityType/1.0.0/schema.json",
+  "id": "8000000012",
+  "namespace": "usertypes",
+  "baseEntityTypeId": null,
+  "name": "DaysInAR",
+  "entityIdParts": ["8100000000000001201"],
+  "displayNamePropertyId": "8100000000000001203",
+  "namespaceType": "Imported",
+  "visibility": "Visible",
+  "properties": [
+    {"id": "8100000000000001201", "name": "ar_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000001202", "name": "claim_date_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000001203", "name": "payer_name", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "8100000000000001204", "name": "claim_count", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "8100000000000001205", "name": "avg_days_to_payment", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "8100000000000001206", "name": "median_days_to_payment", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "8100000000000001207", "name": "p90_days_to_payment", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "8100000000000001208", "name": "avg_net_collection_rate", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"}
+  ]
+}

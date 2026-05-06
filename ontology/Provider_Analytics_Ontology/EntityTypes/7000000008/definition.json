@@ -1,0 +1,24 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/entityType/1.0.0/schema.json",
+  "id": "7000000008",
+  "namespace": "usertypes",
+  "baseEntityTypeId": null,
+  "name": "Medication",
+  "entityIdParts": ["7100000000000000801"],
+  "displayNamePropertyId": "7100000000000000803",
+  "namespaceType": "Imported",
+  "visibility": "Visible",
+  "properties": [
+    {"id": "7100000000000000801", "name": "medication_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000802", "name": "rxnorm_code", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000803", "name": "medication_name", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000804", "name": "generic_name", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000805", "name": "drug_class", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000806", "name": "therapeutic_area", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000807", "name": "route", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000808", "name": "form", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000809", "name": "strength", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000810", "name": "is_chronic", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000811", "name": "is_active", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"}
+  ]
+}

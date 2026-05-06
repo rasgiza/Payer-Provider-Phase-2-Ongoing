@@ -1,0 +1,328 @@
+table fact_claim
+	lineageTag: c1090001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[fact_claim]
+
+	measure 'Total Claims' = COUNTROWS(fact_claim)
+		formatString: 0
+		lineageTag: c1090001-0001-0001-0001-000000000011
+
+	measure 'Denial Rate' =
+			VAR _num = CALCULATE(COUNTROWS(fact_claim), fact_claim[denial_flag] = 1)
+			VAR _den = COUNTROWS(fact_claim)
+			RETURN DIVIDE(_num, _den)
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: c1090001-0001-0001-0001-000000000012
+
+	measure 'Total Billed' = SUM(fact_claim[billed_amount])
+		lineageTag: c1090001-0001-0001-0001-000000000013
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Paid' = SUM(fact_claim[paid_amount])
+		lineageTag: c1090001-0001-0001-0001-000000000014
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Collection Rate' = DIVIDE([Total Paid], [Total Billed])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: c1090001-0001-0001-0001-000000000015
+
+	measure 'At Risk Revenue' = CALCULATE(SUM(fact_claim[billed_amount]), fact_claim[denial_risk_category] = "High")
+		lineageTag: c1090001-0001-0001-0001-000000000016
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Denial Risk' = AVERAGE(fact_claim[denial_risk_score])
+		lineageTag: c1090001-0001-0001-0001-000000000017
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Days to Payment' = AVERAGE(fact_claim[days_to_payment])
+		lineageTag: c1090001-0001-0001-0001-000000000018
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Net Collection Rate' = AVERAGE(fact_claim[net_collection_rate])
+		lineageTag: c1090001-0001-0001-0001-000000000019
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Appeal Success Rate' =
+			VAR _won = CALCULATE(COUNTROWS(fact_claim), fact_claim[appeal_outcome] = "Won")
+			VAR _total = CALCULATE(COUNTROWS(fact_claim), fact_claim[appeal_outcome] <> BLANK())
+			RETURN DIVIDE(_won, _total)
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: c1090001-0001-0001-0001-00000000001a
+
+	measure 'Total Appeal Recovery' = SUM(fact_claim[appeal_amount_recovered])
+		lineageTag: c1090001-0001-0001-0001-00000000001b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'MTD Claims' = CALCULATE([Total Claims], DATESMTD(dim_date[full_date]))
+		formatString: 0
+		lineageTag: c1090001-0001-0001-0001-00000000001c
+
+	measure 'Paid by Payment Date' = CALCULATE(SUM(fact_claim[paid_amount]), USERELATIONSHIP(fact_claim[payment_date_key], dim_date[date_key]))
+		lineageTag: c1090001-0001-0001-0001-00000000001d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'High Risk Denials' = CALCULATE(COUNTROWS(fact_claim), fact_claim[denial_risk_category] = "High")
+		formatString: 0
+		lineageTag: c1090001-0001-0001-0001-00000000001e
+
+	column claim_id
+		dataType: string
+		lineageTag: c1090001-0001-0001-0001-000000000021
+		sourceLineageTag: claim_id
+		summarizeBy: none
+		sourceColumn: claim_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column claim_date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1090001-0001-0001-0001-000000000022
+		sourceLineageTag: claim_date_key
+		summarizeBy: none
+		sourceColumn: claim_date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1090001-0001-0001-0001-000000000023
+		sourceLineageTag: payment_date_key
+		summarizeBy: none
+		sourceColumn: payment_date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column patient_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1090001-0001-0001-0001-000000000024
+		sourceLineageTag: patient_key
+		summarizeBy: none
+		sourceColumn: patient_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column provider_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1090001-0001-0001-0001-000000000025
+		sourceLineageTag: provider_key
+		summarizeBy: none
+		sourceColumn: provider_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column payer_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1090001-0001-0001-0001-000000000026
+		sourceLineageTag: payer_key
+		summarizeBy: none
+		sourceColumn: payer_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column encounter_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1090001-0001-0001-0001-000000000027
+		sourceLineageTag: encounter_key
+		summarizeBy: sum
+		sourceColumn: encounter_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column facility_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1090001-0001-0001-0001-000000000028
+		sourceLineageTag: facility_key
+		summarizeBy: sum
+		sourceColumn: facility_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column claim_type
+		dataType: string
+		lineageTag: c1090001-0001-0001-0001-000000000029
+		sourceLineageTag: claim_type
+		summarizeBy: none
+		sourceColumn: claim_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column claim_status
+		dataType: string
+		lineageTag: c1090001-0001-0001-0001-00000000002a
+		sourceLineageTag: claim_status
+		summarizeBy: none
+		sourceColumn: claim_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column billed_amount
+		dataType: double
+		lineageTag: c1090001-0001-0001-0001-00000000002b
+		sourceLineageTag: billed_amount
+		summarizeBy: sum
+		sourceColumn: billed_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column allowed_amount
+		dataType: double
+		lineageTag: c1090001-0001-0001-0001-00000000002c
+		sourceLineageTag: allowed_amount
+		summarizeBy: sum
+		sourceColumn: allowed_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column paid_amount
+		dataType: double
+		lineageTag: c1090001-0001-0001-0001-00000000002d
+		sourceLineageTag: paid_amount
+		summarizeBy: sum
+		sourceColumn: paid_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column denial_flag
+		dataType: int64
+		formatString: 0
+		lineageTag: c1090001-0001-0001-0001-00000000002e
+		sourceLineageTag: denial_flag
+		summarizeBy: sum
+		sourceColumn: denial_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column denial_risk_score
+		dataType: double
+		lineageTag: c1090001-0001-0001-0001-00000000002f
+		sourceLineageTag: denial_risk_score
+		summarizeBy: sum
+		sourceColumn: denial_risk_score
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column denial_risk_category
+		dataType: string
+		lineageTag: c1090001-0001-0001-0001-000000000030
+		sourceLineageTag: denial_risk_category
+		summarizeBy: none
+		sourceColumn: denial_risk_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column primary_denial_reason
+		dataType: string
+		lineageTag: c1090001-0001-0001-0001-000000000031
+		sourceLineageTag: primary_denial_reason
+		summarizeBy: none
+		sourceColumn: primary_denial_reason
+
+		annotation SummarizationSetBy = Automatic
+
+	column recommended_action
+		dataType: string
+		lineageTag: c1090001-0001-0001-0001-000000000032
+		sourceLineageTag: recommended_action
+		summarizeBy: none
+		sourceColumn: recommended_action
+
+		annotation SummarizationSetBy = Automatic
+
+	column days_to_payment
+		dataType: int64
+		formatString: 0
+		lineageTag: c1090001-0001-0001-0001-000000000033
+		sourceLineageTag: days_to_payment
+		summarizeBy: sum
+		sourceColumn: days_to_payment
+
+		annotation SummarizationSetBy = Automatic
+
+	column net_collection_rate
+		dataType: double
+		lineageTag: c1090001-0001-0001-0001-000000000034
+		sourceLineageTag: net_collection_rate
+		summarizeBy: average
+		sourceColumn: net_collection_rate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column appeal_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c1090001-0001-0001-0001-000000000035
+		sourceLineageTag: appeal_date
+		summarizeBy: none
+		sourceColumn: appeal_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column appeal_outcome
+		dataType: string
+		lineageTag: c1090001-0001-0001-0001-000000000036
+		sourceLineageTag: appeal_outcome
+		summarizeBy: none
+		sourceColumn: appeal_outcome
+
+		annotation SummarizationSetBy = Automatic
+
+	column appeal_amount_recovered
+		dataType: double
+		lineageTag: c1090001-0001-0001-0001-000000000037
+		sourceLineageTag: appeal_amount_recovered
+		summarizeBy: sum
+		sourceColumn: appeal_amount_recovered
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column _load_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c1090001-0001-0001-0001-000000000038
+		sourceLineageTag: _load_timestamp
+		summarizeBy: none
+		sourceColumn: _load_timestamp
+
+		annotation SummarizationSetBy = Automatic
+
+	column claim_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1090001-0001-0001-0001-000000000039
+		sourceLineageTag: claim_key
+		summarizeBy: sum
+		sourceColumn: claim_key
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_claim = entity
+		mode: directLake
+		source
+			entityName: fact_claim
+			expressionSource: 'DirectLake - lh_gold_curated'

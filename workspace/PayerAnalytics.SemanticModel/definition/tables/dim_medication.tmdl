@@ -1,0 +1,121 @@
+table dim_medication
+	lineageTag: c1060001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[dim_medication]
+
+	column medication_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1060001-0001-0001-0001-000000000011
+		sourceLineageTag: medication_key
+		summarizeBy: none
+		sourceColumn: medication_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column rxnorm_code
+		dataType: string
+		lineageTag: c1060001-0001-0001-0001-000000000012
+		sourceLineageTag: rxnorm_code
+		summarizeBy: none
+		sourceColumn: rxnorm_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column medication_name
+		dataType: string
+		lineageTag: c1060001-0001-0001-0001-000000000013
+		sourceLineageTag: medication_name
+		summarizeBy: none
+		sourceColumn: medication_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column generic_name
+		dataType: string
+		lineageTag: c1060001-0001-0001-0001-000000000014
+		sourceLineageTag: generic_name
+		summarizeBy: none
+		sourceColumn: generic_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column drug_class
+		dataType: string
+		lineageTag: c1060001-0001-0001-0001-000000000015
+		sourceLineageTag: drug_class
+		summarizeBy: none
+		sourceColumn: drug_class
+
+		annotation SummarizationSetBy = Automatic
+
+	column therapeutic_area
+		dataType: string
+		lineageTag: c1060001-0001-0001-0001-000000000016
+		sourceLineageTag: therapeutic_area
+		summarizeBy: none
+		sourceColumn: therapeutic_area
+
+		annotation SummarizationSetBy = Automatic
+
+	column route
+		dataType: string
+		lineageTag: c1060001-0001-0001-0001-000000000017
+		sourceLineageTag: route
+		summarizeBy: none
+		sourceColumn: route
+
+		annotation SummarizationSetBy = Automatic
+
+	column form
+		dataType: string
+		lineageTag: c1060001-0001-0001-0001-000000000018
+		sourceLineageTag: form
+		summarizeBy: none
+		sourceColumn: form
+
+		annotation SummarizationSetBy = Automatic
+
+	column strength
+		dataType: string
+		lineageTag: c1060001-0001-0001-0001-000000000019
+		sourceLineageTag: strength
+		summarizeBy: none
+		sourceColumn: strength
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_chronic
+		dataType: int64
+		formatString: 0
+		lineageTag: c1060001-0001-0001-0001-00000000001a
+		sourceLineageTag: is_chronic
+		summarizeBy: sum
+		sourceColumn: is_chronic
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_active
+		dataType: int64
+		formatString: 0
+		lineageTag: c1060001-0001-0001-0001-00000000001b
+		sourceLineageTag: is_active
+		summarizeBy: sum
+		sourceColumn: is_active
+
+		annotation SummarizationSetBy = Automatic
+
+	column _load_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c1060001-0001-0001-0001-00000000001c
+		sourceLineageTag: _load_timestamp
+		summarizeBy: none
+		sourceColumn: _load_timestamp
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_medication = entity
+		mode: directLake
+		source
+			entityName: dim_medication
+			expressionSource: 'DirectLake - lh_gold_curated'

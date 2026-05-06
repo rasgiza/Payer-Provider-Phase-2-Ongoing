@@ -1,0 +1,125 @@
+{
+    "properties": {
+        "description": "Real-Time Intelligence pipeline. Streams events via Eventstream Custom Endpoint, then scores them for fraud, care gaps, and high-cost trajectories. Run on-demand for demos or schedule for continuous RTI refresh. Independent of the daily batch ETL pipeline (PL_Healthcare_Master).",
+        "activities": [
+            {
+                "name": "RTI_Event_Simulator",
+                "description": "Stream claims, ADT, and Rx events → Eventstream → Eventhouse + Lakehouse + Activator",
+                "type": "TridentNotebook",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.01:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "notebookId": "b2000002-0002-0002-0002-000000000008",
+                    "workspaceId": "00000000-0000-0000-0000-000000000000",
+                    "parameters": {
+                        "ES_CONNECTION_STRING": {
+                            "value": {
+                                "value": "@pipeline().parameters.ES_CONNECTION_STRING",
+                                "type": "Expression"
+                            },
+                            "type": "string"
+                        },
+                        "STREAM_BATCHES": {
+                            "value": {
+                                "value": "@pipeline().parameters.STREAM_BATCHES",
+                                "type": "Expression"
+                            },
+                            "type": "int"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "RTI_Fraud_Detection",
+                "description": "Score new claims events for fraud risk → rti_fraud_scores (Delta + KQL)",
+                "type": "TridentNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "RTI_Event_Simulator",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.01:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "notebookId": "b2000002-0002-0002-0002-000000000010",
+                    "workspaceId": "00000000-0000-0000-0000-000000000000",
+                    "parameters": {}
+                }
+            },
+            {
+                "name": "RTI_Care_Gap_Alerts",
+                "description": "Check ADT events against open HEDIS care gaps → rti_care_gap_alerts (Delta + KQL)",
+                "type": "TridentNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "RTI_Event_Simulator",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.01:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "notebookId": "b2000002-0002-0002-0002-000000000011",
+                    "workspaceId": "00000000-0000-0000-0000-000000000000",
+                    "parameters": {}
+                }
+            },
+            {
+                "name": "RTI_HighCost_Trajectory",
+                "description": "Rolling window analysis for high-cost member trajectories → rti_highcost_alerts (Delta + KQL)",
+                "type": "TridentNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "RTI_Event_Simulator",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.01:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "notebookId": "b2000002-0002-0002-0002-000000000012",
+                    "workspaceId": "00000000-0000-0000-0000-000000000000",
+                    "parameters": {}
+                }
+            }
+        ],
+        "parameters": {
+            "ES_CONNECTION_STRING": {
+                "type": "string",
+                "defaultValue": ""
+            },
+            "STREAM_BATCHES": {
+                "type": "int",
+                "defaultValue": 10
+            }
+        }
+    }
+}

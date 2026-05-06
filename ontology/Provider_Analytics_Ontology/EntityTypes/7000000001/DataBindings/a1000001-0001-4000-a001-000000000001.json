@@ -1,0 +1,30 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/dataBinding/1.0.0/schema.json",
+  "id": "a1000001-0001-4000-a001-000000000001",
+  "dataBindingConfiguration": {
+    "dataBindingType": "NonTimeSeries",
+    "propertyBindings": [
+      {"sourceColumnName": "patient_key", "targetPropertyId": "7100000000000000101"},
+      {"sourceColumnName": "patient_id", "targetPropertyId": "7100000000000000102"},
+      {"sourceColumnName": "first_name", "targetPropertyId": "7100000000000000103"},
+      {"sourceColumnName": "last_name", "targetPropertyId": "7100000000000000104"},
+      {"sourceColumnName": "date_of_birth", "targetPropertyId": "7100000000000000105"},
+      {"sourceColumnName": "gender", "targetPropertyId": "7100000000000000106"},
+      {"sourceColumnName": "city", "targetPropertyId": "7100000000000000107"},
+      {"sourceColumnName": "state", "targetPropertyId": "7100000000000000108"},
+      {"sourceColumnName": "zip_code", "targetPropertyId": "7100000000000000109"},
+      {"sourceColumnName": "insurance_type", "targetPropertyId": "7100000000000000110"},
+      {"sourceColumnName": "insurance_provider", "targetPropertyId": "7100000000000000111"},
+      {"sourceColumnName": "age", "targetPropertyId": "7100000000000000112"},
+      {"sourceColumnName": "age_group", "targetPropertyId": "7100000000000000113"},
+      {"sourceColumnName": "is_current", "targetPropertyId": "7100000000000000114"}
+    ],
+    "sourceTableProperties": {
+      "sourceType": "LakehouseTable",
+      "workspaceId": "00000000-0000-0000-0000-000000000000",
+      "itemId": "00000000-0000-0000-0000-000000000000",
+      "sourceTableName": "dim_patient",
+      "sourceSchema": null
+    }
+  }
+}

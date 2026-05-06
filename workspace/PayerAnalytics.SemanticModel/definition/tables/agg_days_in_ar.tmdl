@@ -1,0 +1,82 @@
+table agg_days_in_ar
+	lineageTag: c10f0001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[agg_days_in_ar]
+
+	column claim_date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c10f0001-0001-0001-0001-000000000011
+		sourceLineageTag: claim_date_key
+		summarizeBy: none
+		sourceColumn: claim_date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column payer_name
+		dataType: string
+		lineageTag: c10f0001-0001-0001-0001-000000000012
+		sourceLineageTag: payer_name
+		summarizeBy: none
+		sourceColumn: payer_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column claim_count
+		dataType: int64
+		formatString: 0
+		lineageTag: c10f0001-0001-0001-0001-000000000013
+		sourceLineageTag: claim_count
+		summarizeBy: sum
+		sourceColumn: claim_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_days_to_payment
+		dataType: double
+		lineageTag: c10f0001-0001-0001-0001-000000000014
+		sourceLineageTag: avg_days_to_payment
+		summarizeBy: average
+		sourceColumn: avg_days_to_payment
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column median_days_to_payment
+		dataType: double
+		lineageTag: c10f0001-0001-0001-0001-000000000015
+		sourceLineageTag: median_days_to_payment
+		summarizeBy: average
+		sourceColumn: median_days_to_payment
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column p90_days_to_payment
+		dataType: double
+		lineageTag: c10f0001-0001-0001-0001-000000000016
+		sourceLineageTag: p90_days_to_payment
+		summarizeBy: average
+		sourceColumn: p90_days_to_payment
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_net_collection_rate
+		dataType: double
+		lineageTag: c10f0001-0001-0001-0001-000000000017
+		sourceLineageTag: avg_net_collection_rate
+		summarizeBy: average
+		sourceColumn: avg_net_collection_rate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition agg_days_in_ar = entity
+		mode: directLake
+		source
+			entityName: agg_days_in_ar
+			expressionSource: 'DirectLake - lh_gold_curated'

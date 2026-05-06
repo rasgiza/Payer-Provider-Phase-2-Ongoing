@@ -1,0 +1,30 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/entityType/1.0.0/schema.json",
+  "id": "7000000004",
+  "namespace": "usertypes",
+  "baseEntityTypeId": null,
+  "name": "Claim",
+  "entityIdParts": ["7100000000000000401"],
+  "displayNamePropertyId": "7100000000000000402",
+  "namespaceType": "Imported",
+  "visibility": "Visible",
+  "properties": [
+    {"id": "7100000000000000401", "name": "claim_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000402", "name": "claim_id", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000403", "name": "claim_date_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000404", "name": "patient_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000405", "name": "provider_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000406", "name": "encounter_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000407", "name": "facility_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000408", "name": "claim_type", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000409", "name": "claim_status", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000410", "name": "billed_amount", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "7100000000000000411", "name": "allowed_amount", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "7100000000000000412", "name": "paid_amount", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "7100000000000000413", "name": "denial_flag", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000000414", "name": "denial_risk_score", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "7100000000000000415", "name": "denial_risk_category", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000416", "name": "primary_denial_reason", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000000417", "name": "recommended_action", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"}
+  ]
+}

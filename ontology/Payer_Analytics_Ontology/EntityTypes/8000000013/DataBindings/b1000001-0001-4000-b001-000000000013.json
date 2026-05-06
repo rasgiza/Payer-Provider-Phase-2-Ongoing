@@ -1,0 +1,23 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/dataBinding/1.0.0/schema.json",
+  "id": "b1000001-0001-4000-b001-000000000013",
+  "dataBindingConfiguration": {
+    "dataBindingType": "NonTimeSeries",
+    "propertyBindings": [
+      {"sourceColumnName": "appeal_agg_key", "targetPropertyId": "8100000000000001301"},
+      {"sourceColumnName": "payer_name", "targetPropertyId": "8100000000000001302"},
+      {"sourceColumnName": "denial_reason", "targetPropertyId": "8100000000000001303"},
+      {"sourceColumnName": "appeal_outcome", "targetPropertyId": "8100000000000001304"},
+      {"sourceColumnName": "appeal_count", "targetPropertyId": "8100000000000001305"},
+      {"sourceColumnName": "total_amount_recovered", "targetPropertyId": "8100000000000001306"},
+      {"sourceColumnName": "avg_amount_recovered", "targetPropertyId": "8100000000000001307"}
+    ],
+    "sourceTableProperties": {
+      "sourceType": "LakehouseTable",
+      "workspaceId": "00000000-0000-0000-0000-000000000000",
+      "itemId": "00000000-0000-0000-0000-000000000000",
+      "sourceTableName": "agg_appeal_outcomes",
+      "sourceSchema": null
+    }
+  }
+}

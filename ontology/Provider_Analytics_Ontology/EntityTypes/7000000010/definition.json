@@ -1,0 +1,21 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/ontology/entityType/1.0.0/schema.json",
+  "id": "7000000010",
+  "namespace": "usertypes",
+  "baseEntityTypeId": null,
+  "name": "MedicationAdherence",
+  "entityIdParts": ["7100000000000001001"],
+  "displayNamePropertyId": "7100000000000001004",
+  "namespaceType": "Imported",
+  "visibility": "Visible",
+  "properties": [
+    {"id": "7100000000000001001", "name": "adherence_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000001002", "name": "patient_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000001003", "name": "medication_key", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000001004", "name": "adherence_category", "redefines": null, "baseTypeNamespaceType": null, "valueType": "String"},
+    {"id": "7100000000000001005", "name": "pdc_score", "redefines": null, "baseTypeNamespaceType": null, "valueType": "Double"},
+    {"id": "7100000000000001006", "name": "gap_days", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000001007", "name": "total_fills", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"},
+    {"id": "7100000000000001008", "name": "is_chronic", "redefines": null, "baseTypeNamespaceType": null, "valueType": "BigInt"}
+  ]
+}

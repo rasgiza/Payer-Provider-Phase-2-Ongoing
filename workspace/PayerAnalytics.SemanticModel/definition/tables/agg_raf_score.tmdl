@@ -1,0 +1,106 @@
+table agg_raf_score
+	lineageTag: c1240001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[agg_raf_score]
+
+	measure 'Avg RAF Score' = AVERAGE(agg_raf_score[raf_score])
+		formatString: 0.00
+		lineageTag: c1240001-0001-0001-0001-000000000011
+
+	measure 'Avg HCC Count' = AVERAGE(agg_raf_score[hcc_count])
+		formatString: 0.0
+		lineageTag: c1240001-0001-0001-0001-000000000012
+
+	measure 'Members with HCCs' = CALCULATE(DISTINCTCOUNT(agg_raf_score[member_key]), agg_raf_score[hcc_count] > 0)
+		formatString: #,##0
+		lineageTag: c1240001-0001-0001-0001-000000000013
+
+	column raf_id
+		dataType: string
+		lineageTag: c1240001-0001-0001-0001-000000000021
+		sourceLineageTag: raf_id
+		summarizeBy: none
+		sourceColumn: raf_id
+		annotation SummarizationSetBy = Automatic
+
+	column member_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1240001-0001-0001-0001-000000000022
+		sourceLineageTag: member_key
+		summarizeBy: none
+		sourceColumn: member_key
+		annotation SummarizationSetBy = Automatic
+
+	column payer_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1240001-0001-0001-0001-000000000023
+		sourceLineageTag: payer_key
+		summarizeBy: none
+		sourceColumn: payer_key
+		annotation SummarizationSetBy = Automatic
+
+	column plan_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1240001-0001-0001-0001-000000000024
+		sourceLineageTag: plan_key
+		summarizeBy: none
+		sourceColumn: plan_key
+		annotation SummarizationSetBy = Automatic
+
+	column measurement_year
+		dataType: int64
+		formatString: 0
+		lineageTag: c1240001-0001-0001-0001-000000000025
+		sourceLineageTag: measurement_year
+		summarizeBy: none
+		sourceColumn: measurement_year
+		annotation SummarizationSetBy = Automatic
+
+	column hcc_count
+		dataType: int64
+		formatString: 0
+		lineageTag: c1240001-0001-0001-0001-000000000026
+		sourceLineageTag: hcc_count
+		summarizeBy: sum
+		sourceColumn: hcc_count
+		annotation SummarizationSetBy = Automatic
+
+	column hcc_codes
+		dataType: string
+		lineageTag: c1240001-0001-0001-0001-000000000027
+		sourceLineageTag: hcc_codes
+		summarizeBy: none
+		sourceColumn: hcc_codes
+		annotation SummarizationSetBy = Automatic
+
+	column demographic_score
+		dataType: double
+		lineageTag: c1240001-0001-0001-0001-000000000028
+		sourceLineageTag: demographic_score
+		summarizeBy: average
+		sourceColumn: demographic_score
+		annotation SummarizationSetBy = Automatic
+
+	column disease_score
+		dataType: double
+		lineageTag: c1240001-0001-0001-0001-000000000029
+		sourceLineageTag: disease_score
+		summarizeBy: average
+		sourceColumn: disease_score
+		annotation SummarizationSetBy = Automatic
+
+	column raf_score
+		dataType: double
+		lineageTag: c1240001-0001-0001-0001-00000000002a
+		sourceLineageTag: raf_score
+		summarizeBy: average
+		sourceColumn: raf_score
+		annotation SummarizationSetBy = Automatic
+
+	partition agg_raf_score = entity
+		mode: directLake
+		source
+			entityName: agg_raf_score
+			expressionSource: 'DirectLake - lh_gold_curated'

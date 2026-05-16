@@ -106,6 +106,16 @@ TRANSACTIONAL_TABLES = [
     {"name": "claims",        "source_file": "claims.csv",        "key_column": "claim_id"},
     {"name": "prescriptions", "source_file": "prescriptions.csv", "key_column": "prescription_id"},
     {"name": "diagnoses",     "source_file": "diagnoses.csv",     "key_column": "diagnosis_id"},
+    # ── Payer-domain transactional ──
+    {"name": "member_enrollment",  "source_file": "member_enrollment.csv",  "key_column": "enrollment_id"},
+    {"name": "premiums",           "source_file": "premiums.csv",           "key_column": "premium_id"},
+    {"name": "authorizations",     "source_file": "authorizations.csv",     "key_column": "auth_id"},
+    {"name": "capitation",         "source_file": "capitation.csv",         "key_column": "capitation_id"},
+    {"name": "provider_contracts", "source_file": "provider_contracts.csv", "key_column": "contract_id"},
+    {"name": "hedis_compliance",   "source_file": "hedis_compliance.csv",   "key_column": "compliance_id"},
+    {"name": "star_ratings",       "source_file": "star_ratings.csv",       "key_column": "star_id"},
+    {"name": "risk_adjustment",    "source_file": "risk_adjustment.csv",    "key_column": "raf_id"},
+    {"name": "claim_appeals",      "source_file": "claim_appeals.csv",      "key_column": "appeal_id"},
 ]
 
 # ── Reference / metadata tables (stored as ref_{name}, NO _raw suffix) ──
@@ -117,6 +127,10 @@ REFERENCE_TABLES = [
     {"name": "ref_medications",    "source_file": "metadata/medications_ref.csv", "key_column": "medication_name","raw_suffix": False},
     {"name": "ref_sdoh_zipcode",   "source_file": "metadata/sdoh_zipcode.csv",   "key_column": "zipcode",        "raw_suffix": False},
     {"name": "ref_monitors",       "source_file": "metadata/monitors.csv",        "key_column": "monitor_id",     "raw_suffix": False},
+    # ── Payer-domain reference ──
+    {"name": "ref_plans",          "source_file": "metadata/plans.csv",           "key_column": "plan_id",        "raw_suffix": False},
+    {"name": "ref_hcc_codes",      "source_file": "metadata/hcc_codes.csv",       "key_column": "hcc_code",       "raw_suffix": False},
+    {"name": "ref_star_measures",  "source_file": "metadata/star_measures.csv",   "key_column": "star_measure_id","raw_suffix": False},
 ]
 
 # Combined list drives the processing loop

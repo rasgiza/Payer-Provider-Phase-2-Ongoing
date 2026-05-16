@@ -1,0 +1,126 @@
+table fact_premium
+	lineageTag: c1100001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[fact_premium]
+
+	measure 'Total Premium Revenue' = SUM(fact_premium[premium_amount])
+		lineageTag: c1100001-0001-0001-0001-000000000011
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Member Months' = COUNTROWS(fact_premium)
+		formatString: #,##0
+		lineageTag: c1100001-0001-0001-0001-000000000012
+
+	measure 'Premium PMPM' = DIVIDE([Total Premium Revenue], [Member Months])
+		lineageTag: c1100001-0001-0001-0001-000000000013
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Subsidy' = SUM(fact_premium[subsidy_amount])
+		lineageTag: c1100001-0001-0001-0001-000000000014
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Member Paid' = SUM(fact_premium[member_paid])
+		lineageTag: c1100001-0001-0001-0001-000000000015
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column premium_id
+		dataType: string
+		lineageTag: c1100001-0001-0001-0001-000000000021
+		sourceLineageTag: premium_id
+		summarizeBy: none
+		sourceColumn: premium_id
+		annotation SummarizationSetBy = Automatic
+
+	column premium_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1100001-0001-0001-0001-000000000022
+		sourceLineageTag: premium_key
+		summarizeBy: none
+		sourceColumn: premium_key
+		annotation SummarizationSetBy = Automatic
+
+	column year_month
+		dataType: string
+		lineageTag: c1100001-0001-0001-0001-000000000023
+		sourceLineageTag: year_month
+		summarizeBy: none
+		sourceColumn: year_month
+		annotation SummarizationSetBy = Automatic
+
+	column year_month_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1100001-0001-0001-0001-000000000024
+		sourceLineageTag: year_month_key
+		summarizeBy: none
+		sourceColumn: year_month_key
+		annotation SummarizationSetBy = Automatic
+
+	column member_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1100001-0001-0001-0001-000000000025
+		sourceLineageTag: member_key
+		summarizeBy: none
+		sourceColumn: member_key
+		annotation SummarizationSetBy = Automatic
+
+	column plan_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1100001-0001-0001-0001-000000000026
+		sourceLineageTag: plan_key
+		summarizeBy: none
+		sourceColumn: plan_key
+		annotation SummarizationSetBy = Automatic
+
+	column payer_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1100001-0001-0001-0001-000000000027
+		sourceLineageTag: payer_key
+		summarizeBy: none
+		sourceColumn: payer_key
+		annotation SummarizationSetBy = Automatic
+
+	column premium_amount
+		dataType: double
+		lineageTag: c1100001-0001-0001-0001-000000000028
+		sourceLineageTag: premium_amount
+		summarizeBy: sum
+		sourceColumn: premium_amount
+		annotation SummarizationSetBy = Automatic
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column subsidy_amount
+		dataType: double
+		lineageTag: c1100001-0001-0001-0001-000000000029
+		sourceLineageTag: subsidy_amount
+		summarizeBy: sum
+		sourceColumn: subsidy_amount
+		annotation SummarizationSetBy = Automatic
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column member_paid
+		dataType: double
+		lineageTag: c1100001-0001-0001-0001-00000000002a
+		sourceLineageTag: member_paid
+		summarizeBy: sum
+		sourceColumn: member_paid
+		annotation SummarizationSetBy = Automatic
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column _load_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c1100001-0001-0001-0001-00000000002b
+		sourceLineageTag: _load_timestamp
+		summarizeBy: none
+		sourceColumn: _load_timestamp
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_premium = entity
+		mode: directLake
+		source
+			entityName: fact_premium
+			expressionSource: 'DirectLake - lh_gold_curated'

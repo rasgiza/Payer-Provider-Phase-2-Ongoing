@@ -1,0 +1,46 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/dataAgent/definition/fewShots/1.0.0/schema.json",
+  "boundSemanticModel": "PayerAnalytics",
+  "fewShots": [
+    {
+      "question": "What is our medical loss ratio (MLR) by payer for the last 12 months?",
+      "answer": "EVALUATE\nSUMMARIZECOLUMNS(\n  dim_payer[payer_name],\n  TREATAS({\"Last12Months\"}, dim_date[period_label]),\n  \"MLR %\", [MLR %],\n  \"Premium $\", [Total Premium Collected],\n  \"Medical $\", [Total Medical Paid]\n)\nORDER BY [MLR %] DESC\n\nI use the `agg_mlr_by_payer_month` aggregate filtered to the last 12 months and present payers ranked by MLR. MLR > 85% on commercial or > 88% on MA flags margin pressure."
+    },
+    {
+      "question": "Show me PMPM premium and medical cost trend by month for the past year.",
+      "answer": "EVALUATE\nSUMMARIZECOLUMNS(\n  dim_date[year_month],\n  \"Premium PMPM\", [Premium PMPM],\n  \"Medical PMPM\", [Medical PMPM],\n  \"MLR %\", [MLR %]\n)\nORDER BY dim_date[year_month]\n\nThis returns the trend; I call out months where Medical PMPM growth outpaces Premium PMPM growth (margin compression)."
+    },
+    {
+      "question": "Which providers have the highest prior authorization denial rates?",
+      "answer": "EVALUATE\nTOPN(20,\n  SUMMARIZECOLUMNS(\n    dim_provider[provider_name],\n    dim_provider[specialty],\n    \"PA Submitted\", COUNTROWS(fact_authorization),\n    \"PA Denial Rate\", [PA Denial Rate],\n    \"Avg Decision TAT (hrs)\", [Avg Decision TAT]\n  ),\n  [PA Denial Rate], DESC\n)\nWHERE [PA Submitted] >= 20\n\nI exclude providers with < 20 PAs to avoid noise. High denial rate + high TAT signals an outlier worth a network/contract review."
+    },
+    {
+      "question": "What is our HEDIS compliance % by measure for the current measurement year?",
+      "answer": "EVALUATE\nSUMMARIZECOLUMNS(\n  agg_hedis_compliance[measure_code],\n  agg_hedis_compliance[measure_name],\n  FILTER(VALUES(agg_hedis_compliance[measurement_year]), [Current Measurement Year]),\n  \"Eligible\", SUM(agg_hedis_compliance[denominator_eligible]),\n  \"Compliant\", SUM(agg_hedis_compliance[numerator_met]),\n  \"HEDIS Compliance %\", [HEDIS Compliance %]\n)\nORDER BY [HEDIS Compliance %] ASC\n\nI sort ascending so the worst-performing measures (largest gap-closure opportunity) are at the top."
+    },
+    {
+      "question": "Project our Star Rating for next year — which measures are dragging it down?",
+      "answer": "EVALUATE\nSUMMARIZECOLUMNS(\n  agg_star_rating[measure_name],\n  \"Score\", AVERAGE(agg_star_rating[score]),\n  \"Weight\", AVERAGE(agg_star_rating[weight]),\n  \"Weighted Score\", [Weighted Star Score]\n)\nORDER BY [Weighted Score] ASC\n\nThen the overall projection:\nEVALUATE ROW(\"Projected Star\", [Weighted Star Score Overall])\n\nI flag any measure with score < 3.0 and weight >= 3 as a high-leverage focus area."
+    },
+    {
+      "question": "Top 20 members with the largest RAF gap (documented vs expected).",
+      "answer": "EVALUATE\nTOPN(20,\n  SUMMARIZECOLUMNS(\n    dim_patient[patient_id],\n    dim_patient[age_group],\n    \"RAF Score\", AVERAGE(agg_raf_score[raf_score]),\n    \"Expected PMPM\", AVERAGE(agg_raf_score[expected_pmpm]),\n    \"HCC Count\", AVERAGE(agg_raf_score[hcc_count])\n  ),\n  [RAF Score], DESC\n)\n\nThese members have the highest documented risk; cross-reference against open HEDIS gaps to prioritize outreach."
+    },
+    {
+      "question": "How much did we recover through claim appeals last quarter?",
+      "answer": "EVALUATE\nSUMMARIZECOLUMNS(\n  dim_payer[payer_name],\n  TREATAS({\"LastQuarter\"}, dim_date[period_label]),\n  \"Appeals Filed\", COUNTROWS(fact_appeal),\n  \"Appeal Win Rate\", [Appeal Win Rate],\n  \"Appeal Recovery $\", [Appeal Recovery $]\n)\nORDER BY [Appeal Recovery $] DESC\n\nRecovery $ ÷ original denied $ gives the leakage-recovery efficiency."
+    },
+    {
+      "question": "Compare PMPM costs across our plan portfolio.",
+      "answer": "EVALUATE\nSUMMARIZECOLUMNS(\n  dim_plan[plan_name],\n  dim_plan[line_of_business],\n  dim_plan[metal_tier],\n  \"Member Months\", [Member Months],\n  \"Premium PMPM\", [Premium PMPM],\n  \"Medical PMPM\", [Medical PMPM],\n  \"MLR %\", [MLR %]\n)\nORDER BY dim_plan[line_of_business], [MLR %] DESC\n\nI segment by line of business because MLR targets differ (commercial 85%, MA 88%, Medicaid 88%)."
+    },
+    {
+      "question": "What is our capitation spend by provider for the year?",
+      "answer": "EVALUATE\nSUMMARIZECOLUMNS(\n  dim_provider[provider_name],\n  dim_provider[specialty],\n  \"Attributed Members\", SUM(fact_capitation[attributed_members]),\n  \"Avg PMPM Rate\", AVERAGE(fact_capitation[pmpm_rate]),\n  \"Total Capitation Paid\", [Total Capitation Paid]\n)\nORDER BY [Total Capitation Paid] DESC\n\nFor VBC contract review, I cross-reference against `bridge_provider_contract` to confirm value-based flag and contract terms."
+    },
+    {
+      "question": "Show me the contracts up for renewal in the next 90 days.",
+      "answer": "EVALUATE\nFILTER(\n  SELECTCOLUMNS(bridge_provider_contract, ...),\n  bridge_provider_contract[contract_end] <= TODAY() + 90 && bridge_provider_contract[contract_end] >= TODAY()\n)\n\nI join to fact_capitation and agg_mlr to surface which renewing contracts are highest-spend / highest-risk so the negotiation team prioritizes."
+    }
+  ]
+}

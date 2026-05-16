@@ -990,6 +990,116 @@
         "table__renderLinks": [],
         "colorRules": []
       }
+    },
+    {
+      "id": "bb11bb11-bb11-bb11-bb11-bb11bb11bb11",
+      "title": "Worst Patients (>=2 alert streams in 24h)",
+      "visualType": "table",
+      "pageId": "aa11aa11-aa11-aa11-aa11-aa11aa11aa11",
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 16,
+        "height": 9
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "cc11cc11-cc11-cc11-cc11-cc11cc11cc11"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": false,
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": [
+          {
+            "id": "cr-cross-stream",
+            "columnName": "severity_rank",
+            "ruleType": "colorByValue",
+            "valueRules": [
+              {"value": "CRITICAL", "color": "red"},
+              {"value": "HIGH",     "color": "orange"}
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "bb22bb22-bb22-bb22-bb22-bb22bb22bb22",
+      "title": "Provider Scorecard (7d) -- composite_risk = 0.4*fraud_p95 + 2*denial% + 5*readmits",
+      "visualType": "table",
+      "pageId": "aa11aa11-aa11-aa11-aa11-aa11aa11aa11",
+      "layout": {
+        "x": 0,
+        "y": 9,
+        "width": 16,
+        "height": 9
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "cc22cc22-cc22-cc22-cc22-cc22cc22cc22"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": true,
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
+    },
+    {
+      "id": "bb33bb33-bb33-bb33-bb33-bb33bb33bb33",
+      "title": "MTTD/MTTR Summary (24h) -- Closed via Power Automate Acknowledge",
+      "visualType": "multiStat",
+      "pageId": "aa11aa11-aa11-aa11-aa11-aa11aa11aa11",
+      "layout": {
+        "x": 16,
+        "y": 0,
+        "width": 8,
+        "height": 9
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "cc33cc33-cc33-cc33-cc33-cc33cc33cc33"
+      },
+      "visualOptions": {
+        "multiStat__textSize": "auto",
+        "multiStat__valueColumn": null,
+        "colorRulesDisabled": true,
+        "colorRules": []
+      }
+    },
+    {
+      "id": "bb44bb44-bb44-bb44-bb44-bb44bb44bb44",
+      "title": "Seeded Demo Scenarios (presenter view -- last 4h)",
+      "visualType": "table",
+      "pageId": "aa11aa11-aa11-aa11-aa11-aa11aa11aa11",
+      "layout": {
+        "x": 16,
+        "y": 9,
+        "width": 8,
+        "height": 9
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "cc44cc44-cc44-cc44-cc44-cc44cc44cc44"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": false,
+        "colorRulesDisabled": true,
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
     }
   ],
   "baseQueries": [],
@@ -1097,6 +1207,10 @@
     {
       "name": "High-Cost Trajectory",
       "id": "927df46d-2fad-4752-849a-d4ea6aa200ee"
+    },
+    {
+      "name": "Triage & Performance",
+      "id": "aa11aa11-aa11-aa11-aa11-aa11aa11aa11"
     }
   ],
   "queries": [
@@ -1206,7 +1320,7 @@
         "kind": "inline",
         "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
       },
-      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where fraud_score >= 0.7\r\n| count",
+      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where fraud_score >= 50\r\n| count",
       "id": "6e86d17d-c897-43e1-979f-69f06a2d9423",
       "usedVariables": [
         "_endTime",
@@ -1220,7 +1334,7 @@
         "kind": "inline",
         "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
       },
-      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| summarize Count=count() by Bucket=case(\r\n    fraud_score < 0.3, \"Low (0-0.3)\",\r\n    fraud_score < 0.7, \"Medium (0.3-0.7)\",\r\n    \"High (0.7+)\")\r\n| order by Bucket asc",
+      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| summarize Count=count() by Bucket=case(\r\n    fraud_score < 30, \"Low (0-30)\",\r\n    fraud_score < 50, \"Medium (30-50)\",\r\n    fraud_score < 70, \"High (50-70)\",\r\n    \"Critical (70+)\")\r\n| order by Bucket asc",
       "id": "beb54197-6581-467e-bba8-dcfbe662fbad",
       "usedVariables": [
         "_endTime",
@@ -1248,7 +1362,7 @@
         "kind": "inline",
         "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
       },
-      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where fraud_score >= 0.7\r\n| summarize Alerts=count() by bin(score_timestamp, 1h)\r\n| order by score_timestamp asc",
+      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where fraud_score >= 50\r\n| summarize Alerts=count() by bin(score_timestamp, 1h)\r\n| order by score_timestamp asc",
       "id": "c1d8484a-1ee0-4710-9c2e-19e39d5b4cc6",
       "usedVariables": [
         "_endTime",
@@ -1262,7 +1376,7 @@
         "kind": "inline",
         "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
       },
-      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where fraud_score >= 0.7\r\n| mv-expand flag=parse_json(fraud_flags)\r\n| summarize Count=count() by tostring(flag)\r\n| top 10 by Count desc",
+      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where fraud_score >= 50\r\n| mv-expand flag=parse_json(fraud_flags)\r\n| summarize Count=count() by tostring(flag)\r\n| top 10 by Count desc",
       "id": "1895b935-e829-4c84-94b3-a4a94dabd1b6",
       "usedVariables": [
         "_endTime",
@@ -1276,7 +1390,7 @@
         "kind": "inline",
         "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
       },
-      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where fraud_score >= 0.7\r\n| join kind=leftouter (\r\n    adt_events | summarize arg_max(event_timestamp, facility_name) by facility_id\r\n) on facility_id\r\n| summarize AlertCount=count(), AvgScore=round(avg(fraud_score), 2)\r\n    by latitude, longitude, Facility=facility_name\r\n| where isnotnull(latitude) and isnotnull(longitude)",
+      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where isempty(_riskTier) or risk_tier in~ (_riskTier)\r\n| where fraud_score >= 50\r\n| join kind=leftouter (\r\n    adt_events | summarize arg_max(event_timestamp, facility_name) by facility_id\r\n) on facility_id\r\n| summarize AlertCount=count(), AvgScore=round(avg(fraud_score), 2)\r\n    by latitude, longitude, Facility=facility_name\r\n| where isnotnull(latitude) and isnotnull(longitude)",
       "id": "bedc65d6-22e9-4d00-b343-d81415bc2abc",
       "usedVariables": [
         "_endTime",
@@ -1360,7 +1474,7 @@
         "kind": "inline",
         "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
       },
-      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where fraud_score >= 0.7\r\n| summarize DollarsAtRisk=round(sum(claim_amount), 0)",
+      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)\r\n| where fraud_score >= 50\r\n| summarize DollarsAtRisk=round(sum(claim_amount), 0)",
       "id": "75181de9-f4cf-4cbf-a877-24e02eb98e92",
       "usedVariables": [
         "_endTime",
@@ -1480,7 +1594,7 @@
         "kind": "inline",
         "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
       },
-      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where fraud_score >= 0.7\r\n| summarize FraudAlerts=count(), AvgScore=round(avg(fraud_score), 2), TotalDollars=round(sum(claim_amount), 0)\r\n    by provider_id\r\n| top 10 by FraudAlerts desc",
+      "text": "fraud_scores\r\n| where score_timestamp between (_startTime .. _endTime)\r\n| where fraud_score >= 50\r\n| summarize FraudAlerts=count(), AvgScore=round(avg(fraud_score), 2), TotalDollars=round(sum(claim_amount), 0)\r\n    by provider_id\r\n| top 10 by FraudAlerts desc",
       "id": "a84bdcef-57d8-4fb3-ae8e-c67794dd048e",
       "usedVariables": [
         "_endTime",
@@ -1531,6 +1645,42 @@
       },
       "text": "adt_events | distinct facility_name | order by facility_name asc\n",
       "id": "d21a0f33-2e9a-4b2b-9274-4cf4f2aff5d3",
+      "usedVariables": []
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "vw_cross_stream_patients(24h)\r\n| project patient_id, severity_rank, stream_count, streams, total_alerts, max_score=round(max_score,1), last_alert, sample_text\r\n| take 50",
+      "id": "cc11cc11-cc11-cc11-cc11-cc11cc11cc11",
+      "usedVariables": []
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "vw_provider_scorecard(7d)\r\n| take 20",
+      "id": "cc22cc22-cc22-cc22-cc22-cc22cc22cc22",
+      "usedVariables": []
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "vw_alert_mttr(24h)\r\n| summarize TotalAlerts=count(), Closed=countif(status=='CLOSED'), Open=countif(status=='OPEN'), AvgMTTRsec=round(avg(toreal(mttr_seconds)), 0)\r\n| extend AvgMTTRmin=round(AvgMTTRsec/60.0, 1), CloseRatePct=round(100.0*Closed/TotalAlerts, 1)",
+      "id": "cc33cc33-cc33-cc33-cc33-cc33cc33cc33",
+      "usedVariables": []
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "45ca4c6d-0a3d-41cf-b88c-799a7eb44774"
+      },
+      "text": "vw_seeded_scenarios(4h)\r\n| take 50",
+      "id": "cc44cc44-cc44-cc44-cc44-cc44cc44cc44",
       "usedVariables": []
     }
   ]

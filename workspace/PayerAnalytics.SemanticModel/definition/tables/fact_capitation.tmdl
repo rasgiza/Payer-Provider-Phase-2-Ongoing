@@ -1,0 +1,117 @@
+table fact_capitation
+	lineageTag: c1120001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[fact_capitation]
+
+	measure 'Total Capitation Paid' = SUMX(fact_capitation, fact_capitation[capitation_pmpm])
+		lineageTag: c1120001-0001-0001-0001-000000000011
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Capitation PMPM' = AVERAGE(fact_capitation[capitation_pmpm])
+		lineageTag: c1120001-0001-0001-0001-000000000012
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Withhold %' = AVERAGE(fact_capitation[withhold_pct])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: c1120001-0001-0001-0001-000000000013
+
+	column capitation_id
+		dataType: string
+		lineageTag: c1120001-0001-0001-0001-000000000021
+		sourceLineageTag: capitation_id
+		summarizeBy: none
+		sourceColumn: capitation_id
+		annotation SummarizationSetBy = Automatic
+
+	column capitation_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1120001-0001-0001-0001-000000000022
+		sourceLineageTag: capitation_key
+		summarizeBy: none
+		sourceColumn: capitation_key
+		annotation SummarizationSetBy = Automatic
+
+	column year_month
+		dataType: string
+		lineageTag: c1120001-0001-0001-0001-000000000023
+		sourceLineageTag: year_month
+		summarizeBy: none
+		sourceColumn: year_month
+		annotation SummarizationSetBy = Automatic
+
+	column member_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1120001-0001-0001-0001-000000000024
+		sourceLineageTag: member_key
+		summarizeBy: none
+		sourceColumn: member_key
+		annotation SummarizationSetBy = Automatic
+
+	column provider_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1120001-0001-0001-0001-000000000025
+		sourceLineageTag: provider_key
+		summarizeBy: none
+		sourceColumn: provider_key
+		annotation SummarizationSetBy = Automatic
+
+	column payer_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1120001-0001-0001-0001-000000000026
+		sourceLineageTag: payer_key
+		summarizeBy: none
+		sourceColumn: payer_key
+		annotation SummarizationSetBy = Automatic
+
+	column plan_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1120001-0001-0001-0001-000000000027
+		sourceLineageTag: plan_key
+		summarizeBy: none
+		sourceColumn: plan_key
+		annotation SummarizationSetBy = Automatic
+
+	column capitation_pmpm
+		dataType: double
+		lineageTag: c1120001-0001-0001-0001-000000000028
+		sourceLineageTag: capitation_pmpm
+		summarizeBy: sum
+		sourceColumn: capitation_pmpm
+		annotation SummarizationSetBy = Automatic
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column withhold_pct
+		dataType: double
+		lineageTag: c1120001-0001-0001-0001-000000000029
+		sourceLineageTag: withhold_pct
+		summarizeBy: average
+		sourceColumn: withhold_pct
+		annotation SummarizationSetBy = Automatic
+
+	column bonus_eligible
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: c1120001-0001-0001-0001-00000000002a
+		sourceLineageTag: bonus_eligible
+		summarizeBy: none
+		sourceColumn: bonus_eligible
+		annotation SummarizationSetBy = Automatic
+
+	column _load_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c1120001-0001-0001-0001-00000000002b
+		sourceLineageTag: _load_timestamp
+		summarizeBy: none
+		sourceColumn: _load_timestamp
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_capitation = entity
+		mode: directLake
+		source
+			entityName: fact_capitation
+			expressionSource: 'DirectLake - lh_gold_curated'

@@ -1,0 +1,118 @@
+table dim_plan
+	lineageTag: c1020001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[dim_plan]
+
+	measure 'Total Plans' = CALCULATE(COUNTROWS(dim_plan), dim_plan[is_active] = 1)
+		formatString: 0
+		lineageTag: c1020001-0001-0001-0001-000000000051
+
+	measure 'Capitated Plan Count' = CALCULATE(COUNTROWS(dim_plan), dim_plan[is_capitated] = TRUE())
+		formatString: 0
+		lineageTag: c1020001-0001-0001-0001-000000000052
+
+	column plan_id
+		dataType: string
+		lineageTag: c1020001-0001-0001-0001-000000000011
+		sourceLineageTag: plan_id
+		summarizeBy: none
+		sourceColumn: plan_id
+		annotation SummarizationSetBy = Automatic
+
+	column plan_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1020001-0001-0001-0001-000000000012
+		sourceLineageTag: plan_key
+		summarizeBy: none
+		sourceColumn: plan_key
+		annotation SummarizationSetBy = Automatic
+
+	column plan_name
+		dataType: string
+		lineageTag: c1020001-0001-0001-0001-000000000013
+		sourceLineageTag: plan_name
+		summarizeBy: none
+		sourceColumn: plan_name
+		annotation SummarizationSetBy = Automatic
+
+	column line_of_business
+		dataType: string
+		lineageTag: c1020001-0001-0001-0001-000000000014
+		sourceLineageTag: line_of_business
+		summarizeBy: none
+		sourceColumn: line_of_business
+		annotation SummarizationSetBy = Automatic
+
+	column plan_type
+		dataType: string
+		lineageTag: c1020001-0001-0001-0001-000000000015
+		sourceLineageTag: plan_type
+		summarizeBy: none
+		sourceColumn: plan_type
+		annotation SummarizationSetBy = Automatic
+
+	column metal_tier
+		dataType: string
+		lineageTag: c1020001-0001-0001-0001-000000000016
+		sourceLineageTag: metal_tier
+		summarizeBy: none
+		sourceColumn: metal_tier
+		annotation SummarizationSetBy = Automatic
+
+	column state
+		dataType: string
+		lineageTag: c1020001-0001-0001-0001-000000000017
+		sourceLineageTag: state
+		summarizeBy: none
+		sourceColumn: state
+		annotation SummarizationSetBy = Automatic
+
+	column network_size
+		dataType: string
+		lineageTag: c1020001-0001-0001-0001-000000000018
+		sourceLineageTag: network_size
+		summarizeBy: none
+		sourceColumn: network_size
+		annotation SummarizationSetBy = Automatic
+
+	column is_capitated
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: c1020001-0001-0001-0001-000000000019
+		sourceLineageTag: is_capitated
+		summarizeBy: none
+		sourceColumn: is_capitated
+		annotation SummarizationSetBy = Automatic
+
+	column avg_pmpm_premium
+		dataType: double
+		lineageTag: c1020001-0001-0001-0001-00000000001a
+		sourceLineageTag: avg_pmpm_premium
+		summarizeBy: average
+		sourceColumn: avg_pmpm_premium
+		annotation SummarizationSetBy = Automatic
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column is_active
+		dataType: int64
+		formatString: 0
+		lineageTag: c1020001-0001-0001-0001-00000000001b
+		sourceLineageTag: is_active
+		summarizeBy: sum
+		sourceColumn: is_active
+		annotation SummarizationSetBy = Automatic
+
+	column _load_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c1020001-0001-0001-0001-00000000001c
+		sourceLineageTag: _load_timestamp
+		summarizeBy: none
+		sourceColumn: _load_timestamp
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_plan = entity
+		mode: directLake
+		source
+			entityName: dim_plan
+			expressionSource: 'DirectLake - lh_gold_curated'

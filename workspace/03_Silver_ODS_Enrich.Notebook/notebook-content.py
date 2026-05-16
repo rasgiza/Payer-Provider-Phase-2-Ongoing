@@ -436,6 +436,41 @@ print(f"✓ {SILVER_ODS}.diagnoses_enriched: {diagnoses_enriched.count():,} rows
 
 # MARKDOWN **{"language":"markdown"}**
 
+# ## 6a-6i. Pass-through Enrichment for Payer-Domain Tables
+# Load from Silver Stage and write to Silver ODS as `_enriched`. Gold reads from
+# the `_enriched` views; for these payer tables Stage→ODS is a stable rename
+# (no joins yet — left as a hook for future enrichment).
+
+# METADATA **{"language":"python"}**
+
+# CELL **{"language":"python"}**
+
+PAYER_PASSTHROUGH = [
+    "member_enrollment",
+    "premiums",
+    "authorizations",
+    "capitation",
+    "provider_contracts",
+    "hedis_compliance",
+    "star_ratings",
+    "risk_adjustment",
+    "claim_appeals",
+]
+
+for _name in PAYER_PASSTHROUGH:
+    _src = f"{SILVER_STAGE}.{_name}_clean"
+    _tgt = f"{SILVER_ODS}.{_name}_enriched"
+    try:
+        _df = spark.sql(f"SELECT * FROM {_src}").withColumn("_ods_load_timestamp", current_timestamp())
+        _df.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(_tgt)
+        print(f"✓ {_tgt}: {_df.count():,} rows")
+    except Exception as _e:
+        print(f"⚠️ Skipped {_tgt}: {_e}")
+
+# METADATA **{"language":"markdown"}**
+
+# MARKDOWN **{"language":"markdown"}**
+
 # ## 7. Verify ODS Tables
 
 # METADATA **{"language":"python"}**
@@ -462,6 +497,14 @@ try:
     print(f"  claims_enriched:        {spark.sql(f'SELECT COUNT(*) FROM {SILVER_ODS}.claims_enriched').collect()[0][0]:,}")
     print(f"  prescriptions_enriched: {spark.sql(f'SELECT COUNT(*) FROM {SILVER_ODS}.prescriptions_enriched').collect()[0][0]:,}")
     print(f"  diagnoses_enriched:     {spark.sql(f'SELECT COUNT(*) FROM {SILVER_ODS}.diagnoses_enriched').collect()[0][0]:,}")
+    for _t in ["member_enrollment_enriched", "premiums_enriched", "authorizations_enriched",
+               "capitation_enriched", "provider_contracts_enriched", "hedis_compliance_enriched",
+               "star_ratings_enriched", "risk_adjustment_enriched", "claim_appeals_enriched"]:
+        try:
+            _c = spark.sql(f"SELECT COUNT(*) FROM {SILVER_ODS}.{_t}").collect()[0][0]
+            print(f"  {_t:<28} {_c:,}")
+        except Exception:
+            pass
 except Exception as e:
     print(f"Could not count tables: {e}")
 

@@ -84,3 +84,117 @@ relationship c1000001-0001-0001-0001-000000000024
 	isActive: false
 	fromColumn: fact_diagnosis.diagnosis_date_key
 	toColumn: dim_date.date_key
+
+relationship c1000001-0001-0001-0001-000000000030
+	fromColumn: fact_premium.member_key
+	toColumn: dim_patient.patient_key
+
+relationship c1000001-0001-0001-0001-000000000031
+	fromColumn: fact_premium.payer_key
+	toColumn: dim_payer.payer_key
+
+relationship c1000001-0001-0001-0001-000000000032
+	fromColumn: fact_premium.plan_key
+	toColumn: dim_plan.plan_key
+
+relationship c1000001-0001-0001-0001-000000000033
+	fromColumn: fact_premium.year_month_key
+	toColumn: dim_date.date_key
+
+relationship c1000001-0001-0001-0001-000000000034
+	fromColumn: fact_authorization.member_key
+	toColumn: dim_patient.patient_key
+
+relationship c1000001-0001-0001-0001-000000000035
+	fromColumn: fact_authorization.provider_key
+	toColumn: dim_provider.provider_key
+
+relationship c1000001-0001-0001-0001-000000000036
+	fromColumn: fact_authorization.payer_key
+	toColumn: dim_payer.payer_key
+
+relationship c1000001-0001-0001-0001-000000000037
+	fromColumn: fact_authorization.submit_date_key
+	toColumn: dim_date.date_key
+
+relationship c1000001-0001-0001-0001-000000000038
+	isActive: false
+	fromColumn: fact_authorization.decision_date_key
+	toColumn: dim_date.date_key
+
+relationship c1000001-0001-0001-0001-000000000039
+	fromColumn: fact_capitation.member_key
+	toColumn: dim_patient.patient_key
+
+relationship c1000001-0001-0001-0001-00000000003a
+	fromColumn: fact_capitation.provider_key
+	toColumn: dim_provider.provider_key
+
+relationship c1000001-0001-0001-0001-00000000003b
+	fromColumn: fact_capitation.payer_key
+	toColumn: dim_payer.payer_key
+
+relationship c1000001-0001-0001-0001-00000000003c
+	fromColumn: fact_capitation.plan_key
+	toColumn: dim_plan.plan_key
+
+relationship c1000001-0001-0001-0001-00000000003d
+	fromColumn: fact_appeal.claim_key
+	toColumn: fact_claim.claim_key
+
+relationship c1000001-0001-0001-0001-00000000003e
+	fromColumn: fact_appeal.member_key
+	toColumn: dim_patient.patient_key
+
+relationship c1000001-0001-0001-0001-00000000003f
+	fromColumn: fact_appeal.payer_key
+	toColumn: dim_payer.payer_key
+
+relationship c1000001-0001-0001-0001-000000000040
+	fromColumn: fact_appeal.submit_date_key
+	toColumn: dim_date.date_key
+
+relationship c1000001-0001-0001-0001-000000000041
+	isActive: false
+	fromColumn: fact_appeal.decision_date_key
+	toColumn: dim_date.date_key
+
+relationship c1000001-0001-0001-0001-000000000042
+	fromColumn: bridge_provider_contract.provider_key
+	toColumn: dim_provider.provider_key
+
+relationship c1000001-0001-0001-0001-000000000043
+	fromColumn: bridge_provider_contract.payer_key
+	toColumn: dim_payer.payer_key
+
+relationship c1000001-0001-0001-0001-000000000044
+	fromColumn: agg_mlr_by_payer_month.payer_key
+	toColumn: dim_payer.payer_key
+
+relationship c1000001-0001-0001-0001-000000000045
+	fromColumn: agg_hedis_compliance.payer_key
+	toColumn: dim_payer.payer_key
+
+relationship c1000001-0001-0001-0001-000000000046
+	fromColumn: agg_hedis_compliance.plan_key
+	toColumn: dim_plan.plan_key
+
+relationship c1000001-0001-0001-0001-000000000047
+	fromColumn: agg_star_rating.payer_key
+	toColumn: dim_payer.payer_key
+
+relationship c1000001-0001-0001-0001-000000000048
+	fromColumn: agg_star_rating_overall.payer_key
+	toColumn: dim_payer.payer_key
+
+relationship c1000001-0001-0001-0001-000000000049
+	fromColumn: agg_raf_score.member_key
+	toColumn: dim_patient.patient_key
+
+relationship c1000001-0001-0001-0001-00000000004a
+	fromColumn: agg_raf_score.payer_key
+	toColumn: dim_payer.payer_key
+
+relationship c1000001-0001-0001-0001-00000000004b
+	fromColumn: agg_raf_score.plan_key
+	toColumn: dim_plan.plan_key

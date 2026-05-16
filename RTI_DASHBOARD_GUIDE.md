@@ -172,7 +172,7 @@ fraud_scores
 | where score_timestamp between (_startTime .. _endTime)
 | where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)
 | where isempty(_riskTier) or risk_tier in~ (_riskTier)
-| where fraud_score >= 0.7
+| where fraud_score >= 50
 | count
 ```
 
@@ -184,9 +184,10 @@ fraud_scores
 | where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)
 | where isempty(_riskTier) or risk_tier in~ (_riskTier)
 | summarize Count=count() by Bucket=case(
-    fraud_score < 0.3, "Low (0-0.3)",
-    fraud_score < 0.7, "Medium (0.3-0.7)",
-    "High (0.7+)")
+    fraud_score < 30, "Low (0-30)",
+    fraud_score < 50, "Medium (30-50)",
+    fraud_score < 70, "High (50-70)",
+    "Critical (70+)")
 | order by Bucket asc
 ```
 
@@ -208,7 +209,7 @@ fraud_scores
 | where score_timestamp between (_startTime .. _endTime)
 | where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)
 | where isempty(_riskTier) or risk_tier in~ (_riskTier)
-| where fraud_score >= 0.7
+| where fraud_score >= 50
 | summarize Alerts=count() by bin(score_timestamp, 1h)
 | order by score_timestamp asc
 ```
@@ -220,7 +221,7 @@ fraud_scores
 | where score_timestamp between (_startTime .. _endTime)
 | where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)
 | where isempty(_riskTier) or risk_tier in~ (_riskTier)
-| where fraud_score >= 0.7
+| where fraud_score >= 50
 | mv-expand flag=parse_json(fraud_flags)
 | summarize Count=count() by tostring(flag)
 | top 10 by Count desc
@@ -233,7 +234,7 @@ fraud_scores
 | where score_timestamp between (_startTime .. _endTime)
 | where isempty(_facility) or facility_id in (adt_events | where facility_name in~ (_facility) | distinct facility_id)
 | where isempty(_riskTier) or risk_tier in~ (_riskTier)
-| where fraud_score >= 0.7
+| where fraud_score >= 50
 | join kind=leftouter (
     adt_events | summarize arg_max(event_timestamp, facility_name) by facility_id
 ) on facility_id
@@ -382,6 +383,105 @@ highcost_alerts
     by Facility=facility_name
 | order by Patients desc
 ```
+
+---
+
+## Page 5 — Triage & Performance
+
+Demo-hardening page that closes the loop on the four executive personas
+(CMO / CFO / COO / SIU). Powered by four KQL view functions defined in
+`NB_RTI_Setup_Eventhouse` and seeded by `NB_RTI_Seed_Scenarios`.
+
+### One-Time UI Setup — OneLake Table Shortcuts for Patient/Provider 360
+
+The `vw_alerts_enriched()` function joins live alerts to `dim_patient`,
+`dim_provider`, and `dim_facility` in `lh_gold_curated`. These dims must be
+exposed in the Eventhouse as **OneLake table shortcuts** (zero-copy, read-only).
+The shortcut surface is not reliably scriptable via REST today, so do this once
+in the portal:
+
+1. Real-Time Intelligence → open **Healthcare_RTI_Eventhouse → Healthcare_RTI_DB**.
+2. Click **+ Get data → OneLake**.
+3. Source: pick workspace → **`lh_gold_curated`** (Lakehouse).
+4. Select tables: check **`dim_patient`**, **`dim_provider`**, **`dim_facility`**.
+5. Shortcut type: **Table shortcut** (NOT folder/file). Keep names unchanged.
+6. Finish. The three tables now appear in the KQL DB tree and can be queried
+   directly: `dim_patient | take 5`.
+
+Validation:
+```kql
+vw_alerts_enriched(24h) | take 20
+```
+If the function errors with `'dim_patient' could not be resolved`, the
+shortcut step above was skipped. Re-run it — no need to redeploy the function.
+
+> **Why not external_table or REST?** Eventhouse `.create external table`
+> with Delta works but is slower (no caching, no policy push-down) and
+> requires lakehouse-specific abfss paths. The REST endpoint for KQL DB
+> OneLake shortcuts is preview and inconsistent across tenants. Portal table
+> shortcuts are the supported production path today.
+
+### Tile 1 — Worst Patients (≥2 alert streams in 24h)
+
+| Setting | Value |
+|---------|-------|
+| Visual | Table |
+| Query  | `vw_cross_stream_patients(24h) \| take 50` |
+| Color rule | `severity_rank` → red on `CRITICAL`, orange on `HIGH` |
+
+Calls out patients showing up in multiple streams (fraud, care gap, high-cost,
+readmission, deterioration) in the last 24h. After running
+`NB_RTI_Seed_Scenarios`, `SEED:JOHN_PATIENT` should appear here as CRITICAL
+(care gap + high-cost + claims = 3 streams).
+
+### Tile 2 — Provider Scorecard (7d)
+
+| Setting | Value |
+|---------|-------|
+| Visual | Table |
+| Query  | `vw_provider_scorecard(7d) \| take 20` |
+
+Composite risk per provider:
+`composite_risk = 0.4*fraud_score_p95 + 2*denial_rate_pct + 5*readmit_count`.
+Used by SIU for coaching prioritization and by the CMO for outlier review.
+After seeding, `SEED:RAJ_SINGH` lands near the top once the fraud scorer runs.
+
+### Tile 3 — MTTD / MTTR Summary (24h)
+
+| Setting | Value |
+|---------|-------|
+| Visual | Multi-stat |
+| Query  | `vw_alert_mttr(24h) \| summarize TotalAlerts=count(), Closed=countif(status=='CLOSED'), Open=countif(status=='OPEN'), AvgMTTRsec=round(avg(toreal(mttr_seconds)),0) \| extend AvgMTTRmin=round(AvgMTTRsec/60.0,1), CloseRatePct=round(100.0*Closed/TotalAlerts,1)` |
+
+Joins `vw_all_alerts` to `alert_closure_events` on `alert_id`. The Acknowledge
+button in the Power Automate Teams card (`Healthcare_RTI_NotifyCareTeam`) emits
+a row to `alert_closure_events` with `resolved_by`, `action_taken`, and
+`mttr_seconds = NOW - alert_timestamp`. Demonstrates the **closed-loop**
+acknowledgment story: alert → notify → ack → measurable response.
+
+### Tile 4 — Seeded Demo Scenarios (presenter view — last 4h)
+
+| Setting | Value |
+|---------|-------|
+| Visual | Table |
+| Query  | `vw_seeded_scenarios(4h) \| take 50` |
+
+Filters the raw event tables for rows tagged `SEED:*` / `SEED-*` / `SEED_*`.
+Use this as the presenter's "did my seed run?" sanity check before going live.
+
+---
+
+## Closed-Loop Acknowledgment
+
+| Component | Role |
+|-----------|------|
+| `Healthcare_RTI_NotifyCareTeam` (Power Automate) | Sends adaptive card to Teams when Activator fires |
+| Adaptive card **Acknowledge** action | POSTs back to PA flow with `alert_id`, `alert_source_table`, `action_taken`, `resolved_by` (User.Id from Teams context), `resolution_notes` |
+| PA flow `Insert row into Eventhouse` | Writes one row to `alert_closure_events` (`mttr_seconds`, `outcome='ACKNOWLEDGED'`) via the same Eventstream Custom Endpoint with `_table='alert_closure_events'` |
+| `vw_alert_mttr(7d)` | Surfaces close rate + average MTTR on the dashboard and to the Operations Agent |
+
+This satisfies the demo requirement that every alert has a *human owner and a
+measurable time-to-acknowledge*, not just a notification.
 
 ---
 

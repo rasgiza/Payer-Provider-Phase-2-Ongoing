@@ -412,6 +412,17 @@ For troubleshooting hybrid query failures (compound questions, instruction trunc
 
 When `DEPLOY_STREAMING=True`, the launcher deploys a full RTI stack: **Eventhouse + KQL Database + 3 scoring notebooks + OpsAgent + RTI Dashboard** that address high-value payer/provider pain points where batch analytics fall short.
 
+> **Demo hardening (Phase 2.1)**: see [`DEMO_SCENARIOS.md`](DEMO_SCENARIOS.md)
+> for the four seeded stories (Maria Lopez readmit, Dr. Raj Singh fraud spike,
+> John Patient cross-stream, Beaumont Royal Oak capacity). Run
+> `NB_RTI_Seed_Scenarios` after the simulator is streaming, then visit the new
+> **Triage & Performance** page in `Healthcare_RTI_Dashboard` for the
+> cross-stream / provider-scorecard / MTTD-MTTR tiles. The dashboard's MTTR
+> stat is fed by `alert_closure_events`, which is populated by the
+> **Acknowledge** action in the `Healthcare_RTI_NotifyCareTeam` Power Automate
+> adaptive card — this closes the loop from alert → notify → ack → measurable
+> response.
+
 ### Use Case 1: Claims Fraud Detection
 
 > **$68B lost to healthcare fraud annually** (NHCAA). Most SIU teams investigate claims weeks after submission — by then, the money is gone.
@@ -701,6 +712,32 @@ Data Activator (Reflex) is the **production-grade alerting layer** for this solu
 
 > **Power Automate integration**: For complex routing (create ServiceNow tickets, update EHR systems, page on-call staff), select **Power Automate** as the action and build a flow that reads the alert payload. The Reflex trigger passes all card fields as dynamic content to the flow.
 
+**Rule 4 — 30-Day Readmission (Care Transitions Alert)**
+
+| Setting | Value |
+|---------|-------|
+| **Table** | `readmission_events` |
+| **Monitor** | `readmission_risk_score` |
+| **Condition** | `readmission_risk_score >= 70 OR (days_since_discharge <= 7 AND readmission_risk_score >= 50)` |
+| **Action 1** | **Teams** → post to `#care-transitions` channel |
+| **Action 2** | **Power Automate** → create Care Transitions task in EHR (optional) |
+| **Card fields** | patient_id, facility_id, days_since_discharge, drg_code, current_diagnosis, prior_diagnosis, readmission_risk_score |
+| **Email Subject** | `🔁 Readmission Alert — Patient {{patient_id}}: {{days_since_discharge}}d since discharge` |
+| **Email Body** | `Risk {{readmission_risk_score}}/100, DRG {{drg_code}}, Prior dx: {{prior_diagnosis}}, Current dx: {{current_diagnosis}}` |
+
+#### Pre-Demo Health Check
+
+Before any executive demo, run the verification script to confirm streaming, scoring, and patient ID overlap are all healthy:
+
+```powershell
+cd Payer-Provider-Phase-2-Ongoing-main\scripts
+$env:KUSTO_QUERY_URI = "https://<your-eventhouse>.z9.kusto.fabric.microsoft.com"
+$env:KQL_DATABASE = "Healthcare_RTI_DB"
+python verify_demo_ready.py
+```
+
+The script runs 8 checks (input freshness, scoring freshness, threshold coverage, readmission landing, ADT enum, patient ID overlap). Exits non-zero on any FAIL. **Do not present if any check fails.** See [scripts/verify_demo_ready.py](scripts/verify_demo_ready.py).
+
 #### Real-World Pain Points Solved
 
 | Pain Point | How Activator Solves It |
@@ -708,8 +745,9 @@ Data Activator (Reflex) is the **production-grade alerting layer** for this solu
 | **Fraud goes undetected for days** | Fraud scores ≥ 50 trigger immediate SIU email — MTTD drops from days to minutes |
 | **Care gaps missed during admissions** | Patients with overdue HEDIS measures are flagged on admission — care coordinators act while the patient is still in-house |
 | **High-cost members escalate silently** | Spending trajectories > $50K/30d trigger proactive case management before costs spiral |
+| **30-day readmissions detected after-the-fact** | `readmission_events` fires within minutes of a re-admit ADT — care transitions team gets a Teams alert with prior DRG and discharge date |
 | **Alert fatigue from noisy dashboards** | Activator fires only when thresholds breach — no polling, no dashboards to watch |
-| **Ops teams lack unified triage** | Combined with the Operations Agent, alerts from all 3 streams flow into a single prioritized view |
+| **Ops teams lack unified triage** | Combined with the Operations Agent, alerts from all 4 streams (fraud, care gaps, high-cost, readmissions) flow into a single prioritized view |
 | **Compliance audit trail gaps** | Every Activator trigger is logged with timestamp, threshold, and action taken — ready for audit |
 
 ### Run Incremental Loads

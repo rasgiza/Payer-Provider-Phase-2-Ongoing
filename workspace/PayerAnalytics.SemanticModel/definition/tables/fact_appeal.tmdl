@@ -1,0 +1,145 @@
+table fact_appeal
+	lineageTag: c1130001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[fact_appeal]
+
+	measure 'Total Appeals' = COUNTROWS(fact_appeal)
+		formatString: 0
+		lineageTag: c1130001-0001-0001-0001-000000000011
+
+	measure 'Appeal Recovery $' = SUM(fact_appeal[appeal_amount_recovered])
+		lineageTag: c1130001-0001-0001-0001-000000000012
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Appeal Win Rate' =
+			VAR _won = CALCULATE(COUNTROWS(fact_appeal), fact_appeal[appeal_outcome] = "Won")
+			VAR _total = COUNTROWS(fact_appeal)
+			RETURN DIVIDE(_won, _total)
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: c1130001-0001-0001-0001-000000000013
+
+	column appeal_id
+		dataType: string
+		lineageTag: c1130001-0001-0001-0001-000000000021
+		sourceLineageTag: appeal_id
+		summarizeBy: none
+		sourceColumn: appeal_id
+		annotation SummarizationSetBy = Automatic
+
+	column appeal_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1130001-0001-0001-0001-000000000022
+		sourceLineageTag: appeal_key
+		summarizeBy: none
+		sourceColumn: appeal_key
+		annotation SummarizationSetBy = Automatic
+
+	column claim_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1130001-0001-0001-0001-000000000023
+		sourceLineageTag: claim_key
+		summarizeBy: none
+		sourceColumn: claim_key
+		annotation SummarizationSetBy = Automatic
+
+	column claim_id
+		dataType: string
+		lineageTag: c1130001-0001-0001-0001-000000000024
+		sourceLineageTag: claim_id
+		summarizeBy: none
+		sourceColumn: claim_id
+		annotation SummarizationSetBy = Automatic
+
+	column member_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1130001-0001-0001-0001-000000000025
+		sourceLineageTag: member_key
+		summarizeBy: none
+		sourceColumn: member_key
+		annotation SummarizationSetBy = Automatic
+
+	column payer_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1130001-0001-0001-0001-000000000026
+		sourceLineageTag: payer_key
+		summarizeBy: none
+		sourceColumn: payer_key
+		annotation SummarizationSetBy = Automatic
+
+	column submit_date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1130001-0001-0001-0001-000000000027
+		sourceLineageTag: submit_date_key
+		summarizeBy: none
+		sourceColumn: submit_date_key
+		annotation SummarizationSetBy = Automatic
+
+	column decision_date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1130001-0001-0001-0001-000000000028
+		sourceLineageTag: decision_date_key
+		summarizeBy: none
+		sourceColumn: decision_date_key
+		annotation SummarizationSetBy = Automatic
+
+	column appeal_level
+		dataType: string
+		lineageTag: c1130001-0001-0001-0001-000000000029
+		sourceLineageTag: appeal_level
+		summarizeBy: none
+		sourceColumn: appeal_level
+		annotation SummarizationSetBy = Automatic
+
+	column appeal_level_num
+		dataType: int64
+		formatString: 0
+		lineageTag: c1130001-0001-0001-0001-00000000002a
+		sourceLineageTag: appeal_level_num
+		summarizeBy: none
+		sourceColumn: appeal_level_num
+		annotation SummarizationSetBy = Automatic
+
+	column appeal_outcome
+		dataType: string
+		lineageTag: c1130001-0001-0001-0001-00000000002b
+		sourceLineageTag: appeal_outcome
+		summarizeBy: none
+		sourceColumn: appeal_outcome
+		annotation SummarizationSetBy = Automatic
+
+	column appeal_amount_recovered
+		dataType: double
+		lineageTag: c1130001-0001-0001-0001-00000000002c
+		sourceLineageTag: appeal_amount_recovered
+		summarizeBy: sum
+		sourceColumn: appeal_amount_recovered
+		annotation SummarizationSetBy = Automatic
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column appeal_reason
+		dataType: string
+		lineageTag: c1130001-0001-0001-0001-00000000002d
+		sourceLineageTag: appeal_reason
+		summarizeBy: none
+		sourceColumn: appeal_reason
+		annotation SummarizationSetBy = Automatic
+
+	column _load_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c1130001-0001-0001-0001-00000000002e
+		sourceLineageTag: _load_timestamp
+		summarizeBy: none
+		sourceColumn: _load_timestamp
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_appeal = entity
+		mode: directLake
+		source
+			entityName: fact_appeal
+			expressionSource: 'DirectLake - lh_gold_curated'

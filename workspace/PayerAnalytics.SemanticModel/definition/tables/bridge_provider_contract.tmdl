@@ -1,0 +1,111 @@
+table bridge_provider_contract
+	lineageTag: c1140001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[bridge_provider_contract]
+
+	measure 'Contract Count' = COUNTROWS(bridge_provider_contract)
+		formatString: 0
+		lineageTag: c1140001-0001-0001-0001-000000000011
+
+	measure 'In-Network Contract Rate' = DIVIDE(CALCULATE(COUNTROWS(bridge_provider_contract), bridge_provider_contract[is_in_network] = TRUE()), COUNTROWS(bridge_provider_contract))
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: c1140001-0001-0001-0001-000000000012
+
+	column contract_id
+		dataType: string
+		lineageTag: c1140001-0001-0001-0001-000000000021
+		sourceLineageTag: contract_id
+		summarizeBy: none
+		sourceColumn: contract_id
+		annotation SummarizationSetBy = Automatic
+
+	column provider_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1140001-0001-0001-0001-000000000022
+		sourceLineageTag: provider_key
+		summarizeBy: none
+		sourceColumn: provider_key
+		annotation SummarizationSetBy = Automatic
+
+	column payer_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1140001-0001-0001-0001-000000000023
+		sourceLineageTag: payer_key
+		summarizeBy: none
+		sourceColumn: payer_key
+		annotation SummarizationSetBy = Automatic
+
+	column contract_type
+		dataType: string
+		lineageTag: c1140001-0001-0001-0001-000000000024
+		sourceLineageTag: contract_type
+		summarizeBy: none
+		sourceColumn: contract_type
+		annotation SummarizationSetBy = Automatic
+
+	column effective_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c1140001-0001-0001-0001-000000000025
+		sourceLineageTag: effective_date
+		summarizeBy: none
+		sourceColumn: effective_date
+		annotation SummarizationSetBy = Automatic
+
+	column termination_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c1140001-0001-0001-0001-000000000026
+		sourceLineageTag: termination_date
+		summarizeBy: none
+		sourceColumn: termination_date
+		annotation SummarizationSetBy = Automatic
+
+	column fee_schedule_pct_medicare
+		dataType: double
+		lineageTag: c1140001-0001-0001-0001-000000000027
+		sourceLineageTag: fee_schedule_pct_medicare
+		summarizeBy: average
+		sourceColumn: fee_schedule_pct_medicare
+		annotation SummarizationSetBy = Automatic
+
+	column withhold_pct
+		dataType: double
+		lineageTag: c1140001-0001-0001-0001-000000000028
+		sourceLineageTag: withhold_pct
+		summarizeBy: average
+		sourceColumn: withhold_pct
+		annotation SummarizationSetBy = Automatic
+
+	column quality_bonus_pct
+		dataType: double
+		lineageTag: c1140001-0001-0001-0001-000000000029
+		sourceLineageTag: quality_bonus_pct
+		summarizeBy: average
+		sourceColumn: quality_bonus_pct
+		annotation SummarizationSetBy = Automatic
+
+	column is_in_network
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: c1140001-0001-0001-0001-00000000002a
+		sourceLineageTag: is_in_network
+		summarizeBy: none
+		sourceColumn: is_in_network
+		annotation SummarizationSetBy = Automatic
+
+	column _load_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c1140001-0001-0001-0001-00000000002b
+		sourceLineageTag: _load_timestamp
+		summarizeBy: none
+		sourceColumn: _load_timestamp
+		annotation SummarizationSetBy = Automatic
+
+	partition bridge_provider_contract = entity
+		mode: directLake
+		source
+			entityName: bridge_provider_contract
+			expressionSource: 'DirectLake - lh_gold_curated'

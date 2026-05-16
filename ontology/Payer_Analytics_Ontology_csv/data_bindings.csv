@@ -1,0 +1,10 @@
+binding_id,entity_id,entity_name,lakehouse,gold_table,key_column,partition_column,scd_type,refresh_mode
+b1000001-0001-4000-b001-000000000014,8000000014,Plan,lh_gold_curated,dim_plan,plan_key,,Type1,full
+b1000001-0001-4000-b001-000000000015,8000000015,Premium,lh_gold_curated,fact_premium,premium_id,year_month,None,incremental
+b1000001-0001-4000-b001-000000000016,8000000016,Authorization,lh_gold_curated,fact_authorization,auth_id,,None,incremental
+b1000001-0001-4000-b001-000000000017,8000000017,Capitation,lh_gold_curated,fact_capitation,cap_id,year_month,None,incremental
+b1000001-0001-4000-b001-000000000018,8000000018,Appeal,lh_gold_curated,fact_appeal,appeal_id,,None,incremental
+b1000001-0001-4000-b001-000000000019,8000000019,ProviderContract,lh_gold_curated,bridge_provider_contract,contract_id,,None,full
+b1000001-0001-4000-b001-000000000020,8000000020,HEDISCompliance,lh_gold_curated,agg_hedis_compliance,hedis_id,,None,full
+b1000001-0001-4000-b001-000000000021,8000000021,StarRating,lh_gold_curated,agg_star_rating,star_id,,None,full
+b1000001-0001-4000-b001-000000000022,8000000022,RiskAdjustment,lh_gold_curated,agg_raf_score,raf_id,,None,full

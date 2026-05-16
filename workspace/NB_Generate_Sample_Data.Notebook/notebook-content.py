@@ -522,7 +522,11 @@ print(f"  Generated {len(encounters_df)} encounters")
 def generate_claims(encounters_df):
     claims = []
     payer_ids = [p["payer_id"] for p in PAYERS]
+    payer_lookup = {p["payer_id"]: p for p in PAYERS}
     cpt_list = [c["code"] for c in CPT_CODES]
+
+    # CPT codes more prone to denial (high-cost imaging, surgical, durable medical eqt)
+    high_risk_cpts = {"70553", "72148", "73721", "27447", "29827", "33533", "47562"}
 
     for _, enc in encounters_df.iterrows():
         cid = enc["encounter_id"].replace("ENC", "CLM")
@@ -532,7 +536,40 @@ def generate_claims(encounters_df):
         billed = enc["total_charges"]
         allowed = round(billed * random.uniform(0.5, 0.9), 2)
         paid = round(allowed * random.uniform(0.6, 0.95), 2)
-        status = random.choices(CLAIM_STATUSES, weights=[0.05, 0.05, 0.30, 0.08, 0.50, 0.02])[0]
+
+        # Denial risk score (0.0-1.0) — pre-adjudication ML-style score derived
+        # from claim attributes. Higher score => higher chance of being denied.
+        risk = 0.08  # baseline
+        if billed > 50000:
+            risk += 0.20
+        elif billed > 20000:
+            risk += 0.10
+        if cpt in high_risk_cpts:
+            risk += 0.15
+        # Government payers tend to deny edge cases more
+        ptype = payer_lookup.get(payer, {}).get("payer_type", "")
+        if ptype in ("Government", "Medicaid Managed Care"):
+            risk += 0.05
+        if claim_type in ("Inpatient",):
+            risk += 0.05
+        risk += random.uniform(-0.05, 0.10)
+        denial_risk_score = round(min(max(risk, 0.01), 0.99), 4)
+        if denial_risk_score >= 0.40:
+            denial_risk_category = "High"
+        elif denial_risk_score >= 0.20:
+            denial_risk_category = "Medium"
+        else:
+            denial_risk_category = "Low"
+
+        # Status: bias toward Denied when denial_risk_score is High
+        if denial_risk_category == "High":
+            weights = [0.04, 0.04, 0.20, 0.16, 0.54, 0.02]  # higher Denied (0.16)
+        elif denial_risk_category == "Medium":
+            weights = [0.05, 0.05, 0.28, 0.10, 0.50, 0.02]
+        else:
+            weights = [0.05, 0.05, 0.32, 0.05, 0.51, 0.02]
+        status = random.choices(CLAIM_STATUSES, weights=weights)[0]
+        denial_flag = 1 if status == "Denied" else 0
         denial = random.choice(DENIAL_REASONS) if status == "Denied" else None
 
         submit_date = datetime.strptime(enc["discharge_date"], "%Y-%m-%d") + timedelta(days=random.randint(1, 14))
@@ -576,7 +613,10 @@ def generate_claims(encounters_df):
             "paid_amount": paid if status != "Denied" else 0,
             "patient_responsibility": round(billed - paid if status != "Denied" else billed, 2),
             "claim_status": status,
+            "denial_flag": denial_flag,
             "denial_reason": denial,
+            "denial_risk_score": denial_risk_score,
+            "denial_risk_category": denial_risk_category,
             "days_to_payment": days_to_payment,
             "net_collection_rate": net_collection_rate,
             "appeal_date": appeal_date,
@@ -947,6 +987,518 @@ print(f"  Generated {len(care_gaps_df)} care gap records")
 # CELL **{"language":"python"}**
 
 # ============================================================================
+# PAYER DOMAIN REFERENCE DATA
+# ============================================================================
+# Plans (3-4 per payer), HCC risk codes, Star measures.
+
+# Plan products offered by each payer (membership rolls up to plan).
+PLAN_PRODUCTS_BY_PAYER_TYPE = {
+    "Commercial":           [("PPO Gold",     "Commercial", "PPO",     "Gold"),
+                              ("HMO Silver",   "Commercial", "HMO",     "Silver"),
+                              ("EPO Bronze",   "Commercial", "EPO",     "Bronze")],
+    "Government":           [("Original FFS", "Medicare",   "FFS",     "Standard")],
+    "Medicare Advantage":   [("MA HMO",       "Medicare",   "HMO",     "Standard"),
+                              ("MA PPO",       "Medicare",   "PPO",     "Standard"),
+                              ("MA D-SNP",     "Medicare",   "HMO",     "D-SNP")],
+    "Medicaid Managed Care":[("Medicaid HMO", "Medicaid",   "HMO",     "Standard"),
+                              ("CHIP",         "Medicaid",   "HMO",     "CHIP")],
+    "Self-Pay":             [("Self-Pay",     "Self-Pay",   "None",    "N/A")],
+    "Workers Comp":         [("WC Standard",  "WorkersComp","State",   "Standard")],
+}
+
+# HCC (Hierarchical Condition Categories) — CMS risk-adjustment codes mapped to ICD-10.
+# RAF weight is the CMS coefficient that contributes to a member's annual RAF score.
+HCC_CODES = [
+    {"hcc_code": "HCC18",  "hcc_description": "Diabetes with Chronic Complications",   "raf_weight": 0.302, "icd_match": ["E11.9"]},
+    {"hcc_code": "HCC19",  "hcc_description": "Diabetes without Complication",         "raf_weight": 0.105, "icd_match": ["E11.9"]},
+    {"hcc_code": "HCC85",  "hcc_description": "Congestive Heart Failure",              "raf_weight": 0.331, "icd_match": ["I50.9"]},
+    {"hcc_code": "HCC88",  "hcc_description": "Angina Pectoris",                       "raf_weight": 0.135, "icd_match": ["I25.10"]},
+    {"hcc_code": "HCC108", "hcc_description": "Vascular Disease",                      "raf_weight": 0.299, "icd_match": ["I25.10"]},
+    {"hcc_code": "HCC111", "hcc_description": "COPD",                                  "raf_weight": 0.328, "icd_match": ["J44.9"]},
+    {"hcc_code": "HCC136", "hcc_description": "Chronic Kidney Disease, Stage 3",       "raf_weight": 0.069, "icd_match": ["N18.3"]},
+    {"hcc_code": "HCC137", "hcc_description": "Chronic Kidney Disease, Severe (4-5)",  "raf_weight": 0.289, "icd_match": ["N18.3"]},
+    {"hcc_code": "HCC58",  "hcc_description": "Major Depressive, Bipolar Disorders",   "raf_weight": 0.346, "icd_match": ["F32.9"]},
+    {"hcc_code": "HCC114", "hcc_description": "Aspiration and Specified Pneumonias",   "raf_weight": 0.526, "icd_match": ["J18.9"]},
+]
+ICD_TO_HCC = {}
+for h in HCC_CODES:
+    for icd in h["icd_match"]:
+        ICD_TO_HCC.setdefault(icd, []).append(h)
+
+# CMS Star Rating measures (Medicare Advantage quality scoring).
+STAR_MEASURES = [
+    {"star_measure_id": "C01", "star_measure_name": "Breast Cancer Screening",                  "domain": "Staying Healthy",   "weight": 1},
+    {"star_measure_id": "C02", "star_measure_name": "Colorectal Cancer Screening",              "domain": "Staying Healthy",   "weight": 1},
+    {"star_measure_id": "C09", "star_measure_name": "Diabetes Care - Blood Sugar Controlled",   "domain": "Managing Chronic",  "weight": 3},
+    {"star_measure_id": "C10", "star_measure_name": "Controlling Blood Pressure",               "domain": "Managing Chronic",  "weight": 3},
+    {"star_measure_id": "C12", "star_measure_name": "Medication Adherence for Diabetes",        "domain": "Drug Safety",       "weight": 3},
+    {"star_measure_id": "C13", "star_measure_name": "Medication Adherence for Hypertension",    "domain": "Drug Safety",       "weight": 3},
+    {"star_measure_id": "C14", "star_measure_name": "Statin Use in Persons with Diabetes",      "domain": "Drug Safety",       "weight": 1},
+    {"star_measure_id": "C15", "star_measure_name": "Plan All-Cause Readmissions",              "domain": "Managing Chronic",  "weight": 3},
+]
+
+print(f"Plan-product templates: {sum(len(v) for v in PLAN_PRODUCTS_BY_PAYER_TYPE.values())}")
+print(f"HCC codes: {len(HCC_CODES)}, Star measures: {len(STAR_MEASURES)}")
+
+# METADATA **{"language":"python"}**
+
+# CELL **{"language":"python"}**
+
+# ============================================================================
+# GENERATE PLANS  (payer × product → plan_id)
+# ============================================================================
+
+def generate_plans():
+    plans = []
+    pidx = 1
+    for payer in PAYERS:
+        ptype = payer["payer_type"]
+        products = PLAN_PRODUCTS_BY_PAYER_TYPE.get(ptype, [("Standard", ptype, payer.get("plan_type", "FFS"), "Standard")])
+        for prod_name, line_of_business, plan_type, metal in products:
+            plans.append({
+                "plan_id":              f"PLN{pidx:05d}",
+                "payer_id":             payer["payer_id"],
+                "plan_name":            f"{payer['payer_name']} - {prod_name}",
+                "line_of_business":     line_of_business,
+                "plan_type":            plan_type,
+                "metal_tier":           metal,
+                "state":                payer["state"],
+                "network_size":         payer["network_size"],
+                "effective_date":       "2023-01-01",
+                "termination_date":     None,
+                "is_capitated":         line_of_business in ("Medicare", "Medicaid") and plan_type == "HMO",
+                "avg_pmpm_premium":     round(random.uniform(180, 1450), 2),
+            })
+            pidx += 1
+    return pd.DataFrame(plans)
+
+print("Generating plans...")
+plans_df = generate_plans()
+print(f"  Generated {len(plans_df)} plans across {len(PAYERS)} payers")
+
+# METADATA **{"language":"python"}**
+
+# CELL **{"language":"python"}**
+
+# ============================================================================
+# GENERATE MEMBER ENROLLMENT  (member_id == patient_id; one row per member-month)
+# ============================================================================
+# 24 months of enrollment ending at DATA_END_DATE. Each patient is enrolled in
+# 1-2 plans over the period (with possible mid-period switches). Coverage gaps
+# are rare (<5% of member-months).
+
+def _month_starts(start, end):
+    cur = datetime(start.year, start.month, 1)
+    end_m = datetime(end.year, end.month, 1)
+    out = []
+    while cur <= end_m:
+        out.append(cur)
+        # advance one month
+        if cur.month == 12:
+            cur = datetime(cur.year + 1, 1, 1)
+        else:
+            cur = datetime(cur.year, cur.month + 1, 1)
+    return out
+
+def generate_member_enrollment(patients_df, plans_df):
+    enrollment = []
+    enroll_window_months = 24
+    enroll_start = DATA_END_DATE - timedelta(days=enroll_window_months * 30)
+    months = _month_starts(enroll_start, DATA_END_DATE)
+    plans_list = plans_df.to_dict("records")
+
+    # Bias plan assignment: weight by payer to match historical claim mix
+    payer_weight = {p["payer_id"]: random.uniform(0.5, 3.0) for p in PAYERS}
+    plan_weights = [payer_weight[pl["payer_id"]] for pl in plans_list]
+
+    for _, pt in patients_df.iterrows():
+        pid = pt["patient_id"]
+        # Most members stay on one plan; ~25% switch plans once during window
+        switches = 1 if random.random() < 0.25 else 0
+        plan_a = random.choices(plans_list, weights=plan_weights, k=1)[0]
+        plan_b = random.choices(plans_list, weights=plan_weights, k=1)[0] if switches else plan_a
+        switch_month_idx = random.randint(6, 18) if switches else len(months)
+
+        for idx, m in enumerate(months):
+            # Random short coverage gap ~3% chance
+            if random.random() < 0.03:
+                continue
+            current_plan = plan_a if idx < switch_month_idx else plan_b
+            year_month = m.strftime("%Y-%m")
+            premium = round(current_plan["avg_pmpm_premium"] * random.uniform(0.92, 1.08), 2)
+            # Enrollment status
+            status = random.choices(["Active", "Active", "Active", "Suspended"], weights=[0.94, 0.02, 0.02, 0.02])[0]
+            enrollment.append({
+                "enrollment_id":   f"ENR{len(enrollment)+1:09d}",
+                "member_id":       pid,
+                "patient_id":      pid,
+                "plan_id":         current_plan["plan_id"],
+                "payer_id":        current_plan["payer_id"],
+                "year_month":      year_month,
+                "coverage_start":  m.strftime("%Y-%m-%d"),
+                "coverage_end":    (datetime(m.year + (1 if m.month == 12 else 0),
+                                              1 if m.month == 12 else m.month + 1, 1) - timedelta(days=1)).strftime("%Y-%m-%d"),
+                "enrollment_status": status,
+                "pmpm_premium":    premium,
+                "is_capitated":    current_plan["is_capitated"],
+            })
+    return pd.DataFrame(enrollment)
+
+print("Generating member enrollment...")
+member_enrollment_df = generate_member_enrollment(patients_df, plans_df)
+print(f"  Generated {len(member_enrollment_df):,} member-months for {member_enrollment_df['member_id'].nunique():,} members")
+
+# METADATA **{"language":"python"}**
+
+# CELL **{"language":"python"}**
+
+# ============================================================================
+# GENERATE PREMIUMS  (one row per member-month: revenue side of MLR)
+# ============================================================================
+
+def generate_premiums(member_enrollment_df):
+    rows = []
+    for _, e in member_enrollment_df.iterrows():
+        rows.append({
+            "premium_id":      f"PRM{len(rows)+1:09d}",
+            "member_id":       e["member_id"],
+            "plan_id":         e["plan_id"],
+            "payer_id":        e["payer_id"],
+            "year_month":      e["year_month"],
+            "premium_amount":  e["pmpm_premium"],
+            "subsidy_amount":  round(e["pmpm_premium"] * random.uniform(0, 0.40), 2),
+            "member_paid":     round(e["pmpm_premium"] * random.uniform(0.0, 0.60), 2),
+        })
+    return pd.DataFrame(rows)
+
+print("Generating premiums...")
+premiums_df = generate_premiums(member_enrollment_df)
+print(f"  Generated {len(premiums_df):,} premium records")
+
+# METADATA **{"language":"python"}**
+
+# CELL **{"language":"python"}**
+
+# ============================================================================
+# GENERATE PRIOR AUTHORIZATIONS  (~15% of inpatient/high-cost CPT claims)
+# ============================================================================
+
+PA_REQUIRED_CPTS = {"70553", "72148", "73721", "27447", "29827", "33533", "47562", "99291"}
+
+def generate_authorizations(claims_df):
+    rows = []
+    eligible = claims_df[
+        (claims_df["cpt_code"].isin(PA_REQUIRED_CPTS)) | (claims_df["claim_type"] == "Inpatient")
+    ]
+    # ~15% of those actually went through PA
+    sample = eligible.sample(frac=0.15, random_state=42) if len(eligible) > 0 else eligible
+
+    for _, c in sample.iterrows():
+        submit = datetime.strptime(c["service_date"], "%Y-%m-%d") - timedelta(days=random.randint(2, 14))
+        decision = submit + timedelta(hours=random.randint(2, 96))
+        tat_hours = round((decision - submit).total_seconds() / 3600.0, 1)
+        # Decision biased by denial_risk_score
+        risk = c.get("denial_risk_score", 0.2)
+        if risk >= 0.4:
+            outcome = random.choices(["Approved", "Denied", "Pending"], weights=[0.55, 0.40, 0.05])[0]
+        else:
+            outcome = random.choices(["Approved", "Denied", "Pending"], weights=[0.85, 0.10, 0.05])[0]
+        rows.append({
+            "auth_id":             f"AUTH{len(rows)+1:08d}",
+            "patient_id":          c["patient_id"],
+            "member_id":           c["patient_id"],
+            "provider_id":         c["provider_id"],
+            "payer_id":            c["payer_id"],
+            "claim_id":            c["claim_id"],
+            "cpt_code":            c["cpt_code"],
+            "primary_diagnosis_code": c["primary_diagnosis_code"],
+            "submit_date":         submit.strftime("%Y-%m-%d"),
+            "decision_date":       decision.strftime("%Y-%m-%d"),
+            "decision_tat_hours":  tat_hours,
+            "auth_outcome":        outcome,
+            "auth_units_requested": random.randint(1, 5),
+            "auth_units_approved": random.randint(1, 5) if outcome == "Approved" else 0,
+        })
+    return pd.DataFrame(rows)
+
+print("Generating prior authorizations...")
+authorizations_df = generate_authorizations(claims_df)
+print(f"  Generated {len(authorizations_df):,} prior authorization records")
+
+# METADATA **{"language":"python"}**
+
+# CELL **{"language":"python"}**
+
+# ============================================================================
+# GENERATE CAPITATION PAYMENTS  (only for capitated plans, monthly per provider-member)
+# ============================================================================
+
+def generate_capitation(member_enrollment_df, providers_df, plans_df):
+    rows = []
+    cap_enroll = member_enrollment_df[member_enrollment_df["is_capitated"] == True]
+    if len(cap_enroll) == 0:
+        return pd.DataFrame(rows)
+    # Each capitated member assigned to a PCP for the month
+    pcp_pool = providers_df["provider_id"].tolist()
+    plan_lookup = plans_df.set_index("plan_id").to_dict("index")
+
+    for _, e in cap_enroll.iterrows():
+        plan = plan_lookup.get(e["plan_id"], {})
+        # Capitation rate: $40-$180 PMPM depending on line of business
+        lob = plan.get("line_of_business", "Commercial")
+        base = {"Medicare": 145, "Medicaid": 85, "Commercial": 55}.get(lob, 60)
+        cap_pmpm = round(base * random.uniform(0.85, 1.20), 2)
+        rows.append({
+            "capitation_id":     f"CAP{len(rows)+1:09d}",
+            "member_id":         e["member_id"],
+            "provider_id":       random.choice(pcp_pool),
+            "payer_id":          e["payer_id"],
+            "plan_id":           e["plan_id"],
+            "year_month":        e["year_month"],
+            "capitation_pmpm":   cap_pmpm,
+            "withhold_pct":      round(random.uniform(0.0, 0.10), 3),
+            "bonus_eligible":    random.choices([True, False], weights=[0.30, 0.70])[0],
+        })
+    return pd.DataFrame(rows)
+
+print("Generating capitation payments...")
+capitation_df = generate_capitation(member_enrollment_df, providers_df, plans_df)
+print(f"  Generated {len(capitation_df):,} capitation records")
+
+# METADATA **{"language":"python"}**
+
+# CELL **{"language":"python"}**
+
+# ============================================================================
+# GENERATE PROVIDER CONTRACTS  (provider × payer pricing terms)
+# ============================================================================
+
+def generate_provider_contracts(providers_df, plans_df):
+    rows = []
+    payers = list({pl["payer_id"] for _, pl in plans_df.iterrows()})
+    for _, pr in providers_df.iterrows():
+        # Each provider contracted with 4-8 payers
+        contracted = random.sample(payers, k=min(len(payers), random.randint(4, 8)))
+        for payer_id in contracted:
+            contract_type = random.choices(
+                ["Fee-for-Service", "Capitated", "Value-Based", "Bundled"],
+                weights=[0.55, 0.15, 0.20, 0.10]
+            )[0]
+            rows.append({
+                "contract_id":       f"CTR{len(rows)+1:08d}",
+                "provider_id":       pr["provider_id"],
+                "payer_id":          payer_id,
+                "contract_type":     contract_type,
+                "effective_date":    "2023-01-01",
+                "termination_date":  None,
+                "fee_schedule_pct_medicare": round(random.uniform(0.85, 1.35), 3),
+                "withhold_pct":      round(random.uniform(0.0, 0.10), 3),
+                "quality_bonus_pct": round(random.uniform(0.0, 0.08), 3),
+                "is_in_network":     True,
+            })
+    return pd.DataFrame(rows)
+
+print("Generating provider contracts...")
+provider_contracts_df = generate_provider_contracts(providers_df, plans_df)
+print(f"  Generated {len(provider_contracts_df):,} provider-payer contracts")
+
+# METADATA **{"language":"python"}**
+
+# CELL **{"language":"python"}**
+
+# ============================================================================
+# GENERATE HEDIS COMPLIANCE  (denominator/numerator roll-up by measure × year × payer)
+# ============================================================================
+# care_gaps_df has per-patient gap_open status. Roll up to per-measure compliance.
+
+def generate_hedis_compliance(care_gaps_df, member_enrollment_df, plans_df):
+    rows = []
+    # Attach payer via member_enrollment (use most recent year_month per member)
+    member_payer = (member_enrollment_df.sort_values("year_month")
+                                          .drop_duplicates("member_id", keep="last")
+                                          [["member_id", "payer_id", "plan_id"]])
+    merged = care_gaps_df.merge(member_payer, left_on="patient_id", right_on="member_id", how="left")
+    measurement_year = DATA_END_DATE.year
+    grouped = merged.groupby(["payer_id", "plan_id", "measure_id", "measure_name"], dropna=False)
+    for (payer_id, plan_id, measure_id, measure_name), grp in grouped:
+        denom = len(grp)
+        if denom == 0:
+            continue
+        numer = int((grp["is_gap_open"] == False).sum())
+        rate = round(numer / denom, 4) if denom > 0 else 0.0
+        rows.append({
+            "compliance_id":         f"HEDIS{len(rows)+1:08d}",
+            "measurement_year":      measurement_year,
+            "payer_id":              payer_id,
+            "plan_id":               plan_id,
+            "measure_id":            measure_id,
+            "measure_name":          measure_name,
+            "denominator_eligible":  denom,
+            "numerator_met":         numer,
+            "compliance_rate":       rate,
+        })
+    return pd.DataFrame(rows)
+
+print("Generating HEDIS compliance roll-up...")
+hedis_compliance_df = generate_hedis_compliance(care_gaps_df, member_enrollment_df, plans_df)
+print(f"  Generated {len(hedis_compliance_df):,} HEDIS compliance records")
+
+# METADATA **{"language":"python"}**
+
+# CELL **{"language":"python"}**
+
+# ============================================================================
+# GENERATE STAR RATINGS  (per payer × measurement_year × star measure)
+# ============================================================================
+
+def generate_star_ratings():
+    rows = []
+    measurement_year = DATA_END_DATE.year
+    # Star Ratings only apply to Medicare Advantage and (some) Part D
+    eligible_payers = [p for p in PAYERS if p["payer_type"] in ("Medicare Advantage", "Government")]
+    for payer in eligible_payers:
+        for m in STAR_MEASURES:
+            score = round(random.uniform(2.5, 5.0) * 2) / 2  # half-star increments
+            rows.append({
+                "star_id":             f"STAR{len(rows)+1:06d}",
+                "payer_id":            payer["payer_id"],
+                "measurement_year":    measurement_year,
+                "star_measure_id":     m["star_measure_id"],
+                "star_measure_name":   m["star_measure_name"],
+                "domain":              m["domain"],
+                "weight":              m["weight"],
+                "star_score":          score,
+                "weighted_score":      round(score * m["weight"], 2),
+                "national_avg":        round(random.uniform(3.0, 4.2), 1),
+            })
+    return pd.DataFrame(rows)
+
+print("Generating Star Ratings...")
+star_ratings_df = generate_star_ratings()
+print(f"  Generated {len(star_ratings_df):,} Star Rating records")
+
+# METADATA **{"language":"python"}**
+
+# CELL **{"language":"python"}**
+
+# ============================================================================
+# GENERATE RISK ADJUSTMENT  (per member × measurement_year aggregated HCC + RAF)
+# ============================================================================
+
+def generate_risk_adjustment(patients_df, diagnoses_df, member_enrollment_df):
+    rows = []
+    measurement_year = DATA_END_DATE.year
+    # Map member → payer (from latest enrollment)
+    member_payer = (member_enrollment_df.sort_values("year_month")
+                                          .drop_duplicates("member_id", keep="last")
+                                          .set_index("member_id")
+                                          [["payer_id", "plan_id"]].to_dict("index"))
+    pt_dx = diagnoses_df.groupby("patient_id")["icd_code"].apply(set).to_dict()
+    pt_age = {p["patient_id"]: (datetime.now() - datetime.strptime(p["date_of_birth"], "%Y-%m-%d")).days // 365
+              for _, p in patients_df.iterrows()}
+    pt_gender = {p["patient_id"]: p["gender"] for _, p in patients_df.iterrows()}
+
+    for _, p in patients_df.iterrows():
+        pid = p["patient_id"]
+        if pid not in member_payer:
+            continue
+        dx_set = pt_dx.get(pid, set())
+        hcc_codes_hit = []
+        raf_score = 0.0
+        for h in HCC_CODES:
+            if dx_set.intersection(h["icd_match"]):
+                hcc_codes_hit.append(h["hcc_code"])
+                raf_score += h["raf_weight"]
+        # Demographic baseline: age + sex
+        age = pt_age.get(pid, 50)
+        demo = 0.30 if age < 65 else (0.45 + (age - 65) * 0.012)
+        if pt_gender.get(pid) == "F":
+            demo += 0.05
+        raf_score += demo
+        info = member_payer[pid]
+        rows.append({
+            "raf_id":             f"RAF{len(rows)+1:08d}",
+            "member_id":          pid,
+            "payer_id":           info["payer_id"],
+            "plan_id":            info["plan_id"],
+            "measurement_year":   measurement_year,
+            "hcc_count":          len(hcc_codes_hit),
+            "hcc_codes":          ",".join(sorted(hcc_codes_hit)) if hcc_codes_hit else None,
+            "demographic_score":  round(demo, 4),
+            "disease_score":      round(raf_score - demo, 4),
+            "raf_score":          round(raf_score, 4),
+        })
+    return pd.DataFrame(rows)
+
+print("Generating risk adjustment (RAF)...")
+risk_adjustment_df = generate_risk_adjustment(patients_df, diagnoses_df, member_enrollment_df)
+print(f"  Generated {len(risk_adjustment_df):,} member-year RAF records")
+
+# METADATA **{"language":"python"}**
+
+# CELL **{"language":"python"}**
+
+# ============================================================================
+# GENERATE CLAIM APPEALS  (~30% of denied claims appealed; multi-level workflow)
+# ============================================================================
+
+APPEAL_LEVELS = ["Internal-1", "Internal-2", "External-IRO"]
+
+def generate_claim_appeals(claims_df):
+    rows = []
+    denied = claims_df[claims_df["claim_status"] == "Denied"]
+    if len(denied) == 0:
+        return pd.DataFrame(rows)
+    # ~30% of denied claims get appealed
+    appealed = denied.sample(frac=0.30, random_state=7)
+
+    for _, c in appealed.iterrows():
+        # 1-3 levels per appeal
+        num_levels = random.choices([1, 2, 3], weights=[0.65, 0.25, 0.10])[0]
+        level_start = datetime.strptime(c["process_date"], "%Y-%m-%d") + timedelta(days=random.randint(3, 21))
+        for lvl in range(num_levels):
+            decision = level_start + timedelta(days=random.randint(15, 60))
+            outcome = random.choices(["Overturned", "Upheld", "Partial"],
+                                      weights=[0.30, 0.55, 0.15])[0]
+            recovered = 0.0
+            if outcome == "Overturned":
+                recovered = round(c["allowed_amount"] * random.uniform(0.80, 1.0), 2)
+            elif outcome == "Partial":
+                recovered = round(c["allowed_amount"] * random.uniform(0.30, 0.60), 2)
+            rows.append({
+                "appeal_id":               f"APL{len(rows)+1:08d}",
+                "claim_id":                c["claim_id"],
+                "patient_id":              c["patient_id"],
+                "payer_id":                c["payer_id"],
+                "appeal_level":            APPEAL_LEVELS[lvl],
+                "appeal_level_num":        lvl + 1,
+                "submit_date":             level_start.strftime("%Y-%m-%d"),
+                "decision_date":           decision.strftime("%Y-%m-%d"),
+                "appeal_outcome":          outcome,
+                "appeal_amount_recovered": recovered,
+                "appeal_reason":           random.choice([
+                                              "Medical necessity",
+                                              "Coding error",
+                                              "Missing documentation",
+                                              "Authorization on file",
+                                              "Coverage dispute",
+                                          ]),
+            })
+            # If overturned at this level, appeal stops
+            if outcome == "Overturned":
+                break
+            level_start = decision + timedelta(days=random.randint(7, 30))
+    return pd.DataFrame(rows)
+
+print("Generating claim appeals...")
+claim_appeals_df = generate_claim_appeals(claims_df)
+print(f"  Generated {len(claim_appeals_df):,} appeal records")
+
+# METADATA **{"language":"python"}**
+
+# CELL **{"language":"python"}**
+
+# ============================================================================
 # WRITE CSV FILES TO ONELAKE (lh_bronze_raw/Files/)
 # ============================================================================
 # Use absolute OneLake paths so this works both when run directly (with default
@@ -997,6 +1549,24 @@ write_csv_to_lakehouse(monitors_df, f"{FILES_BASE}/metadata/monitors.csv")
 write_csv_to_lakehouse(sdoh_df, f"{FILES_BASE}/metadata/sdoh_zipcode.csv")
 write_csv_to_lakehouse(pd.DataFrame(HEDIS_MEASURES), f"{FILES_BASE}/metadata/hedis_measures.csv")
 write_csv_to_lakehouse(care_gaps_df, f"{FILES_BASE}/care_gaps.csv")
+
+# --- Payer-domain transactional CSVs ---
+print("\nWriting payer-domain transactional CSVs...")
+write_csv_to_lakehouse(member_enrollment_df,  f"{FILES_BASE}/member_enrollment.csv")
+write_csv_to_lakehouse(premiums_df,           f"{FILES_BASE}/premiums.csv")
+write_csv_to_lakehouse(authorizations_df,     f"{FILES_BASE}/authorizations.csv")
+write_csv_to_lakehouse(capitation_df,         f"{FILES_BASE}/capitation.csv")
+write_csv_to_lakehouse(provider_contracts_df, f"{FILES_BASE}/provider_contracts.csv")
+write_csv_to_lakehouse(hedis_compliance_df,   f"{FILES_BASE}/hedis_compliance.csv")
+write_csv_to_lakehouse(star_ratings_df,       f"{FILES_BASE}/star_ratings.csv")
+write_csv_to_lakehouse(risk_adjustment_df,    f"{FILES_BASE}/risk_adjustment.csv")
+write_csv_to_lakehouse(claim_appeals_df,      f"{FILES_BASE}/claim_appeals.csv")
+
+# --- Payer-domain reference CSVs ---
+print("\nWriting payer-domain reference CSVs...")
+write_csv_to_lakehouse(plans_df,                  f"{FILES_BASE}/metadata/plans.csv")
+write_csv_to_lakehouse(pd.DataFrame(HCC_CODES),   f"{FILES_BASE}/metadata/hcc_codes.csv")
+write_csv_to_lakehouse(pd.DataFrame(STAR_MEASURES), f"{FILES_BASE}/metadata/star_measures.csv")
 
 print("\n✅ All data generated and written to lh_bronze_raw/Files/")
 
@@ -1058,5 +1628,17 @@ print(f"  Monitors:       {len(monitors_df):>10,}")
 print(f"  SDOH Zips:      {len(sdoh_df):>10,}")
 print(f"  HEDIS Measures: {len(HEDIS_MEASURES):>10,}")
 print(f"  Care Gaps:      {len(care_gaps_df):>10,}")
+print(f"  Plans:          {len(plans_df):>10,}")
+print(f"  Member-Months:  {len(member_enrollment_df):>10,}")
+print(f"  Premiums:       {len(premiums_df):>10,}")
+print(f"  Authorizations: {len(authorizations_df):>10,}")
+print(f"  Capitation:     {len(capitation_df):>10,}")
+print(f"  Prov Contracts: {len(provider_contracts_df):>10,}")
+print(f"  HEDIS Compl.:   {len(hedis_compliance_df):>10,}")
+print(f"  Star Ratings:   {len(star_ratings_df):>10,}")
+print(f"  RAF Records:    {len(risk_adjustment_df):>10,}")
+print(f"  Claim Appeals:  {len(claim_appeals_df):>10,}")
+print(f"  HCC Codes:      {len(HCC_CODES):>10,}")
+print(f"  Star Measures:  {len(STAR_MEASURES):>10,}")
 print(f"  Date Range:     {DATA_START_DATE.strftime('%Y-%m-%d')} → {DATA_END_DATE.strftime('%Y-%m-%d')}")
 print("=" * 60)

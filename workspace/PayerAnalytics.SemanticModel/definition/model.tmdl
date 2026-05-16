@@ -28,3 +28,14 @@ ref table agg_readmission_by_date
 ref table agg_revenue_by_drg
 ref table agg_days_in_ar
 ref table agg_appeal_outcomes
+ref table dim_plan
+ref table fact_premium
+ref table fact_authorization
+ref table fact_capitation
+ref table fact_appeal
+ref table bridge_provider_contract
+ref table agg_mlr_by_payer_month
+ref table agg_hedis_compliance
+ref table agg_star_rating
+ref table agg_star_rating_overall
+ref table agg_raf_score

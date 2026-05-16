@@ -1,11 +1,11 @@
-# Sample Questions — Healthcare Data Agents
+# Sample Questions â€” Healthcare Data Agents
 
 > **Phase 2:** persona-specific RTI questions (CMO / CFO / COO / CTO) live in
-> [`README.md` § Phase 2 — Persona Coverage](README.md#phase-2--persona-coverage-cmo--cfo--coo--cto)
+> [`README.md` Â§ Phase 2 â€” Persona Coverage](README.md#phase-2--persona-coverage-cmo--cfo--coo--cto)
 > and are answered by the new `*_Alerts` notebooks + the
 > [Tile Query Pack](rti_dashboard/TILE_QUERY_PACK.md).
 
-## Provider Agent — CMO Executive Summary (Phase 2)
+## Provider Agent â€” CMO Executive Summary (Phase 2)
 
 These questions exercise the new CMO fewshots added to **ProviderAgent**:
 
@@ -13,10 +13,10 @@ These questions exercise the new CMO fewshots added to **ProviderAgent**:
 |---|----------|
 | C1 | What should I be worried about today as CMO? |
 | C2 | CMO executive summary: what's our readmission rate this month vs the 15% benchmark and how many high-risk patients haven't been readmitted yet? |
-| C3 | What's driving readmissions — which chronic conditions? |
+| C3 | What's driving readmissions â€” which chronic conditions? |
 | C4 | Show me intervention candidates: high-risk readmission patients who are also medication non-adherent. |
 | C5 | How does SDOH risk tier affect our readmission rate? Are we delivering equitable care? |
-| C6 | Which providers should I peer-review this week — high denial rate or low documentation score? |
+| C6 | Which providers should I peer-review this week â€” high denial rate or low documentation score? |
 
 ---
 
@@ -30,8 +30,8 @@ Open **HealthcareHLSAgent** in your Fabric workspace. The Data Agent queries the
 | 1 | What is the overall claim denial rate and how does it break down by payer? |
 | 2 | What are the top 5 denial reasons by claim count and total billed amount? |
 | 3 | Which providers have the highest denial rates? Show the top 10 with their specialties. |
-| 4 | Show me all denied claims over $50,000 — include the patient, payer, denial reason, and billed amount. |
-| 5 | What is the total revenue at risk from claims flagged as high denial risk that haven’t been denied yet? |
+| 4 | Show me all denied claims over $50,000 â€” include the patient, payer, denial reason, and billed amount. |
+| 5 | What is the total revenue at risk from claims flagged as high denial risk that havenâ€™t been denied yet? |
 | 6 | Show me claims with high denial risk that are still pending. |
 | 7 | How many claims are in each denial risk category? |
 
@@ -74,10 +74,10 @@ Open **HealthcareHLSAgent** in your Fabric workspace. The Data Agent queries the
 ### Payer & Prescription Cost Analysis
 | # | Question |
 |---|----------|
-| 28 | Compare prescription costs by payer — which payer pays the most and which shifts the most cost to patients? |
+| 28 | Compare prescription costs by payer â€” which payer pays the most and which shifts the most cost to patients? |
 | 29 | What is the average patient copay by payer and drug class? |
 | 30 | Which payers bear the highest cost burden for chronic medications? |
-| 31 | Show me which providers prescribe the most to each payer — the provider-payer prescription network. |
+| 31 | Show me which providers prescribe the most to each payer â€” the provider-payer prescription network. |
 | 32 | Which payers have the lowest collection rate (paid vs billed)? Show the reimbursement gap. |
 
 ### Cross-Domain Analytics
@@ -87,74 +87,74 @@ Open **HealthcareHLSAgent** in your Fabric workspace. The Data Agent queries the
 | 34 | Show me denied claims with their primary diagnosis. |
 | 35 | Which encounters are linked to denied claims? |
 | 36 | For patients in high-poverty zip codes, how does denial rate compare to the overall population? |
-| 37 | Show me high-risk readmission patients who are also medication non-adherent — what payers cover them and what's the cost? |
+| 37 | Show me high-risk readmission patients who are also medication non-adherent â€” what payers cover them and what's the cost? |
 
 ---
 
 ## Graph Agent (Healthcare Ontology Agent)
 
-Open **Healthcare Ontology Agent** in your Fabric workspace. This agent navigates the Healthcare_Demo_Ontology_HLS graph — tracing relationships between providers, payers, claims, encounters, and patients. Unlike HealthcareHLSAgent (which does SQL aggregations), the Graph Agent excels at **entity profiles**, **relationship traversal**, and **network exploration**.
+Open **Healthcare Ontology Agent** in your Fabric workspace. This agent navigates the Healthcare_Demo_Ontology_HLS graph â€” tracing relationships between providers, payers, claims, encounters, and patients. Unlike HealthcareHLSAgent (which does SQL aggregations), the Graph Agent excels at **entity profiles**, **relationship traversal**, and **network exploration**.
 
 > **When to use which agent:**
-> - **HealthcareHLSAgent** → "How many?", "What rate?", "Top 10", "Monthly trend" (aggregations)
-> - **Healthcare Ontology Agent** → "Show me this provider's network", "Which payers denied these claims?", "Trace this claim end-to-end" (traversals)
+> - **HealthcareHLSAgent** â†’ "How many?", "What rate?", "Top 10", "Monthly trend" (aggregations)
+> - **Healthcare Ontology Agent** â†’ "Show me this provider's network", "Which payers denied these claims?", "Trace this claim end-to-end" (traversals)
 
 > **Performance tip:** For "full profile" questions (e.g., Q1 below), the agent runs **separate queries** per relationship type (encounters, claims, prescriptions) rather than one giant query. This avoids Cartesian products that would create millions of intermediate rows and hang. Always specify a provider_id, name, or specialty to help the agent filter early.
 
 ### Provider Operations & Network
 | # | Question |
 |---|----------|
-| 1 | Show me a full provider profile — patients treated, encounters, claims submitted, and prescriptions written. (You can specify a provider_id, name, or specialty — or let the agent pick one.) |
+| 1 | Show me a full provider profile â€” patients treated, encounters, claims submitted, and prescriptions written. (You can specify a provider_id, name, or specialty â€” or let the agent pick one.) |
 | 2 | Which providers have submitted claims that were denied? Show each provider with their denied claims, denial reasons, payers, and patients. |
-| 3 | Pick a provider and show me their patient panel — encounters, diagnoses, and outcomes for their patients. |
-| 4 | Show me prescribing patterns for providers in a given specialty — what medications, which patients, and which payers cover the prescriptions? (Try Cardiology, Internal Medicine, etc.) |
+| 3 | Pick a provider and show me their patient panel â€” encounters, diagnoses, and outcomes for their patients. |
+| 4 | Show me prescribing patterns for providers in a given specialty â€” what medications, which patients, and which payers cover the prescriptions? (Try Cardiology, Internal Medicine, etc.) |
 | 5 | Which providers treat patients with high readmission risk? Show the provider, their high-risk patients, and conditions. |
 | 6 | Which providers serve patients in socially vulnerable communities? Show the SDOH profile alongside provider details. |
 
 ### Payer Portfolio & Coverage
 | # | Question |
 |---|----------|
-| 7 | Show me all claims for a specific payer — which providers submitted them, which patients, and what were the outcomes? (Name any payer or let the agent list them.) |
+| 7 | Show me all claims for a specific payer â€” which providers submitted them, which patients, and what were the outcomes? (Name any payer or let the agent list them.) |
 | 8 | Which payers have the most denied claims? For each payer show the denials with provider, patient, encounter, and denial reason. |
 | 9 | What prescriptions does each payer cover? Show the medication, prescribing provider, and patient. |
-| 10 | Show me the provider network that bills a specific payer — which providers submit claims and for what encounter types? |
+| 10 | Show me the provider network that bills a specific payer â€” which providers submit claims and for what encounter types? |
 | 11 | Which payers cover patients in high SDOH risk areas? Show the payer, the patients, and their social risk factors. |
 
 ### Claims & Financial Investigation
 | # | Question |
 |---|----------|
-| 12 | Trace a claim end-to-end — from patient through encounter, provider, and payer. (Provide a claim_id or say "pick a denied claim".) |
-| 13 | Show me all denied claims with the complete story — which provider submitted, to which payer, for which patient, and why denied. |
+| 12 | Trace a claim end-to-end â€” from patient through encounter, provider, and payer. (Provide a claim_id or say "pick a denied claim".) |
+| 13 | Show me all denied claims with the complete story â€” which provider submitted, to which payer, for which patient, and why denied. |
 | 14 | What claims are linked to a specific encounter? Show the financial picture including payer and provider. |
-| 15 | Show me denied claims for high-risk readmission patients — which providers and payers are involved. |
-| 16 | Show me high-cost encounters — who was the provider, what diagnoses, what payer, and was the claim denied. |
+| 15 | Show me denied claims for high-risk readmission patients â€” which providers and payers are involved. |
+| 16 | Show me high-cost encounters â€” who was the provider, what diagnoses, what payer, and was the claim denied. |
 
 ### Provider-Payer Network Analysis
 | # | Question |
 |---|----------|
 | 17 | How are providers and payers connected through claims? Show me the provider-payer claims network. |
 | 18 | Which chronic medications are prescribed across the provider network and which payers reimburse them. |
-| 19 | Show me the relationship between claim denials and patient diagnoses — what conditions are associated with denied claims. |
-| 20 | Trace prescription costs by payer — which payers bear the highest prescription burden and for what drug classes. |
+| 19 | Show me the relationship between claim denials and patient diagnoses â€” what conditions are associated with denied claims. |
+| 20 | Trace prescription costs by payer â€” which payers bear the highest prescription burden and for what drug classes. |
 
 ### Clinical Operations & Interventions
 | # | Question |
 |---|----------|
-| 21 | Show me patients with poor medication adherence — who are their providers and which payers cover them? These are intervention opportunities. |
-| 22 | Show me which payers cover prescriptions for each drug class — break down total cost, payer-paid, and patient copay. |
-| 23 | Find our most vulnerable population — patients in high SDOH risk areas who are non-adherent with high readmission risk. Show providers and payers involved. |
+| 21 | Show me patients with poor medication adherence â€” who are their providers and which payers cover them? These are intervention opportunities. |
+| 22 | Show me which payers cover prescriptions for each drug class â€” break down total cost, payer-paid, and patient copay. |
+| 23 | Find our most vulnerable population â€” patients in high SDOH risk areas who are non-adherent with high readmission risk. Show providers and payers involved. |
 | 24 | What is the overall denial rate by payer or the average cost per provider across the network? |
 
 ### Prescription-Payer Relationship Traversal
 | # | Question |
 |---|----------|
-| 25 | For a specific patient, trace all their prescriptions — which provider prescribed each, which payer covers it, and what's the patient copay? |
+| 25 | For a specific patient, trace all their prescriptions â€” which provider prescribed each, which payer covers it, and what's the patient copay? |
 | 26 | Which payers cover the highest-cost specialty medications? Show the drug, prescribing provider, and payer for the top 20 most expensive prescriptions. |
-| 27 | Show me the full prescription lifecycle for a chronic medication — from prescribing provider to payer reimbursement to patient out-of-pocket cost. |
+| 27 | Show me the full prescription lifecycle for a chronic medication â€” from prescribing provider to payer reimbursement to patient out-of-pocket cost. |
 | 28 | Which providers prescribe the most non-generic medications and which payers are absorbing that cost? |
-| 29 | For patients in food desert zip codes, trace their prescriptions — are payers covering their chronic medications adequately or are copays high? |
+| 29 | For patients in food desert zip codes, trace their prescriptions â€” are payers covering their chronic medications adequately or are copays high? |
 
-> **Note:** Question 24 involves aggregation — the graph agent will explain that rates/rankings require HealthcareHLSAgent and offer to explore specific payers or providers instead. This demonstrates the agent's ability to redirect to the right tool.
+> **Note:** Question 24 involves aggregation â€” the graph agent will explain that rates/rankings require HealthcareHLSAgent and offer to explore specific payers or providers instead. This demonstrates the agent's ability to redirect to the right tool.
 
 ---
 
@@ -176,7 +176,7 @@ These questions work with the RTI scoring tables after running the Real-Time Int
 
 ## Operations Agent Questions (Planned)
 
-These questions are planned for the Operations Agent (Use Case 4 — architecture stub):
+These questions are planned for the Operations Agent (Use Case 4 â€” architecture stub):
 
 | # | Question |
 |---|----------|
@@ -236,3 +236,55 @@ If you've set up the optional **Foundry Orchestrator Agent** (see [FOUNDRY_IQ_SE
 | 18 | Which payers have the lowest reimbursement rates for our highest-volume CPT codes? What does the contract guide say about negotiation priorities? |
 | 19 | Do we have any network adequacy gaps based on CMS time/distance standards? Which specialties are underserved? |
 | 20 | Compare our collection rates against contracted rates by payer. Where are we seeing the most revenue leakage? |
+
+
+---
+
+## CFO / Payer Executive Questions (HealthcarePayerAgent)
+
+These questions target the **HealthcarePayerAgent** (see `data_agents/HealthcarePayerAgent/`)
+bound to the **PayerAnalytics** semantic model. They cover profitability, utilization,
+quality, and risk — the four levers a payer CFO and Chief Medical Officer track weekly.
+
+### Profitability & MLR
+| # | Question |
+|---|----------|
+| C1 | What is our medical loss ratio (MLR) by payer for the last 12 months? Which lines of business are over target? |
+| C2 | Show me PMPM premium and medical cost trend by month — are we seeing margin compression? |
+| C3 | Compare PMPM costs across our plan portfolio. Which plans are unprofitable after admin? |
+| C4 | What is our Admin Loss Ratio (Admin $ / Premium $) by payer this year vs last year? |
+
+### Utilization & Prior Authorization
+| # | Question |
+|---|----------|
+| C5 | Which providers have the highest prior authorization denial rates? Filter to ≥ 20 PAs. |
+| C6 | What is our average PA decision turnaround time? Which payers exceed 72 hours? |
+| C7 | How much are we paying in capitation by provider? Cross-reference against value-based contract flag. |
+| C8 | What is our PA approval rate trend by service category over the last 6 months? |
+
+### Recovery & Leakage
+| # | Question |
+|---|----------|
+| C9 | How much did we recover through claim appeals last quarter, by payer? |
+| C10 | What is our appeal win rate? Which denial reasons have the highest reversal rate (i.e., the original denial was wrong)? |
+| C11 | Show me net collection rate by payer — where is the most revenue leakage? |
+
+### Quality (HEDIS / Stars)
+| # | Question |
+|---|----------|
+| C12 | What is our HEDIS compliance % by measure for the current measurement year? Which measures are below 70%? |
+| C13 | Project our Star Rating for next year — which measures with weight ≥ 3 are dragging the weighted score down? |
+| C14 | Which providers have the largest HEDIS gap-closure opportunity for diabetes measures? |
+
+### Risk Adjustment
+| # | Question |
+|---|----------|
+| C15 | Top 20 members with the highest documented RAF — are they being actively managed? |
+| C16 | What is the average RAF by plan and line of business? Are MA plans appropriately documenting risk? |
+| C17 | Show me members with chronic ICD codes documented in claims but no RAF entry this year (RAF gap candidates). |
+
+### Contract & Network
+| # | Question |
+|---|----------|
+| C18 | Which provider contracts are up for renewal in the next 90 days, ranked by total spend? |
+| C19 | Compare value-based vs fee-for-service provider performance: cost PMPM, HEDIS, readmissions. |

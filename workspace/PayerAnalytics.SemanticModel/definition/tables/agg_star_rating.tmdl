@@ -1,0 +1,100 @@
+table agg_star_rating
+	lineageTag: c1220001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[agg_star_rating]
+
+	measure 'Avg Star Score' = AVERAGE(agg_star_rating[star_score])
+		formatString: 0.00
+		lineageTag: c1220001-0001-0001-0001-000000000011
+
+	measure 'Weighted Star Score' = DIVIDE(SUM(agg_star_rating[weighted_score]), SUM(agg_star_rating[weight]))
+		formatString: 0.00
+		lineageTag: c1220001-0001-0001-0001-000000000012
+
+	column star_id
+		dataType: string
+		lineageTag: c1220001-0001-0001-0001-000000000021
+		sourceLineageTag: star_id
+		summarizeBy: none
+		sourceColumn: star_id
+		annotation SummarizationSetBy = Automatic
+
+	column payer_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1220001-0001-0001-0001-000000000022
+		sourceLineageTag: payer_key
+		summarizeBy: none
+		sourceColumn: payer_key
+		annotation SummarizationSetBy = Automatic
+
+	column measurement_year
+		dataType: int64
+		formatString: 0
+		lineageTag: c1220001-0001-0001-0001-000000000023
+		sourceLineageTag: measurement_year
+		summarizeBy: none
+		sourceColumn: measurement_year
+		annotation SummarizationSetBy = Automatic
+
+	column star_measure_id
+		dataType: string
+		lineageTag: c1220001-0001-0001-0001-000000000024
+		sourceLineageTag: star_measure_id
+		summarizeBy: none
+		sourceColumn: star_measure_id
+		annotation SummarizationSetBy = Automatic
+
+	column star_measure_name
+		dataType: string
+		lineageTag: c1220001-0001-0001-0001-000000000025
+		sourceLineageTag: star_measure_name
+		summarizeBy: none
+		sourceColumn: star_measure_name
+		annotation SummarizationSetBy = Automatic
+
+	column domain
+		dataType: string
+		lineageTag: c1220001-0001-0001-0001-000000000026
+		sourceLineageTag: domain
+		summarizeBy: none
+		sourceColumn: domain
+		annotation SummarizationSetBy = Automatic
+
+	column weight
+		dataType: int64
+		formatString: 0
+		lineageTag: c1220001-0001-0001-0001-000000000027
+		sourceLineageTag: weight
+		summarizeBy: sum
+		sourceColumn: weight
+		annotation SummarizationSetBy = Automatic
+
+	column star_score
+		dataType: double
+		lineageTag: c1220001-0001-0001-0001-000000000028
+		sourceLineageTag: star_score
+		summarizeBy: average
+		sourceColumn: star_score
+		annotation SummarizationSetBy = Automatic
+
+	column weighted_score
+		dataType: double
+		lineageTag: c1220001-0001-0001-0001-000000000029
+		sourceLineageTag: weighted_score
+		summarizeBy: sum
+		sourceColumn: weighted_score
+		annotation SummarizationSetBy = Automatic
+
+	column national_avg
+		dataType: double
+		lineageTag: c1220001-0001-0001-0001-00000000002a
+		sourceLineageTag: national_avg
+		summarizeBy: average
+		sourceColumn: national_avg
+		annotation SummarizationSetBy = Automatic
+
+	partition agg_star_rating = entity
+		mode: directLake
+		source
+			entityName: agg_star_rating
+			expressionSource: 'DirectLake - lh_gold_curated'

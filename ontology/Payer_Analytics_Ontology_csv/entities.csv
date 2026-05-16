@@ -1,0 +1,10 @@
+entity_id,entity_name,display_name,description,gold_table,key_column,natural_key
+8000000014,Plan,Plan,"Health insurance plan offered by a payer (line of business + metal tier).",dim_plan,plan_key,plan_id
+8000000015,Premium,Premium,"Member-month premium revenue collected by the payer.",fact_premium,premium_id,premium_id
+8000000016,Authorization,PriorAuthorization,"Prior authorization request submitted by a provider for a member service.",fact_authorization,auth_id,auth_id
+8000000017,Capitation,CapitationPayment,"Per-member-per-month capitation payment from payer to provider.",fact_capitation,cap_id,cap_id
+8000000018,Appeal,ClaimAppeal,"Appeal filed against a denied or underpaid claim.",fact_appeal,appeal_id,appeal_id
+8000000019,ProviderContract,ProviderContract,"Contract between a provider and a payer (fee schedule, capitation, VBC).",bridge_provider_contract,contract_id,contract_id
+8000000020,HEDISCompliance,HEDISCompliance,"Per-member HEDIS quality measure compliance status.",agg_hedis_compliance,hedis_id,hedis_id
+8000000021,StarRating,StarRating,"CMS Star Rating measure score per payer-contract-year.",agg_star_rating,star_id,star_id
+8000000022,RiskAdjustment,RiskAdjustment,"Member-year risk adjustment factor (RAF) and HCC profile.",agg_raf_score,raf_id,raf_id

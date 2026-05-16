@@ -1,0 +1,160 @@
+table fact_authorization
+	lineageTag: c1110001-0001-0001-0001-000000000001
+	sourceLineageTag: [dbo].[fact_authorization]
+
+	measure 'Total Auths' = COUNTROWS(fact_authorization)
+		formatString: 0
+		lineageTag: c1110001-0001-0001-0001-000000000011
+
+	measure 'PA Approval Rate' =
+			VAR _approved = CALCULATE(COUNTROWS(fact_authorization), fact_authorization[auth_outcome] = "Approved")
+			VAR _decided = CALCULATE(COUNTROWS(fact_authorization), fact_authorization[auth_outcome] <> BLANK())
+			RETURN DIVIDE(_approved, _decided)
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: c1110001-0001-0001-0001-000000000012
+
+	measure 'PA Denial Rate' =
+			VAR _denied = CALCULATE(COUNTROWS(fact_authorization), fact_authorization[auth_outcome] = "Denied")
+			VAR _decided = CALCULATE(COUNTROWS(fact_authorization), fact_authorization[auth_outcome] <> BLANK())
+			RETURN DIVIDE(_denied, _decided)
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: c1110001-0001-0001-0001-000000000013
+
+	measure 'Avg Decision TAT (hrs)' = AVERAGE(fact_authorization[decision_tat_hours])
+		formatString: 0.0
+		lineageTag: c1110001-0001-0001-0001-000000000014
+
+	column auth_id
+		dataType: string
+		lineageTag: c1110001-0001-0001-0001-000000000021
+		sourceLineageTag: auth_id
+		summarizeBy: none
+		sourceColumn: auth_id
+		annotation SummarizationSetBy = Automatic
+
+	column auth_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1110001-0001-0001-0001-000000000022
+		sourceLineageTag: auth_key
+		summarizeBy: none
+		sourceColumn: auth_key
+		annotation SummarizationSetBy = Automatic
+
+	column submit_date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1110001-0001-0001-0001-000000000023
+		sourceLineageTag: submit_date_key
+		summarizeBy: none
+		sourceColumn: submit_date_key
+		annotation SummarizationSetBy = Automatic
+
+	column decision_date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1110001-0001-0001-0001-000000000024
+		sourceLineageTag: decision_date_key
+		summarizeBy: none
+		sourceColumn: decision_date_key
+		annotation SummarizationSetBy = Automatic
+
+	column member_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1110001-0001-0001-0001-000000000025
+		sourceLineageTag: member_key
+		summarizeBy: none
+		sourceColumn: member_key
+		annotation SummarizationSetBy = Automatic
+
+	column provider_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1110001-0001-0001-0001-000000000026
+		sourceLineageTag: provider_key
+		summarizeBy: none
+		sourceColumn: provider_key
+		annotation SummarizationSetBy = Automatic
+
+	column payer_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c1110001-0001-0001-0001-000000000027
+		sourceLineageTag: payer_key
+		summarizeBy: none
+		sourceColumn: payer_key
+		annotation SummarizationSetBy = Automatic
+
+	column claim_id
+		dataType: string
+		lineageTag: c1110001-0001-0001-0001-000000000028
+		sourceLineageTag: claim_id
+		summarizeBy: none
+		sourceColumn: claim_id
+		annotation SummarizationSetBy = Automatic
+
+	column cpt_code
+		dataType: string
+		lineageTag: c1110001-0001-0001-0001-000000000029
+		sourceLineageTag: cpt_code
+		summarizeBy: none
+		sourceColumn: cpt_code
+		annotation SummarizationSetBy = Automatic
+
+	column primary_diagnosis_code
+		dataType: string
+		lineageTag: c1110001-0001-0001-0001-00000000002a
+		sourceLineageTag: primary_diagnosis_code
+		summarizeBy: none
+		sourceColumn: primary_diagnosis_code
+		annotation SummarizationSetBy = Automatic
+
+	column auth_outcome
+		dataType: string
+		lineageTag: c1110001-0001-0001-0001-00000000002b
+		sourceLineageTag: auth_outcome
+		summarizeBy: none
+		sourceColumn: auth_outcome
+		annotation SummarizationSetBy = Automatic
+
+	column decision_tat_hours
+		dataType: double
+		lineageTag: c1110001-0001-0001-0001-00000000002c
+		sourceLineageTag: decision_tat_hours
+		summarizeBy: average
+		sourceColumn: decision_tat_hours
+		annotation SummarizationSetBy = Automatic
+
+	column auth_units_requested
+		dataType: int64
+		formatString: 0
+		lineageTag: c1110001-0001-0001-0001-00000000002d
+		sourceLineageTag: auth_units_requested
+		summarizeBy: sum
+		sourceColumn: auth_units_requested
+		annotation SummarizationSetBy = Automatic
+
+	column auth_units_approved
+		dataType: int64
+		formatString: 0
+		lineageTag: c1110001-0001-0001-0001-00000000002e
+		sourceLineageTag: auth_units_approved
+		summarizeBy: sum
+		sourceColumn: auth_units_approved
+		annotation SummarizationSetBy = Automatic
+
+	column _load_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c1110001-0001-0001-0001-00000000002f
+		sourceLineageTag: _load_timestamp
+		summarizeBy: none
+		sourceColumn: _load_timestamp
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_authorization = entity
+		mode: directLake
+		source
+			entityName: fact_authorization
+			expressionSource: 'DirectLake - lh_gold_curated'

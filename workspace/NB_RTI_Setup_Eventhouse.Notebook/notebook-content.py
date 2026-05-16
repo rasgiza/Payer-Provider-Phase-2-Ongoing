@@ -10,7 +10,7 @@
 # (via `fabric-launcher` or `fabric-cicd`). This notebook performs post-deploy wiring:
 # 
 # 1. **Discover** Eventhouse + KQL Database by display name (zero hardcoded IDs)
-# 2. **Execute** schema -- creates 6 tables + streaming ingestion policies + JSON mappings
+# 2. **Execute** schema -- creates 7 tables + streaming ingestion policies + JSON mappings
 # 3. **Discover** Kusto ingestion URI for downstream notebooks
 # 
 # > **Why direct Kusto ingestion?** This demo deploys everything programmatically
@@ -212,19 +212,25 @@ KQL_COMMANDS = [
         quantity: long, days_supply: long,
         latitude: real, longitude: real,
         injected_fraud_flags: string,
-        has_open_care_gaps: bool, open_gap_measures: string
+        has_open_care_gaps: bool, open_gap_measures: string,
+        current_encounter_id: string, prior_discharge_date: string,
+        days_since_discharge: long, current_diagnosis: string,
+        prior_diagnosis: string, readmission_risk_score: real, drg_code: string
     )""",
     # DEFENSIVE: If .create-merge failed due to any residual type conflict,
     # this .alter-merge adds ONLY the string/real/bool columns that Eventstream
-    # definitely didn't create (claims/ADT-specific columns). These types
-    # cannot conflict because these columns won't exist yet.
+    # definitely didn't create (claims/ADT/readmission-specific columns). These
+    # types cannot conflict because these columns won't exist yet.
     """.alter-merge table rti_all_events (
         claim_id: string, facility_id: string, facility_name: string,
         payer_id: string, diagnosis_code: string, procedure_code: string,
         claim_type: string, claim_amount: real,
         admission_type: string, primary_diagnosis: string,
         has_open_care_gaps: bool, open_gap_measures: string,
-        injected_fraud_flags: string, _table: string
+        injected_fraud_flags: string, _table: string,
+        current_encounter_id: string, prior_discharge_date: string,
+        current_diagnosis: string, prior_diagnosis: string,
+        readmission_risk_score: real, drg_code: string
     )""",
     # --- INPUT TABLES ---
     """.create-merge table claims_events (
@@ -266,7 +272,19 @@ KQL_COMMANDS = [
         readmission_flag: bool, risk_tier: string, cost_trend: string,
         latitude: real, longitude: real
     )""",
-    # --- STREAMING INGESTION POLICIES (landing + 6 typed tables) ---
+    # Readmission events — emitted directly by NB_RTI_Event_Simulator with
+    # pre-computed readmission_risk_score (0-100). No separate scoring
+    # notebook needed; the source IS the score (mirrors how production
+    # EHR ADT feeds would arrive with risk already computed upstream).
+    """.create-merge table readmission_events (
+        event_id: string, event_timestamp: datetime, event_type: string,
+        patient_id: string, provider_id: string, facility_id: string,
+        current_encounter_id: string, prior_discharge_date: datetime,
+        days_since_discharge: int, current_diagnosis: string,
+        prior_diagnosis: string, readmission_risk_score: real,
+        drg_code: string, latitude: real, longitude: real
+    )""",
+    # --- STREAMING INGESTION POLICIES (landing + 7 typed tables) ---
     ".alter table rti_all_events policy streamingingestion enable",
     ".alter table claims_events policy streamingingestion enable",
     ".alter table adt_events policy streamingingestion enable",
@@ -274,6 +292,7 @@ KQL_COMMANDS = [
     ".alter table fraud_scores policy streamingingestion enable",
     ".alter table care_gap_alerts policy streamingingestion enable",
     ".alter table highcost_alerts policy streamingingestion enable",
+    ".alter table readmission_events policy streamingingestion enable",
     # --- UPDATE POLICIES (auto-route from rti_all_events → typed tables) ---
     # These server-side policies fire on every ingestion batch into rti_all_events,
     # extracting rows by _table field and appending them to the target tables.
@@ -328,9 +347,27 @@ KQL_COMMANDS = [
                   days_supply = toint(coalesce(days_supply, 0)),
                   latitude, longitude
     }""",
+    """.create-or-alter function ExtractReadmissionEvents() {
+        rti_all_events
+        | where _table == "readmission_events"
+        | project event_id,
+                  event_timestamp = todatetime(event_timestamp),
+                  event_type, patient_id,
+                  provider_id = coalesce(provider_id, ""),
+                  facility_id = coalesce(facility_id, ""),
+                  current_encounter_id = coalesce(current_encounter_id, ""),
+                  prior_discharge_date = todatetime(prior_discharge_date),
+                  days_since_discharge = toint(coalesce(days_since_discharge, 0)),
+                  current_diagnosis = coalesce(current_diagnosis, ""),
+                  prior_diagnosis = coalesce(prior_diagnosis, ""),
+                  readmission_risk_score = coalesce(readmission_risk_score, 0.0),
+                  drg_code = coalesce(drg_code, ""),
+                  latitude, longitude
+    }""",
     ".alter table claims_events policy update @'[{\"IsEnabled\": true, \"Source\": \"rti_all_events\", \"Query\": \"ExtractClaimsEvents()\", \"IsTransactional\": false, \"PropagateIngestionProperties\": true}]'",
     ".alter table adt_events policy update @'[{\"IsEnabled\": true, \"Source\": \"rti_all_events\", \"Query\": \"ExtractAdtEvents()\", \"IsTransactional\": false, \"PropagateIngestionProperties\": true}]'",
     ".alter table rx_events policy update @'[{\"IsEnabled\": true, \"Source\": \"rti_all_events\", \"Query\": \"ExtractRxEvents()\", \"IsTransactional\": false, \"PropagateIngestionProperties\": true}]'",
+    ".alter table readmission_events policy update @'[{\"IsEnabled\": true, \"Source\": \"rti_all_events\", \"Query\": \"ExtractReadmissionEvents()\", \"IsTransactional\": false, \"PropagateIngestionProperties\": true}]'",
     # --- ONELAKE MIRRORING POLICIES (5-minute flush for demos) ---
     # OneLake Availability must be enabled on the KQL DB first (portal toggle).
     # These policies set the delta-table flush to 5 minutes instead of the
@@ -338,9 +375,10 @@ KQL_COMMANDS = [
     ".alter-merge table claims_events policy mirroring dataformat=parquet with (IsEnabled=true, TargetLatencyInMinutes=5)",
     ".alter-merge table adt_events policy mirroring dataformat=parquet with (IsEnabled=true, TargetLatencyInMinutes=5)",
     ".alter-merge table rx_events policy mirroring dataformat=parquet with (IsEnabled=true, TargetLatencyInMinutes=5)",
+    ".alter-merge table readmission_events policy mirroring dataformat=parquet with (IsEnabled=true, TargetLatencyInMinutes=5)",
     # --- JSON INGESTION MAPPINGS ---
     """.create-or-alter table rti_all_events ingestion json mapping 'rti_all_events_mapping'
-    '[{"column":"event_id","path":"$.event_id","datatype":"string"},{"column":"event_timestamp","path":"$.event_timestamp","datatype":"string"},{"column":"event_type","path":"$.event_type","datatype":"string"},{"column":"_table","path":"$._table","datatype":"string"},{"column":"claim_id","path":"$.claim_id","datatype":"string"},{"column":"patient_id","path":"$.patient_id","datatype":"string"},{"column":"provider_id","path":"$.provider_id","datatype":"string"},{"column":"facility_id","path":"$.facility_id","datatype":"string"},{"column":"facility_name","path":"$.facility_name","datatype":"string"},{"column":"payer_id","path":"$.payer_id","datatype":"string"},{"column":"diagnosis_code","path":"$.diagnosis_code","datatype":"string"},{"column":"procedure_code","path":"$.procedure_code","datatype":"string"},{"column":"claim_type","path":"$.claim_type","datatype":"string"},{"column":"claim_amount","path":"$.claim_amount","datatype":"real"},{"column":"admission_type","path":"$.admission_type","datatype":"string"},{"column":"primary_diagnosis","path":"$.primary_diagnosis","datatype":"string"},{"column":"medication_code","path":"$.medication_code","datatype":"string"},{"column":"medication_name","path":"$.medication_name","datatype":"string"},{"column":"drug_class","path":"$.drug_class","datatype":"string"},{"column":"quantity","path":"$.quantity","datatype":"long"},{"column":"days_supply","path":"$.days_supply","datatype":"long"},{"column":"latitude","path":"$.latitude","datatype":"real"},{"column":"longitude","path":"$.longitude","datatype":"real"},{"column":"injected_fraud_flags","path":"$.injected_fraud_flags","datatype":"string"},{"column":"has_open_care_gaps","path":"$.has_open_care_gaps","datatype":"bool"},{"column":"open_gap_measures","path":"$.open_gap_measures","datatype":"string"}]'""",
+    '[{"column":"event_id","path":"$.event_id","datatype":"string"},{"column":"event_timestamp","path":"$.event_timestamp","datatype":"string"},{"column":"event_type","path":"$.event_type","datatype":"string"},{"column":"_table","path":"$._table","datatype":"string"},{"column":"claim_id","path":"$.claim_id","datatype":"string"},{"column":"patient_id","path":"$.patient_id","datatype":"string"},{"column":"provider_id","path":"$.provider_id","datatype":"string"},{"column":"facility_id","path":"$.facility_id","datatype":"string"},{"column":"facility_name","path":"$.facility_name","datatype":"string"},{"column":"payer_id","path":"$.payer_id","datatype":"string"},{"column":"diagnosis_code","path":"$.diagnosis_code","datatype":"string"},{"column":"procedure_code","path":"$.procedure_code","datatype":"string"},{"column":"claim_type","path":"$.claim_type","datatype":"string"},{"column":"claim_amount","path":"$.claim_amount","datatype":"real"},{"column":"admission_type","path":"$.admission_type","datatype":"string"},{"column":"primary_diagnosis","path":"$.primary_diagnosis","datatype":"string"},{"column":"medication_code","path":"$.medication_code","datatype":"string"},{"column":"medication_name","path":"$.medication_name","datatype":"string"},{"column":"drug_class","path":"$.drug_class","datatype":"string"},{"column":"quantity","path":"$.quantity","datatype":"long"},{"column":"days_supply","path":"$.days_supply","datatype":"long"},{"column":"latitude","path":"$.latitude","datatype":"real"},{"column":"longitude","path":"$.longitude","datatype":"real"},{"column":"injected_fraud_flags","path":"$.injected_fraud_flags","datatype":"string"},{"column":"has_open_care_gaps","path":"$.has_open_care_gaps","datatype":"bool"},{"column":"open_gap_measures","path":"$.open_gap_measures","datatype":"string"},{"column":"current_encounter_id","path":"$.current_encounter_id","datatype":"string"},{"column":"prior_discharge_date","path":"$.prior_discharge_date","datatype":"string"},{"column":"days_since_discharge","path":"$.days_since_discharge","datatype":"long"},{"column":"current_diagnosis","path":"$.current_diagnosis","datatype":"string"},{"column":"prior_diagnosis","path":"$.prior_diagnosis","datatype":"string"},{"column":"readmission_risk_score","path":"$.readmission_risk_score","datatype":"real"},{"column":"drg_code","path":"$.drg_code","datatype":"string"}]'""",
     """.create-or-alter table claims_events ingestion json mapping 'claims_events_mapping'
     '[{"column":"event_id","path":"$.event_id","datatype":"string"},{"column":"event_timestamp","path":"$.event_timestamp","datatype":"datetime"},{"column":"event_type","path":"$.event_type","datatype":"string"},{"column":"claim_id","path":"$.claim_id","datatype":"string"},{"column":"patient_id","path":"$.patient_id","datatype":"string"},{"column":"provider_id","path":"$.provider_id","datatype":"string"},{"column":"facility_id","path":"$.facility_id","datatype":"string"},{"column":"payer_id","path":"$.payer_id","datatype":"string"},{"column":"diagnosis_code","path":"$.diagnosis_code","datatype":"string"},{"column":"procedure_code","path":"$.procedure_code","datatype":"string"},{"column":"claim_type","path":"$.claim_type","datatype":"string"},{"column":"claim_amount","path":"$.claim_amount","datatype":"real"},{"column":"latitude","path":"$.latitude","datatype":"real"},{"column":"longitude","path":"$.longitude","datatype":"real"},{"column":"injected_fraud_flags","path":"$.injected_fraud_flags","datatype":"string"}]'""",
     """.create-or-alter table adt_events ingestion json mapping 'adt_events_mapping'
@@ -353,6 +391,8 @@ KQL_COMMANDS = [
     '[{"column":"alert_id","path":"$.alert_id","datatype":"string"},{"column":"alert_timestamp","path":"$.alert_timestamp","datatype":"datetime"},{"column":"patient_id","path":"$.patient_id","datatype":"string"},{"column":"facility_id","path":"$.facility_id","datatype":"string"},{"column":"facility_name","path":"$.facility_name","datatype":"string"},{"column":"measure_id","path":"$.measure_id","datatype":"string"},{"column":"measure_name","path":"$.measure_name","datatype":"string"},{"column":"gap_days_overdue","path":"$.gap_days_overdue","datatype":"int"},{"column":"alert_priority","path":"$.alert_priority","datatype":"string"},{"column":"alert_text","path":"$.alert_text","datatype":"string"},{"column":"latitude","path":"$.latitude","datatype":"real"},{"column":"longitude","path":"$.longitude","datatype":"real"}]'""",
     """.create-or-alter table highcost_alerts ingestion json mapping 'highcost_alerts_mapping'
     '[{"column":"alert_id","path":"$.alert_id","datatype":"string"},{"column":"alert_timestamp","path":"$.alert_timestamp","datatype":"datetime"},{"column":"patient_id","path":"$.patient_id","datatype":"string"},{"column":"rolling_spend_30d","path":"$.rolling_spend_30d","datatype":"real"},{"column":"rolling_spend_90d","path":"$.rolling_spend_90d","datatype":"real"},{"column":"ed_visits_30d","path":"$.ed_visits_30d","datatype":"int"},{"column":"readmission_flag","path":"$.readmission_flag","datatype":"bool"},{"column":"risk_tier","path":"$.risk_tier","datatype":"string"},{"column":"cost_trend","path":"$.cost_trend","datatype":"string"},{"column":"latitude","path":"$.latitude","datatype":"real"},{"column":"longitude","path":"$.longitude","datatype":"real"}]'""",
+    """.create-or-alter table readmission_events ingestion json mapping 'readmission_events_mapping'
+    '[{"column":"event_id","path":"$.event_id","datatype":"string"},{"column":"event_timestamp","path":"$.event_timestamp","datatype":"datetime"},{"column":"event_type","path":"$.event_type","datatype":"string"},{"column":"patient_id","path":"$.patient_id","datatype":"string"},{"column":"provider_id","path":"$.provider_id","datatype":"string"},{"column":"facility_id","path":"$.facility_id","datatype":"string"},{"column":"current_encounter_id","path":"$.current_encounter_id","datatype":"string"},{"column":"prior_discharge_date","path":"$.prior_discharge_date","datatype":"datetime"},{"column":"days_since_discharge","path":"$.days_since_discharge","datatype":"int"},{"column":"current_diagnosis","path":"$.current_diagnosis","datatype":"string"},{"column":"prior_diagnosis","path":"$.prior_diagnosis","datatype":"string"},{"column":"readmission_risk_score","path":"$.readmission_risk_score","datatype":"real"},{"column":"drg_code","path":"$.drg_code","datatype":"string"},{"column":"latitude","path":"$.latitude","datatype":"real"},{"column":"longitude","path":"$.longitude","datatype":"real"}]'""",
 
     # ========================================================================
     # PROVIDER + PAYER RTI EXTENSION (5 new typed event tables + alert outputs)
@@ -915,6 +955,180 @@ KQL_COMMANDS = [
           "model_drift_psi",         "MODEL_DRIFT",             "CTO", 0.1,  0.25, "psi",     true, datetime(2026-01-01), "ml-platform"
         ]
     """,
+
+    # ========================================================================
+    # DEMO VIEWS — unified alert shape, cross-stream worst-patient, provider
+    # scorecard, and MTTD/MTTR. Consumed by dashboard tiles + Operations Agent
+    # + the lightweight frontend. All are idempotent KQL functions.
+    # ========================================================================
+    """.create-or-alter function with (folder='views', docstring='Unified shape across all alert streams (fraud, care gap, high-cost, readmission, clinical deterioration). 7-day lookback baked in.') vw_all_alerts() {
+        let fraud = fraud_scores
+            | where score_timestamp >= ago(7d) and fraud_score >= 50
+            | project alert_id = score_id, alert_timestamp = score_timestamp,
+                      source_table = 'fraud_scores', alert_type = 'FRAUD',
+                      patient_id, provider_id, facility_id,
+                      severity = risk_tier, score = fraud_score,
+                      alert_text = strcat('Fraud ', tostring(toint(fraud_score)), '/100 flags=', fraud_flags);
+        let cgap = care_gap_alerts
+            | where alert_timestamp >= ago(7d) and gap_days_overdue > 90
+            | project alert_id, alert_timestamp,
+                      source_table = 'care_gap_alerts', alert_type = 'CARE_GAP',
+                      patient_id, provider_id = '', facility_id,
+                      severity = alert_priority, score = todouble(gap_days_overdue),
+                      alert_text;
+        let hcost = highcost_alerts
+            | where alert_timestamp >= ago(7d)
+            | project alert_id, alert_timestamp,
+                      source_table = 'highcost_alerts', alert_type = 'HIGH_COST',
+                      patient_id, provider_id = '', facility_id = '',
+                      severity = risk_tier, score = rolling_spend_30d,
+                      alert_text = strcat('Spend30d $', tostring(toint(rolling_spend_30d)), ' ED=', tostring(ed_visits_30d));
+        let readm = readmission_events
+            | where event_timestamp >= ago(7d) and (readmission_risk_score >= 70 or (days_since_discharge <= 7 and readmission_risk_score >= 50))
+            | project alert_id = event_id, alert_timestamp = event_timestamp,
+                      source_table = 'readmission_events', alert_type = 'READMISSION',
+                      patient_id, provider_id, facility_id,
+                      severity = case(readmission_risk_score >= 80, 'CRITICAL', readmission_risk_score >= 70, 'HIGH', 'MEDIUM'),
+                      score = readmission_risk_score,
+                      alert_text = strcat('Readmit ', tostring(days_since_discharge), 'd DRG=', drg_code, ' risk=', tostring(toint(readmission_risk_score)));
+        let clin = clinical_deterioration_events
+            | where event_timestamp >= ago(7d) and news2_score >= 5
+            | project alert_id = event_id, alert_timestamp = event_timestamp,
+                      source_table = 'clinical_deterioration_events', alert_type = 'DETERIORATION',
+                      patient_id, provider_id = '', facility_id,
+                      severity = case(news2_score >= 7, 'CRITICAL', 'HIGH'),
+                      score = news2_score,
+                      alert_text = strcat(deterioration_type, ' NEWS2=', tostring(news2_score), ' ward=', ward);
+        union fraud, cgap, hcost, readm, clin
+    }""",
+    """.create-or-alter function with (folder='views', docstring='Cross-stream worst-patient ranking: members appearing in >=2 alert streams in the lookback window. Default 24h. This is the killer provider triage view.') vw_cross_stream_patients(lookback:timespan=24h) {
+        vw_all_alerts()
+        | where alert_timestamp >= ago(lookback)
+        | summarize stream_count = dcount(source_table),
+                    streams = strcat_array(make_set(source_table), ', '),
+                    total_alerts = count(),
+                    max_score = max(score),
+                    last_alert = max(alert_timestamp),
+                    sample_text = take_any(alert_text)
+          by patient_id
+        | where stream_count >= 2
+        | extend severity_rank = case(stream_count >= 3, 'CRITICAL', 'HIGH')
+        | order by stream_count desc, max_score desc, last_alert desc
+    }""",
+    """.create-or-alter function with (folder='views', docstring='Provider scorecard: fraud p95, denial rate, readmit count over the lookback window. Composite_risk ranks the CMO coaching list. Default 7d.') vw_provider_scorecard(lookback:timespan=7d) {
+        let provider_ids = union
+            (fraud_scores | where score_timestamp >= ago(lookback) and isnotempty(provider_id) | distinct provider_id),
+            (denial_adjudication_events | where event_timestamp >= ago(lookback) and isnotempty(provider_id) | distinct provider_id),
+            (readmission_events | where event_timestamp >= ago(lookback) and isnotempty(provider_id) | distinct provider_id)
+            | distinct provider_id;
+        let fraud_agg = fraud_scores
+            | where score_timestamp >= ago(lookback) and isnotempty(provider_id)
+            | summarize fraud_score_p95 = round(percentile(fraud_score, 95), 1),
+                        fraud_alerts = countif(fraud_score >= 50)
+              by provider_id;
+        let denial_agg = denial_adjudication_events
+            | where event_timestamp >= ago(lookback) and isnotempty(provider_id)
+            | summarize total_claims = count(),
+                        denied_claims = countif(adjudication_result == 'DENIED')
+              by provider_id
+            | extend denial_rate_pct = round(100.0 * denied_claims / total_claims, 1);
+        let readm_agg = readmission_events
+            | where event_timestamp >= ago(lookback) and isnotempty(provider_id)
+            | summarize readmit_count = count() by provider_id;
+        provider_ids
+        | join kind=leftouter fraud_agg on provider_id
+        | join kind=leftouter denial_agg on provider_id
+        | join kind=leftouter readm_agg on provider_id
+        | project provider_id,
+                  fraud_score_p95 = coalesce(fraud_score_p95, 0.0),
+                  fraud_alerts = coalesce(fraud_alerts, toint(0)),
+                  total_claims = coalesce(total_claims, toint(0)),
+                  denied_claims = coalesce(denied_claims, toint(0)),
+                  denial_rate_pct = coalesce(denial_rate_pct, 0.0),
+                  readmit_count = coalesce(readmit_count, toint(0))
+        | extend composite_risk = round((fraud_score_p95 * 0.4) + (denial_rate_pct * 2.0) + (toreal(readmit_count) * 5.0), 1)
+        | order by composite_risk desc
+    }""",
+    """.create-or-alter function with (folder='views', docstring='MTTD + MTTR per alert. Joins unified alerts to alert_closure_events. status=OPEN means no Power Automate Acknowledge click yet.') vw_alert_mttr(lookback:timespan=7d) {
+        vw_all_alerts()
+        | where alert_timestamp >= ago(lookback)
+        | join kind=leftouter alert_closure_events on alert_id
+        | project alert_id, alert_timestamp, source_table, alert_type, patient_id,
+                  severity, score, alert_text,
+                  closure_timestamp, resolved_by, action_taken,
+                  mttr_seconds = case(isnotnull(closure_timestamp),
+                                      toint(datetime_diff('second', closure_timestamp, alert_timestamp)),
+                                      toint(0)),
+                  status = case(isnotnull(closure_timestamp), 'CLOSED', 'OPEN')
+    }""",
+    """.create-or-alter function with (folder='views', docstring='Seeded demo scenarios status. Filters by injected_fraud_flags startswith SEED: to surface the four named scenarios for presenter cues.') vw_seeded_scenarios(lookback:timespan=2h) {
+        let claims_seed = claims_events
+            | where event_timestamp >= ago(lookback) and injected_fraud_flags startswith 'SEED:'
+            | project alert_timestamp = event_timestamp, source = 'claims_events',
+                      seed_label = injected_fraud_flags, patient_id, provider_id, facility_id,
+                      detail = strcat('Claim $', tostring(toint(claim_amount)), ' ', procedure_code);
+        let readm_seed = readmission_events
+            | where event_timestamp >= ago(lookback) and current_encounter_id startswith 'SEED-'
+            | project alert_timestamp = event_timestamp, source = 'readmission_events',
+                      seed_label = current_encounter_id, patient_id, provider_id, facility_id,
+                      detail = strcat('Readmit ', tostring(days_since_discharge), 'd DRG=', drg_code);
+        let cgap_seed = care_gap_alerts
+            | where alert_timestamp >= ago(lookback) and alert_id startswith 'SEED-'
+            | project alert_timestamp, source = 'care_gap_alerts',
+                      seed_label = alert_id, patient_id, provider_id = '', facility_id,
+                      detail = alert_text;
+        let hcost_seed = highcost_alerts
+            | where alert_timestamp >= ago(lookback) and alert_id startswith 'SEED-'
+            | project alert_timestamp, source = 'highcost_alerts',
+                      seed_label = alert_id, patient_id, provider_id = '', facility_id = '',
+                      detail = strcat('Spend30d $', tostring(toint(rolling_spend_30d)), ' ED=', tostring(ed_visits_30d));
+        let ops_seed = ops_capacity_events
+            | where event_timestamp >= ago(lookback) and event_type startswith 'SEED_'
+            | project alert_timestamp = event_timestamp, source = 'ops_capacity_events',
+                      seed_label = event_type, patient_id = '', provider_id = '', facility_id,
+                      detail = strcat(capacity_type, ' = ', tostring(current_value), ' / ', tostring(threshold_value));
+        union claims_seed, readm_seed, cgap_seed, hcost_seed, ops_seed
+        | order by alert_timestamp desc
+    }""",
+    """.create-or-alter function with (folder='views', docstring='Patient + provider 360 enrichment. Requires OneLake table shortcuts to lh_gold_curated.dim_patient and dim_provider (created once via Eventhouse portal). Function deploys safely even if shortcuts are absent -- it only fails at QUERY time, not create time.') vw_alerts_enriched(lookback:timespan=7d) {
+        let _patients = materialize(
+            table('dim_patient')
+            | where is_current == true
+            | project patient_id,
+                      patient_name = strcat(first_name, ' ', last_name),
+                      patient_dob = date_of_birth,
+                      patient_gender = gender,
+                      patient_payer_id = payer_id,
+                      patient_risk_tier = risk_tier
+        );
+        let _providers = materialize(
+            table('dim_provider')
+            | where is_current == true
+            | project provider_id,
+                      provider_name = display_name,
+                      provider_specialty = specialty,
+                      provider_npi = npi,
+                      provider_home_facility = facility_id
+        );
+        let _facilities = materialize(
+            table('dim_facility')
+            | project facility_id,
+                      facility_name,
+                      facility_region = region,
+                      facility_lat = latitude,
+                      facility_lon = longitude
+        );
+        vw_all_alerts()
+        | where alert_timestamp >= ago(lookback)
+        | join kind=leftouter _patients   on patient_id
+        | join kind=leftouter _providers  on provider_id
+        | join kind=leftouter _facilities on facility_id
+        | project alert_id, alert_timestamp, source_table, alert_type, severity, score, alert_text,
+                  patient_id, patient_name, patient_dob, patient_gender, patient_payer_id, patient_risk_tier,
+                  provider_id, provider_name, provider_specialty, provider_npi, provider_home_facility,
+                  facility_id, facility_name, facility_region, facility_lat, facility_lon
+        | order by alert_timestamp desc
+    }""",
 ]
 
 # --- Install Kusto SDK if not already present ---

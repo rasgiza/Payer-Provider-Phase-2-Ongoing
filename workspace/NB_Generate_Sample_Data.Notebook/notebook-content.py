@@ -286,6 +286,125 @@ print("Reference data loaded successfully")
 # CELL **{"language":"python"}**
 
 # ============================================================================
+# TABLE SCHEMAS -- single source of truth for column order on every generator.
+# Passing `columns=` to pd.DataFrame guarantees a valid CSV header even when
+# `rows == []`. Bronze ingest infers schema from these headers, so this list
+# IS the Bronze schema for these tables. Adding a generator requires adding
+# its column list here.
+# ============================================================================
+TABLE_SCHEMAS = {
+    "patients": [
+        "patient_id", "first_name", "last_name", "date_of_birth", "gender",
+        "address", "city", "state", "zip_code", "phone", "email",
+        "insurance_type", "insurance_provider", "pcp_provider_id",
+        "created_date", "modified_date",
+    ],
+    "providers": [
+        "provider_id", "first_name", "last_name", "npi", "specialty",
+        "department", "facility_id", "facility_name", "phone", "email",
+        "status", "hire_date", "contract_type", "fte_status",
+        "years_experience", "board_certified", "patient_panel_size",
+        "annual_rvu_target", "actual_rvu", "patient_satisfaction_score",
+        "telehealth_enabled", "documentation_score", "ehr_adoption_score",
+    ],
+    "encounters": [
+        "encounter_id", "patient_id", "provider_id", "encounter_type",
+        "admit_date", "discharge_date", "length_of_stay",
+        "primary_diagnosis_code", "facility_id", "admission_type",
+        "discharge_disposition", "total_charges", "drg_code",
+        "drg_description", "drg_weight", "expected_reimbursement",
+        "cost_to_deliver", "readmission_risk",
+    ],
+    "claims": [
+        "claim_id", "encounter_id", "patient_id", "provider_id", "payer_id",
+        "claim_type", "cpt_code", "primary_diagnosis_code", "service_date",
+        "submit_date", "process_date", "billed_amount", "allowed_amount",
+        "paid_amount", "patient_responsibility", "claim_status",
+        "denial_flag", "denial_reason", "denial_risk_score",
+        "denial_risk_category", "days_to_payment", "net_collection_rate",
+        "appeal_date", "appeal_outcome", "appeal_amount_recovered",
+    ],
+    "prescriptions": [
+        "prescription_id", "encounter_id", "patient_id", "provider_id",
+        "rxnorm_code", "medication_name", "fill_date", "days_supply",
+        "quantity", "refill_number", "total_cost", "copay_amount",
+        "pharmacy_id", "prescriber_id", "is_generic", "prior_auth_required",
+    ],
+    "diagnoses": [
+        "diagnosis_id", "encounter_id", "patient_id", "icd_code",
+        "diagnosis_type", "sequence_number", "diagnosis_date",
+        "present_on_admission",
+    ],
+    "sdoh": [
+        "zip_code", "state", "locale_type", "median_household_income",
+        "poverty_rate", "unemployment_rate", "uninsured_rate",
+        "food_insecurity_rate", "no_vehicle_pct", "composite_svi_score",
+        "risk_tier", "latitude", "longitude",
+    ],
+    "monitors": [
+        "monitor_id", "monitor_type", "manufacturer", "model",
+        "connectivity", "battery_life_days", "fda_cleared", "unit_cost",
+    ],
+    "care_gaps": [
+        "patient_id", "measure_id", "measure_name", "is_gap_open",
+        "last_service_date", "due_date", "gap_days_overdue",
+    ],
+    "plans": [
+        "plan_id", "payer_id", "plan_name", "line_of_business", "plan_type",
+        "metal_tier", "state", "network_size", "effective_date",
+        "termination_date", "is_capitated", "avg_pmpm_premium",
+    ],
+    "member_enrollment": [
+        "enrollment_id", "member_id", "patient_id", "plan_id", "payer_id",
+        "year_month", "coverage_start", "coverage_end", "enrollment_status",
+        "pmpm_premium", "is_capitated",
+    ],
+    "premiums": [
+        "premium_id", "member_id", "plan_id", "payer_id", "year_month",
+        "premium_amount", "subsidy_amount", "member_paid",
+    ],
+    "authorizations": [
+        "auth_id", "patient_id", "member_id", "provider_id", "payer_id",
+        "claim_id", "cpt_code", "primary_diagnosis_code",
+        "submit_date", "decision_date", "decision_tat_hours",
+        "auth_outcome", "auth_units_requested", "auth_units_approved",
+    ],
+    "capitation": [
+        "capitation_id", "member_id", "provider_id", "payer_id", "plan_id",
+        "year_month", "capitation_pmpm", "withhold_pct", "bonus_eligible",
+    ],
+    "provider_contracts": [
+        "contract_id", "provider_id", "payer_id", "contract_type",
+        "effective_date", "termination_date", "fee_schedule_pct_medicare",
+        "withhold_pct", "quality_bonus_pct", "is_in_network",
+    ],
+    "hedis_compliance": [
+        "compliance_id", "measurement_year", "payer_id", "plan_id",
+        "measure_id", "measure_name", "denominator_eligible",
+        "numerator_met", "compliance_rate",
+    ],
+    "star_ratings": [
+        "star_id", "payer_id", "measurement_year", "star_measure_id",
+        "star_measure_name", "domain", "weight", "star_score",
+        "weighted_score", "national_avg",
+    ],
+    "risk_adjustment": [
+        "raf_id", "member_id", "payer_id", "plan_id", "measurement_year",
+        "hcc_count", "hcc_codes", "demographic_score", "disease_score",
+        "raf_score",
+    ],
+    "claim_appeals": [
+        "appeal_id", "claim_id", "patient_id", "payer_id",
+        "appeal_level", "appeal_level_num", "submit_date", "decision_date",
+        "appeal_outcome", "appeal_amount_recovered", "appeal_reason",
+    ],
+}
+
+# METADATA **{"language":"python"}**
+
+# CELL **{"language":"python"}**
+
+# ============================================================================
 # GENERATE PATIENTS
 # ============================================================================
 
@@ -317,7 +436,7 @@ def generate_patients(n):
             "created_date": DATA_START_DATE.strftime("%Y-%m-%d"),
             "modified_date": datetime.now().strftime("%Y-%m-%d"),
         })
-    return pd.DataFrame(patients)
+    return pd.DataFrame(patients, columns=TABLE_SCHEMAS["patients"])
 
 print("Generating patients...")
 patients_df = generate_patients(NUM_PATIENTS)
@@ -389,7 +508,7 @@ def generate_providers(n):
             "documentation_score": doc_score,
             "ehr_adoption_score": ehr_score,
         })
-    return pd.DataFrame(providers)
+    return pd.DataFrame(providers, columns=TABLE_SCHEMAS["providers"])
 
 print("Generating providers...")
 providers_df = generate_providers(NUM_PROVIDERS)
@@ -505,7 +624,7 @@ def generate_encounters(n, patient_ids, provider_ids):
             "cost_to_deliver": cost_to_deliver,
             "readmission_risk": risk,
         })
-    return pd.DataFrame(encounters)
+    return pd.DataFrame(encounters, columns=TABLE_SCHEMAS["encounters"])
 
 print("Generating encounters...")
 encounters_df = generate_encounters(NUM_ENCOUNTERS, patients_df["patient_id"].tolist(), providers_df["provider_id"].tolist())
@@ -623,7 +742,7 @@ def generate_claims(encounters_df):
             "appeal_outcome": appeal_outcome,
             "appeal_amount_recovered": appeal_amount_recovered,
         })
-    return pd.DataFrame(claims)
+    return pd.DataFrame(claims, columns=TABLE_SCHEMAS["claims"])
 
 print("Generating claims...")
 claims_df = generate_claims(encounters_df)
@@ -714,7 +833,7 @@ def generate_prescriptions(encounters_df, num_rx):
         if rx_id > num_rx:
             break
 
-    return pd.DataFrame(prescriptions)
+    return pd.DataFrame(prescriptions, columns=TABLE_SCHEMAS["prescriptions"])
 
 print("Generating prescriptions...")
 prescriptions_df = generate_prescriptions(encounters_df, NUM_PRESCRIPTIONS)
@@ -797,7 +916,7 @@ def generate_diagnoses(encounters_df):
             })
             dx_id += 1
 
-    return pd.DataFrame(diagnoses)
+    return pd.DataFrame(diagnoses, columns=TABLE_SCHEMAS["diagnoses"])
 
 print("Generating diagnoses...")
 diagnoses_df = generate_diagnoses(encounters_df)
@@ -870,7 +989,7 @@ def generate_sdoh():
                 "latitude": round(random.uniform(*config["lat_range"]), 4),
                 "longitude": round(random.uniform(*config["lon_range"]), 4),
             })
-    return pd.DataFrame(sdoh_data)
+    return pd.DataFrame(sdoh_data, columns=TABLE_SCHEMAS["sdoh"])
 
 print("Generating SDOH data...")
 sdoh_df = generate_sdoh()
@@ -900,7 +1019,7 @@ def generate_monitors():
                 "unit_cost": round(random.uniform(25, 500), 2),
             })
             mid += 1
-    return pd.DataFrame(monitors)
+    return pd.DataFrame(monitors, columns=TABLE_SCHEMAS["monitors"])
 
 monitors_df = generate_monitors()
 print(f"  Generated {len(monitors_df)} monitor records")
@@ -976,7 +1095,7 @@ def generate_care_gaps(patients_df, diagnoses_df):
                 "gap_days_overdue": random.randint(0, 365) if is_gap_open else 0,
             })
 
-    return pd.DataFrame(care_gaps)
+    return pd.DataFrame(care_gaps, columns=TABLE_SCHEMAS["care_gaps"])
 
 print("Generating HEDIS care gap data...")
 care_gaps_df = generate_care_gaps(patients_df, diagnoses_df)
@@ -1070,7 +1189,7 @@ def generate_plans():
                 "avg_pmpm_premium":     round(random.uniform(180, 1450), 2),
             })
             pidx += 1
-    return pd.DataFrame(plans)
+    return pd.DataFrame(plans, columns=TABLE_SCHEMAS["plans"])
 
 print("Generating plans...")
 plans_df = generate_plans()
@@ -1142,7 +1261,7 @@ def generate_member_enrollment(patients_df, plans_df):
                 "pmpm_premium":    premium,
                 "is_capitated":    current_plan["is_capitated"],
             })
-    return pd.DataFrame(enrollment)
+    return pd.DataFrame(enrollment, columns=TABLE_SCHEMAS["member_enrollment"])
 
 print("Generating member enrollment...")
 member_enrollment_df = generate_member_enrollment(patients_df, plans_df)
@@ -1184,55 +1303,6 @@ print(f"  Generated {len(premiums_df):,} premium records")
 # ============================================================================
 
 PA_REQUIRED_CPTS = {"70553", "72148", "73721", "27447", "29827", "33533", "47562", "99291"}
-
-# ============================================================================
-# TABLE SCHEMAS -- single source of truth for column order on every generator
-# that can return zero rows for a given input. Passing `columns=` to
-# pd.DataFrame guarantees a valid CSV header even when `rows == []`.
-# Bronze ingest infers schema from these headers, so this list IS the
-# Bronze schema for these tables.
-# ============================================================================
-TABLE_SCHEMAS = {
-    "premiums": [
-        "premium_id", "member_id", "plan_id", "payer_id", "year_month",
-        "premium_amount", "subsidy_amount", "member_paid",
-    ],
-    "authorizations": [
-        "auth_id", "patient_id", "member_id", "provider_id", "payer_id",
-        "claim_id", "cpt_code", "primary_diagnosis_code",
-        "submit_date", "decision_date", "decision_tat_hours",
-        "auth_outcome", "auth_units_requested", "auth_units_approved",
-    ],
-    "capitation": [
-        "capitation_id", "member_id", "provider_id", "payer_id", "plan_id",
-        "year_month", "capitation_pmpm", "withhold_pct", "bonus_eligible",
-    ],
-    "provider_contracts": [
-        "contract_id", "provider_id", "payer_id", "contract_type",
-        "effective_date", "termination_date", "fee_schedule_pct_medicare",
-        "withhold_pct", "quality_bonus_pct", "is_in_network",
-    ],
-    "hedis_compliance": [
-        "compliance_id", "measurement_year", "payer_id", "plan_id",
-        "measure_id", "measure_name", "denominator_eligible",
-        "numerator_met", "compliance_rate",
-    ],
-    "star_ratings": [
-        "star_id", "payer_id", "measurement_year", "star_measure_id",
-        "star_measure_name", "domain", "weight", "star_score",
-        "weighted_score", "national_avg",
-    ],
-    "risk_adjustment": [
-        "raf_id", "member_id", "payer_id", "plan_id", "measurement_year",
-        "hcc_count", "hcc_codes", "demographic_score", "disease_score",
-        "raf_score",
-    ],
-    "claim_appeals": [
-        "appeal_id", "claim_id", "patient_id", "payer_id",
-        "appeal_level", "appeal_level_num", "submit_date", "decision_date",
-        "appeal_outcome", "appeal_amount_recovered", "appeal_reason",
-    ],
-}
 
 def generate_authorizations(claims_df):
     rows = []
@@ -1565,6 +1635,10 @@ _GENERATED_FRAMES = {
     "claims":               claims_df,
     "prescriptions":        prescriptions_df,
     "diagnoses":            diagnoses_df,
+    "sdoh":                 sdoh_df,
+    "monitors":             monitors_df,
+    "care_gaps":            care_gaps_df,
+    "plans":                plans_df,
     "member_enrollment":    member_enrollment_df,
     "premiums":             premiums_df,
     "authorizations":       authorizations_df,

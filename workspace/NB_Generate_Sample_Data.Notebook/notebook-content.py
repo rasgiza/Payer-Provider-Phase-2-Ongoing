@@ -1169,7 +1169,7 @@ def generate_premiums(member_enrollment_df):
             "subsidy_amount":  round(e["pmpm_premium"] * random.uniform(0, 0.40), 2),
             "member_paid":     round(e["pmpm_premium"] * random.uniform(0.0, 0.60), 2),
         })
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows, columns=TABLE_SCHEMAS["premiums"])
 
 print("Generating premiums...")
 premiums_df = generate_premiums(member_enrollment_df)
@@ -1185,13 +1185,54 @@ print(f"  Generated {len(premiums_df):,} premium records")
 
 PA_REQUIRED_CPTS = {"70553", "72148", "73721", "27447", "29827", "33533", "47562", "99291"}
 
-# Explicit column list -- ensures CSV always has a header even if zero rows match
-AUTH_COLS = [
-    "auth_id", "patient_id", "member_id", "provider_id", "payer_id",
-    "claim_id", "cpt_code", "primary_diagnosis_code",
-    "submit_date", "decision_date", "decision_tat_hours",
-    "auth_outcome", "auth_units_requested", "auth_units_approved",
-]
+# ============================================================================
+# TABLE SCHEMAS -- single source of truth for column order on every generator
+# that can return zero rows for a given input. Passing `columns=` to
+# pd.DataFrame guarantees a valid CSV header even when `rows == []`.
+# Bronze ingest infers schema from these headers, so this list IS the
+# Bronze schema for these tables.
+# ============================================================================
+TABLE_SCHEMAS = {
+    "premiums": [
+        "premium_id", "member_id", "plan_id", "payer_id", "year_month",
+        "premium_amount", "subsidy_amount", "member_paid",
+    ],
+    "authorizations": [
+        "auth_id", "patient_id", "member_id", "provider_id", "payer_id",
+        "claim_id", "cpt_code", "primary_diagnosis_code",
+        "submit_date", "decision_date", "decision_tat_hours",
+        "auth_outcome", "auth_units_requested", "auth_units_approved",
+    ],
+    "capitation": [
+        "capitation_id", "member_id", "provider_id", "payer_id", "plan_id",
+        "year_month", "capitation_pmpm", "withhold_pct", "bonus_eligible",
+    ],
+    "provider_contracts": [
+        "contract_id", "provider_id", "payer_id", "contract_type",
+        "effective_date", "termination_date", "fee_schedule_pct_medicare",
+        "withhold_pct", "quality_bonus_pct", "is_in_network",
+    ],
+    "hedis_compliance": [
+        "compliance_id", "measurement_year", "payer_id", "plan_id",
+        "measure_id", "measure_name", "denominator_eligible",
+        "numerator_met", "compliance_rate",
+    ],
+    "star_ratings": [
+        "star_id", "payer_id", "measurement_year", "star_measure_id",
+        "star_measure_name", "domain", "weight", "star_score",
+        "weighted_score", "national_avg",
+    ],
+    "risk_adjustment": [
+        "raf_id", "member_id", "payer_id", "plan_id", "measurement_year",
+        "hcc_count", "hcc_codes", "demographic_score", "disease_score",
+        "raf_score",
+    ],
+    "claim_appeals": [
+        "appeal_id", "claim_id", "patient_id", "payer_id",
+        "appeal_level", "appeal_level_num", "submit_date", "decision_date",
+        "appeal_outcome", "appeal_amount_recovered", "appeal_reason",
+    ],
+}
 
 def generate_authorizations(claims_df):
     rows = []
@@ -1227,7 +1268,7 @@ def generate_authorizations(claims_df):
             "auth_units_requested": random.randint(1, 5),
             "auth_units_approved": random.randint(1, 5) if outcome == "Approved" else 0,
         })
-    return pd.DataFrame(rows, columns=AUTH_COLS)
+    return pd.DataFrame(rows, columns=TABLE_SCHEMAS["authorizations"])
 
 print("Generating prior authorizations...")
 authorizations_df = generate_authorizations(claims_df)
@@ -1243,17 +1284,11 @@ if len(authorizations_df) == 0:
 # GENERATE CAPITATION PAYMENTS  (only for capitated plans, monthly per provider-member)
 # ============================================================================
 
-# Explicit column list -- ensures CSV always has a header even if zero rows match
-CAP_COLS = [
-    "capitation_id", "member_id", "provider_id", "payer_id", "plan_id",
-    "year_month", "capitation_pmpm", "withhold_pct", "bonus_eligible",
-]
-
 def generate_capitation(member_enrollment_df, providers_df, plans_df):
     rows = []
     cap_enroll = member_enrollment_df[member_enrollment_df["is_capitated"] == True]
     if len(cap_enroll) == 0:
-        return pd.DataFrame(rows, columns=CAP_COLS)
+        return pd.DataFrame(rows, columns=TABLE_SCHEMAS["capitation"])
     # Each capitated member assigned to a PCP for the month
     pcp_pool = providers_df["provider_id"].tolist()
     plan_lookup = plans_df.set_index("plan_id").to_dict("index")
@@ -1275,7 +1310,7 @@ def generate_capitation(member_enrollment_df, providers_df, plans_df):
             "withhold_pct":      round(random.uniform(0.0, 0.10), 3),
             "bonus_eligible":    random.choices([True, False], weights=[0.30, 0.70])[0],
         })
-    return pd.DataFrame(rows, columns=CAP_COLS)
+    return pd.DataFrame(rows, columns=TABLE_SCHEMAS["capitation"])
 
 print("Generating capitation payments...")
 capitation_df = generate_capitation(member_enrollment_df, providers_df, plans_df)
@@ -1312,7 +1347,7 @@ def generate_provider_contracts(providers_df, plans_df):
                 "quality_bonus_pct": round(random.uniform(0.0, 0.08), 3),
                 "is_in_network":     True,
             })
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows, columns=TABLE_SCHEMAS["provider_contracts"])
 
 print("Generating provider contracts...")
 provider_contracts_df = generate_provider_contracts(providers_df, plans_df)
@@ -1353,7 +1388,7 @@ def generate_hedis_compliance(care_gaps_df, member_enrollment_df, plans_df):
             "numerator_met":         numer,
             "compliance_rate":       rate,
         })
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows, columns=TABLE_SCHEMAS["hedis_compliance"])
 
 print("Generating HEDIS compliance roll-up...")
 hedis_compliance_df = generate_hedis_compliance(care_gaps_df, member_enrollment_df, plans_df)
@@ -1387,7 +1422,7 @@ def generate_star_ratings():
                 "weighted_score":      round(score * m["weight"], 2),
                 "national_avg":        round(random.uniform(3.0, 4.2), 1),
             })
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows, columns=TABLE_SCHEMAS["star_ratings"])
 
 print("Generating Star Ratings...")
 star_ratings_df = generate_star_ratings()
@@ -1444,7 +1479,7 @@ def generate_risk_adjustment(patients_df, diagnoses_df, member_enrollment_df):
             "disease_score":      round(raf_score - demo, 4),
             "raf_score":          round(raf_score, 4),
         })
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows, columns=TABLE_SCHEMAS["risk_adjustment"])
 
 print("Generating risk adjustment (RAF)...")
 risk_adjustment_df = generate_risk_adjustment(patients_df, diagnoses_df, member_enrollment_df)
@@ -1464,7 +1499,7 @@ def generate_claim_appeals(claims_df):
     rows = []
     denied = claims_df[claims_df["claim_status"] == "Denied"]
     if len(denied) == 0:
-        return pd.DataFrame(rows)
+        return pd.DataFrame(rows, columns=TABLE_SCHEMAS["claim_appeals"])
     # ~30% of denied claims get appealed
     appealed = denied.sample(frac=0.30, random_state=7)
 
@@ -1504,11 +1539,60 @@ def generate_claim_appeals(claims_df):
             if outcome == "Overturned":
                 break
             level_start = decision + timedelta(days=random.randint(7, 30))
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows, columns=TABLE_SCHEMAS["claim_appeals"])
 
 print("Generating claim appeals...")
 claim_appeals_df = generate_claim_appeals(claims_df)
 print(f"  Generated {len(claim_appeals_df):,} appeal records")
+
+# METADATA **{"language":"python"}**
+
+# CELL **{"language":"python"}**
+
+# ============================================================================
+# VALIDATE GENERATED FRAMES BEFORE WRITING TO ONELAKE
+# ----------------------------------------------------------------------------
+# Fail fast on schemaless DataFrames (zero columns). If any frame here has
+# no schema, the write step would later produce a header-less CSV that
+# breaks Bronze ingest and cascades into a cryptic Silver error. Catching
+# it here points directly at the offending generator.
+# ============================================================================
+
+_GENERATED_FRAMES = {
+    "patients":             patients_df,
+    "providers":            providers_df,
+    "encounters":           encounters_df,
+    "claims":               claims_df,
+    "prescriptions":        prescriptions_df,
+    "diagnoses":            diagnoses_df,
+    "member_enrollment":    member_enrollment_df,
+    "premiums":             premiums_df,
+    "authorizations":       authorizations_df,
+    "capitation":           capitation_df,
+    "provider_contracts":   provider_contracts_df,
+    "hedis_compliance":     hedis_compliance_df,
+    "star_ratings":         star_ratings_df,
+    "risk_adjustment":      risk_adjustment_df,
+    "claim_appeals":        claim_appeals_df,
+}
+
+print("Pre-write validation:")
+_bad = []
+for _name, _df in _GENERATED_FRAMES.items():
+    if _df.shape[1] == 0:
+        _bad.append(_name)
+        print(f"  [FAIL] {_name}: 0 columns (schemaless)")
+    else:
+        flag = " [WARN: zero rows]" if len(_df) == 0 else ""
+        print(f"  [OK]   {_name}: {_df.shape[1]} cols, {len(_df):,} rows{flag}")
+
+if _bad:
+    raise ValueError(
+        f"Schemaless DataFrames detected ({', '.join(_bad)}). "
+        f"Generator returned `pd.DataFrame(rows)` on empty rows without "
+        f"specifying `columns=TABLE_SCHEMAS[...]`. Fix the generator."
+    )
+print("  All generated frames have a valid schema. Proceeding to write.")
 
 # METADATA **{"language":"python"}**
 

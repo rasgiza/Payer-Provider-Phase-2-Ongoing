@@ -367,15 +367,41 @@ print(f"✓ {SILVER_SCHEMA}.premiums_clean: {premiums_clean.count():,} rows")
 authorizations_raw = spark.sql(f"SELECT * FROM {BRONZE_SCHEMA}.authorizations_raw")
 print(f"Bronze authorizations count: {authorizations_raw.count():,}")
 
-authorizations_clean = authorizations_raw \
-    .withColumn("submit_date", to_date(col("submit_date"))) \
-    .withColumn("decision_date", to_date(col("decision_date"))) \
-    .withColumn("decision_tat_hours", col("decision_tat_hours").cast("double")) \
-    .withColumn("auth_outcome", initcap(trim(col("auth_outcome")))) \
-    .withColumn("auth_units_requested", col("auth_units_requested").cast("int")) \
-    .withColumn("auth_units_approved", col("auth_units_approved").cast("int")) \
-    .withColumn("_silver_load_timestamp", current_timestamp()) \
-    .dropDuplicates(["auth_id"])
+# Defensive: if upstream CSV was empty/header-only, Bronze only has the 3
+# metadata columns. Skip column casts in that case so we still emit a
+# Silver table with the expected target schema instead of crashing.
+_auth_cols = set(authorizations_raw.columns)
+if "submit_date" not in _auth_cols:
+    print("  [WARN] authorizations_raw is missing data columns -- emitting empty Silver table with target schema.")
+    from pyspark.sql.types import StructType, StructField, StringType, DateType, DoubleType, IntegerType, TimestampType
+    _auth_schema = StructType([
+        StructField("auth_id", StringType(), True),
+        StructField("patient_id", StringType(), True),
+        StructField("member_id", StringType(), True),
+        StructField("provider_id", StringType(), True),
+        StructField("payer_id", StringType(), True),
+        StructField("claim_id", StringType(), True),
+        StructField("cpt_code", StringType(), True),
+        StructField("primary_diagnosis_code", StringType(), True),
+        StructField("submit_date", DateType(), True),
+        StructField("decision_date", DateType(), True),
+        StructField("decision_tat_hours", DoubleType(), True),
+        StructField("auth_outcome", StringType(), True),
+        StructField("auth_units_requested", IntegerType(), True),
+        StructField("auth_units_approved", IntegerType(), True),
+        StructField("_silver_load_timestamp", TimestampType(), True),
+    ])
+    authorizations_clean = spark.createDataFrame([], _auth_schema)
+else:
+    authorizations_clean = authorizations_raw \
+        .withColumn("submit_date", to_date(col("submit_date"))) \
+        .withColumn("decision_date", to_date(col("decision_date"))) \
+        .withColumn("decision_tat_hours", col("decision_tat_hours").cast("double")) \
+        .withColumn("auth_outcome", initcap(trim(col("auth_outcome")))) \
+        .withColumn("auth_units_requested", col("auth_units_requested").cast("int")) \
+        .withColumn("auth_units_approved", col("auth_units_approved").cast("int")) \
+        .withColumn("_silver_load_timestamp", current_timestamp()) \
+        .dropDuplicates(["auth_id"])
 
 authorizations_clean.write.format("delta").mode("overwrite") \
     .option("overwriteSchema", "true") \

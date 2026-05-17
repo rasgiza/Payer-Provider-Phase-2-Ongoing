@@ -1185,6 +1185,14 @@ print(f"  Generated {len(premiums_df):,} premium records")
 
 PA_REQUIRED_CPTS = {"70553", "72148", "73721", "27447", "29827", "33533", "47562", "99291"}
 
+# Explicit column list -- ensures CSV always has a header even if zero rows match
+AUTH_COLS = [
+    "auth_id", "patient_id", "member_id", "provider_id", "payer_id",
+    "claim_id", "cpt_code", "primary_diagnosis_code",
+    "submit_date", "decision_date", "decision_tat_hours",
+    "auth_outcome", "auth_units_requested", "auth_units_approved",
+]
+
 def generate_authorizations(claims_df):
     rows = []
     eligible = claims_df[
@@ -1219,11 +1227,13 @@ def generate_authorizations(claims_df):
             "auth_units_requested": random.randint(1, 5),
             "auth_units_approved": random.randint(1, 5) if outcome == "Approved" else 0,
         })
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows, columns=AUTH_COLS)
 
 print("Generating prior authorizations...")
 authorizations_df = generate_authorizations(claims_df)
 print(f"  Generated {len(authorizations_df):,} prior authorization records")
+if len(authorizations_df) == 0:
+    print("  [WARN] authorizations_df is empty -- CSV will be header-only. Check claims_df for PA-eligible rows.")
 
 # METADATA **{"language":"python"}**
 
@@ -1233,11 +1243,17 @@ print(f"  Generated {len(authorizations_df):,} prior authorization records")
 # GENERATE CAPITATION PAYMENTS  (only for capitated plans, monthly per provider-member)
 # ============================================================================
 
+# Explicit column list -- ensures CSV always has a header even if zero rows match
+CAP_COLS = [
+    "capitation_id", "member_id", "provider_id", "payer_id", "plan_id",
+    "year_month", "capitation_pmpm", "withhold_pct", "bonus_eligible",
+]
+
 def generate_capitation(member_enrollment_df, providers_df, plans_df):
     rows = []
     cap_enroll = member_enrollment_df[member_enrollment_df["is_capitated"] == True]
     if len(cap_enroll) == 0:
-        return pd.DataFrame(rows)
+        return pd.DataFrame(rows, columns=CAP_COLS)
     # Each capitated member assigned to a PCP for the month
     pcp_pool = providers_df["provider_id"].tolist()
     plan_lookup = plans_df.set_index("plan_id").to_dict("index")
@@ -1259,7 +1275,7 @@ def generate_capitation(member_enrollment_df, providers_df, plans_df):
             "withhold_pct":      round(random.uniform(0.0, 0.10), 3),
             "bonus_eligible":    random.choices([True, False], weights=[0.30, 0.70])[0],
         })
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows, columns=CAP_COLS)
 
 print("Generating capitation payments...")
 capitation_df = generate_capitation(member_enrollment_df, providers_df, plans_df)
@@ -1507,10 +1523,25 @@ print(f"  Generated {len(claim_appeals_df):,} appeal records")
 import requests
 
 def write_csv_to_lakehouse(df, path):
-    """Write a pandas DataFrame as CSV to OneLake via notebookutils."""
+    """Write a pandas DataFrame as CSV to OneLake via notebookutils.
+
+    Guards against silent corruption: a DataFrame with zero columns would
+    produce a header-less CSV, which Bronze ingest happily reads as a
+    table with ONLY the audit columns. That cascades into a cryptic
+    AnalysisException in Silver. Fail fast here instead.
+    """
+    if df.shape[1] == 0:
+        fname = path.split("/")[-1]
+        raise ValueError(
+            f"Refusing to write schemaless CSV '{fname}': DataFrame has 0 columns. "
+            f"This usually means an upstream generator returned `pd.DataFrame(rows)` "
+            f"on an empty `rows` list without specifying `columns=`. "
+            f"Fix the generator to always pass an explicit column list."
+        )
     csv_content = df.to_csv(index=False)
     notebookutils.fs.put(path, csv_content, True)
-    print(f"  Written: {path.split('/')[-1]} ({len(df):,} rows)")
+    suffix = "" if len(df) > 0 else " [WARN: header-only, zero rows]"
+    print(f"  Written: {path.split('/')[-1]} ({len(df):,} rows){suffix}")
 
 # Resolve absolute ABFSS path to lh_bronze_raw
 ws_id = spark.conf.get("trident.artifact.workspace.id")

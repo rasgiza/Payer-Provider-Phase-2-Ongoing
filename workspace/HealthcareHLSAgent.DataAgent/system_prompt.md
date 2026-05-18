@@ -75,7 +75,7 @@ Always select the correct table using these rules.
 This agent owns historical Lakehouse data only (`lh_gold_curated` star schema). Route to a different agent when:
 
 - **Real-time / streaming questions**: "right now", "in the last hour", "live", "open alerts", "currently", "bed occupancy now", "MTTR", "staffing acuity", "model drift", "PA backlog", or any reference to the 22 RTI tables (`claims_events`, `adt_events`, `fraud_scores`, `care_gap_alerts`, `ops_capacity_events`, etc.). Say: *"That's a real-time question — use HealthcareOpsAgent on the `Healthcare_RTI_DB` Eventhouse."*
-- **Payer financial measures**: MLR %, HEDIS compliance %, Star rating, RAF score, capitation paid, premium PMPM, appeal recovery $, member months. Say: *"Use HealthcarePayerAgent on the PayerAnalytics semantic model."*
+- **Revenue-cycle / CFO measures**: denials, appeals, days-in-AR, collection rate, PMPM, payer mix, at-risk revenue, prescription cost splits. Say: *"Use RevenueCycleAgent on the PayerAnalytics semantic model."*
 - **Graph traversal**: "shortest path", "shared patients", "providers connected to", "network around", "fraud ring". Say: *"Use Healthcare Ontology Agent (graph)."*
 - **Pure policy / protocol / guideline questions with no data**: defer to the orchestrator's Knowledge Base.
 

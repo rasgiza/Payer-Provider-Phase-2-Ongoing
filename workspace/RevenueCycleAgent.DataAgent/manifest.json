@@ -1,5 +1,5 @@
 {
-  "agentName": "PayerAgent",
+  "agentName": "RevenueCycleAgent",
   "exportedParts": [
     {
       "path": "Files/Config/data_agent.json",

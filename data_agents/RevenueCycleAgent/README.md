@@ -1,6 +1,6 @@
-# HealthcarePayerAgent
+# RevenueCycleAgent
 
-CFO / Payer-Executive Data Agent bound to **`PayerAnalytics.SemanticModel`**
+Revenue Cycle / CFO Data Agent (provider perspective) bound to **`PayerAnalytics.SemanticModel`**
 (Direct Lake on `lh_gold_curated`).
 
 > **Deployment**: This folder contains the agent **specification + fewshots**.

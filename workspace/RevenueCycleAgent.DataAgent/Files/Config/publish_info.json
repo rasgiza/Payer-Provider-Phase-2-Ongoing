@@ -1,4 +1,4 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/dataAgent/definition/publishInfo/1.0.0/schema.json",
-  "description": "Payer-focused healthcare analytics agent for revenue cycle management. Answers questions about claim denials, appeal outcomes, collection rates, days-in-AR, PMPM, payer mix, prescription cost splits (payer-paid vs patient copay), and at-risk revenue. Queries 16 curated gold-layer tables including payer-exclusive aggregates (agg_days_in_ar, agg_appeal_outcomes). Does NOT cover provider productivity (RVU, panel size, board certification) — use the ProviderAgent for those."
+  "description": "Revenue cycle / CFO-focused healthcare analytics agent (provider perspective). Answers questions about claim denials, appeal outcomes, collection rates, days-in-AR, PMPM, payer mix, prescription cost splits (payer-paid vs patient copay), and at-risk revenue. Queries 16 curated gold-layer tables including revenue-cycle aggregates (agg_days_in_ar, agg_appeal_outcomes). Does NOT cover clinical operations or provider productivity (RVU, panel size, board certification) — use the ClinicalOpsAgent for those."
 }

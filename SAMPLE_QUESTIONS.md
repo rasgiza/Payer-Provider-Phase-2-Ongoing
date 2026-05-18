@@ -5,9 +5,9 @@
 > and are answered by the new `*_Alerts` notebooks + the
 > [Tile Query Pack](rti_dashboard/TILE_QUERY_PACK.md).
 
-## Provider Agent â€” CMO Executive Summary (Phase 2)
+## Clinical Ops Agent â€” CMO Executive Summary (Phase 2)
 
-These questions exercise the new CMO fewshots added to **ProviderAgent**:
+These questions exercise the new CMO fewshots added to **ClinicalOpsAgent**:
 
 | # | Question |
 |---|----------|
@@ -240,11 +240,11 @@ If you've set up the optional **Foundry Orchestrator Agent** (see [FOUNDRY_IQ_SE
 
 ---
 
-## CFO / Payer Executive Questions (HealthcarePayerAgent)
+## Revenue Cycle / CFO Questions (RevenueCycleAgent)
 
-These questions target the **HealthcarePayerAgent** (see `data_agents/HealthcarePayerAgent/`)
+These questions target the **RevenueCycleAgent** (see `data_agents/RevenueCycleAgent/`)
 bound to the **PayerAnalytics** semantic model. They cover profitability, utilization,
-quality, and risk — the four levers a payer CFO and Chief Medical Officer track weekly.
+quality, and risk — the four levers a provider CFO and Chief Medical Officer track weekly.
 
 ### Profitability & MLR
 | # | Question |

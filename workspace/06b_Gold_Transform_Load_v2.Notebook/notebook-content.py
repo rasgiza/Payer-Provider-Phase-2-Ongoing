@@ -1929,7 +1929,7 @@ if "drg_code" in df_fact_enc.columns:
     df_drg_encounters = df_fact_enc.filter(col("drg_code").isNotNull())
     if df_drg_encounters.count() > 0:
         df_agg_drg = df_drg_encounters.groupBy("drg_code", "drg_description").agg(
-            count("*").alias("case_count"),
+            count("*").alias("encounter_count"),
             avg("total_charges").alias("avg_charges"),
             avg("total_cost").alias("avg_cost_to_deliver"),
             avg("expected_reimbursement").alias("avg_expected_reimbursement"),
@@ -1966,7 +1966,7 @@ if "days_to_payment" in df_fact_clm.columns:
         df_dim_payer.payer_name,
         df_dim_payer.payer_type
     ).agg(
-        count("*").alias("total_claims"),
+        count("*").alias("claim_count"),
         avg("days_to_payment").alias("avg_days_to_payment"),
         percentile_approx("days_to_payment", 0.5).alias("median_days_to_payment"),
         percentile_approx("days_to_payment", 0.9).alias("p90_days_to_payment"),
@@ -1990,13 +1990,13 @@ if "appeal_outcome" in df_fact_clm.columns:
         )
         df_agg_appeals = df_appeals_with_payer.groupBy(
             df_dim_payer.payer_name,
-            df_appeals.primary_denial_reason,
+            df_appeals.primary_denial_reason.alias("denial_reason"),
             df_appeals.appeal_outcome
         ).agg(
             count("*").alias("appeal_count"),
             sum("billed_amount").alias("total_billed"),
-            sum("appeal_amount_recovered").alias("total_recovered"),
-            avg("appeal_amount_recovered").alias("avg_recovered"),
+            sum("appeal_amount_recovered").alias("total_amount_recovered"),
+            avg("appeal_amount_recovered").alias("avg_amount_recovered"),
         )
         df_agg_appeals.write.format("delta").mode("overwrite") \
             .option("overwriteSchema", "true") \

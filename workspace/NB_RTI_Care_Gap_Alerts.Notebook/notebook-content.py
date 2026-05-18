@@ -145,7 +145,7 @@ except ImportError:
 _ws_id = notebookutils.runtime.context.get("currentWorkspaceId", "")
 _fabric_tok = notebookutils.credentials.getToken("https://analysis.windows.net/powerbi/api")
 _hdr = {"Authorization": f"Bearer {_fabric_tok}", "Content-Type": "application/json"}
-_KUSTO_QUERY_URI = ""
+_KUSTO_QUERY_URI = None
 _resp = _kql_req.get(f"https://api.fabric.microsoft.com/v1/workspaces/{_ws_id}/items?type=Eventhouse", headers=_hdr)
 if _resp.status_code == 200:
     for _item in _resp.json().get("value", []):
@@ -453,8 +453,8 @@ def _get_fabric_token():
 def _get_kusto_token():
     return notebookutils.credentials.getToken("kusto")
 
-_KUSTO_QUERY_URI = ""
-_KUSTO_INGEST_URI = ""
+_KUSTO_QUERY_URI = None
+_KUSTO_INGEST_URI = None
 _headers = {"Authorization": f"Bearer {_get_fabric_token()}", "Content-Type": "application/json"}
 _resp = _requests.get(f"{_BASE_URL}/workspaces/{_WORKSPACE_ID}/items?type=Eventhouse", headers=_headers)
 if _resp.status_code == 200:

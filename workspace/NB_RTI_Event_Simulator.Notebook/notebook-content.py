@@ -191,7 +191,7 @@ else:
     print("  Copy from Healthcare_RTI_Eventstream → HealthcareCustomEndpoint → Connection String")
 
 # ── KQL query path (verification only — not used for ingestion) ──
-_KUSTO_QUERY_URI = ""
+_KUSTO_QUERY_URI = None
 _KQL_DB_NAME = "Healthcare_RTI_DB"
 _fabric_tok = notebookutils.credentials.getToken("pbi")
 _hdr = {"Authorization": f"Bearer {_fabric_tok}", "Content-Type": "application/json"}

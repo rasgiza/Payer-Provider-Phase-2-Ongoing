@@ -2,7 +2,7 @@ table fact_capitation
 	lineageTag: c1120001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[fact_capitation]
 
-	measure 'Total Capitation Paid' = SUMX(fact_capitation, fact_capitation[capitation_pmpm])
+	measure 'Total Capitation Paid' = SUM(fact_capitation[capitation_pmpm])
 		lineageTag: c1120001-0001-0001-0001-000000000011
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/dataAgent/definition/fewShots/1.0.0/schema.json",
+  "fewShots": [
+    {
+      "id": "clinops-sm-01-readmission-rate-overall",
+      "question": "What is our overall 30-day readmission rate?",
+      "query": "EVALUATE { [Readmission Rate] }"
+    },
+    {
+      "id": "clinops-sm-02-readmission-by-encounter-type",
+      "question": "Show readmission rate by encounter type.",
+      "query": "EVALUATE SUMMARIZECOLUMNS(fact_encounter[encounter_type], \"Encounters\", [Total Encounters], \"Readmission Rate\", [Readmission Rate], \"High Risk\", [High Risk Readmissions]) ORDER BY [Readmission Rate] DESC"
+    },
+    {
+      "id": "clinops-sm-03-readmission-trend-monthly",
+      "question": "Show the monthly readmission rate trend for the last year.",
+      "query": "EVALUATE SUMMARIZECOLUMNS(dim_date[year], dim_date[month_number], dim_date[month_name], \"Encounters\", [Total Encounters], \"Readmission Rate\", [Readmission Rate]) ORDER BY dim_date[year], dim_date[month_number]"
+    },
+    {
+      "id": "clinops-sm-04-adherence-by-drug-class",
+      "question": "What is medication adherence by drug class?",
+      "query": "EVALUATE SUMMARIZECOLUMNS(agg_medication_adherence[drug_class], \"PDC Score\", [Avg PDC Score], \"Adherent %\", [Adherent Rate]) ORDER BY [Avg PDC Score] DESC"
+    },
+    {
+      "id": "clinops-sm-05-top-providers-by-rvu",
+      "question": "Which providers are exceeding their RVU targets?",
+      "query": "EVALUATE TOPN(20, SUMMARIZECOLUMNS(dim_provider[display_name], dim_provider[specialty], \"RVU Target\", [Avg RVU Target], \"Actual RVU\", [Avg Actual RVU], \"Attainment %\", [RVU Attainment %]), [RVU Attainment %], DESC)"
+    },
+    {
+      "id": "clinops-sm-06-quality-scorecard-by-specialty",
+      "question": "Show me a quality scorecard by provider specialty.",
+      "query": "EVALUATE SUMMARIZECOLUMNS(dim_provider[specialty], \"Providers\", [Total Providers], \"Board Cert %\", [Board Certified Rate], \"Satisfaction\", [Avg Satisfaction Score], \"Documentation\", [Avg Documentation Score], \"Value-Based %\", [Value-Based Provider Rate]) ORDER BY [Avg Satisfaction Score] DESC"
+    },
+    {
+      "id": "clinops-sm-07-drg-margin-top-bottom",
+      "question": "Which DRGs have the worst margins?",
+      "query": "EVALUATE TOPN(15, SUMMARIZECOLUMNS(fact_encounter[drg_code], fact_encounter[drg_description], \"Encounters\", [Total Encounters], \"Charges\", [Total Charges], \"Cost\", [Total Cost], \"Margin\", [DRG Margin]), [DRG Margin], ASC)"
+    },
+    {
+      "id": "clinops-sm-08-telehealth-trend-yoy",
+      "question": "How is telehealth adoption trending year over year?",
+      "query": "EVALUATE SUMMARIZECOLUMNS(dim_date[year], \"Encounters\", [Total Encounters], \"Telehealth\", [Telehealth Encounters], \"Telehealth %\", [Telehealth Rate], \"Charges\", [Total Charges], \"YoY %\", [YoY Charge Growth]) ORDER BY dim_date[year]"
+    },
+    {
+      "id": "clinops-sm-09-sdoh-impact-on-readmissions",
+      "question": "How does SDOH risk tier correlate with readmissions?",
+      "query": "EVALUATE SUMMARIZECOLUMNS(dim_sdoh[risk_tier], \"Patients\", [Total Patients], \"High Risk SDOH\", [High Risk SDOH Patients], \"Readmission Rate\", [Readmission Rate], \"Charges\", [Total Charges]) ORDER BY [Readmission Rate] DESC"
+    },
+    {
+      "id": "clinops-sm-10-chronic-burden",
+      "question": "What is our chronic condition burden?",
+      "query": "EVALUATE { (\"Total Patients\", [Total Patients]), (\"Chronic Patients\", [Chronic Patients]), (\"Chronic Rate\", [Chronic Rate]), (\"Patients With Chronic Conditions\", [Patients with Chronic Conditions]), (\"Avg PDC\", [Avg PDC Score]) }"
+    },
+    {
+      "id": "clinops-sm-11-panel-utilization",
+      "question": "Are providers at panel capacity?",
+      "query": "EVALUATE SUMMARIZECOLUMNS(dim_provider[specialty], \"Providers\", [Total Providers], \"Avg Panel\", [Avg Panel Size], \"Actual\", [Actual Panel Count], \"Utilization %\", [Panel Utilization %]) ORDER BY [Panel Utilization %] DESC"
+    },
+    {
+      "id": "clinops-sm-12-chronic-conditions-top",
+      "question": "What are the most common chronic diagnoses?",
+      "query": "EVALUATE TOPN(15, SUMMARIZECOLUMNS(dim_diagnosis[icd_code], dim_diagnosis[icd_description], dim_diagnosis[icd_category], \"Diagnoses\", [Unique Diagnoses], \"Patients\", [Patients with Chronic Conditions]), [Patients with Chronic Conditions], DESC)"
+    }
+  ]
+}

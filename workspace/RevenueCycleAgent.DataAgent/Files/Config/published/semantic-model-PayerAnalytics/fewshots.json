@@ -1,0 +1,65 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/dataAgent/definition/fewShots/1.0.0/schema.json",
+  "fewShots": [
+    {
+      "id": "revcycle-sm-01-overall-denial-rate",
+      "question": "What is our overall denial rate?",
+      "query": "EVALUATE { (\"Total Claims\", [Total Claims]), (\"Total Billed\", [Total Billed]), (\"Denial Rate\", [Denial Rate]), (\"At Risk Revenue\", [At Risk Revenue]) }"
+    },
+    {
+      "id": "revcycle-sm-02-denial-rate-by-payer",
+      "question": "What is the denial rate by payer?",
+      "query": "EVALUATE SUMMARIZECOLUMNS(dim_payer[payer_name], dim_payer[payer_type], \"Claims\", [Total Claims], \"Denial Rate\", [Denial Rate], \"Avg Denial Risk\", [Avg Denial Risk]) ORDER BY [Denial Rate] DESC"
+    },
+    {
+      "id": "revcycle-sm-03-collection-rate-by-payer",
+      "question": "Compare collection rate across all payers.",
+      "query": "EVALUATE SUMMARIZECOLUMNS(dim_payer[payer_name], dim_payer[payer_type], \"Billed\", [Total Billed], \"Paid\", [Total Paid], \"Collection %\", [Collection Rate], \"Net Coll %\", [Net Collection Rate]) ORDER BY [Collection Rate] ASC"
+    },
+    {
+      "id": "revcycle-sm-04-at-risk-revenue",
+      "question": "What is our total revenue at risk?",
+      "query": "EVALUATE SUMMARIZECOLUMNS(dim_payer[payer_name], \"At Risk Revenue\", [At Risk Revenue], \"High Risk Denials\", [High Risk Denials]) ORDER BY [At Risk Revenue] DESC"
+    },
+    {
+      "id": "revcycle-sm-05-monthly-collection-trend",
+      "question": "Show the monthly billed vs paid trend for the last 12 months.",
+      "query": "EVALUATE SUMMARIZECOLUMNS(dim_date[year], dim_date[month_number], dim_date[month_name], \"Billed\", [Total Billed], \"Paid\", [Total Paid], \"Collection %\", [Collection Rate], \"MTD Claims\", [MTD Claims]) ORDER BY dim_date[year], dim_date[month_number]"
+    },
+    {
+      "id": "revcycle-sm-06-days-to-payment-by-payer",
+      "question": "Which payers are slowest to pay?",
+      "query": "EVALUATE SUMMARIZECOLUMNS(dim_payer[payer_name], dim_payer[payer_type], \"Claims\", [Total Claims], \"Avg Days to Payment\", [Avg Days to Payment], \"Collection %\", [Collection Rate]) ORDER BY [Avg Days to Payment] DESC"
+    },
+    {
+      "id": "revcycle-sm-07-ar-aging",
+      "question": "What does our AR aging look like?",
+      "query": "EVALUATE SUMMARIZECOLUMNS(agg_days_in_ar[age_bucket], dim_payer[payer_name], \"Claims\", SUM(agg_days_in_ar[claim_count]), \"Billed\", SUM(agg_days_in_ar[billed_amount])) ORDER BY agg_days_in_ar[age_bucket], dim_payer[payer_name]"
+    },
+    {
+      "id": "revcycle-sm-08-appeal-roi-by-payer",
+      "question": "Which payers have the best appeal ROI?",
+      "query": "EVALUATE SUMMARIZECOLUMNS(agg_appeal_outcomes[payer_name], \"Appeals\", SUM(agg_appeal_outcomes[appeal_count]), \"Won\", CALCULATE(SUM(agg_appeal_outcomes[appeal_count]), agg_appeal_outcomes[appeal_outcome] = \"Won\"), \"Recovered\", SUM(agg_appeal_outcomes[total_amount_recovered])) ORDER BY [Recovered] DESC"
+    },
+    {
+      "id": "revcycle-sm-09-payer-mix",
+      "question": "What is our payer mix by volume and revenue?",
+      "query": "EVALUATE SUMMARIZECOLUMNS(dim_payer[payer_type], \"Payers\", [Total Payers], \"Claims\", [Total Claims], \"Billed\", [Total Billed], \"Paid\", [Total Paid], \"Collection %\", [Collection Rate]) ORDER BY [Total Billed] DESC"
+    },
+    {
+      "id": "revcycle-sm-10-drg-margin",
+      "question": "Which DRGs have the worst margins?",
+      "query": "EVALUATE TOPN(15, SUMMARIZECOLUMNS(fact_encounter[drg_code], fact_encounter[drg_description], \"Encounters\", [Total Encounters], \"Charges\", [Total Charges], \"Cost\", [Total Cost], \"Expected Reimb\", [Total Expected Reimbursement]), [Total Cost], DESC)"
+    },
+    {
+      "id": "revcycle-sm-11-ytd-vs-py",
+      "question": "How are YTD charges trending versus prior year?",
+      "query": "EVALUATE { (\"YTD Charges\", [YTD Charges]), (\"PY Charges\", [PY Charges]), (\"YoY %\", [YoY Charge Growth]), (\"Total Encounters\", [Total Encounters]) }"
+    },
+    {
+      "id": "revcycle-sm-12-top-denial-reasons",
+      "question": "Which denial reasons drove the most revenue at risk last quarter?",
+      "query": "EVALUATE TOPN(10, SUMMARIZECOLUMNS(fact_claim[primary_denial_reason], \"Claims\", [Total Claims], \"At Risk $\", [At Risk Revenue], \"Avg Risk\", [Avg Denial Risk]), [At Risk Revenue], DESC)"
+    }
+  ]
+}

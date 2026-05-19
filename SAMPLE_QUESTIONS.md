@@ -18,6 +18,72 @@ These questions exercise the new CMO fewshots added to **ClinicalOpsAgent**:
 | C5 | How does SDOH risk tier affect our readmission rate? Are we delivering equitable care? |
 | C6 | Which providers should I peer-review this week â€” high denial rate or low documentation score? |
 
+### ClinicalOpsAgent â€” ProviderAnalytics Semantic Model (DAX)
+
+These questions exercise the new **`semantic-model-ProviderAnalytics`** binding on ClinicalOpsAgent.
+The agent should respond with DAX (`EVALUATE SUMMARIZECOLUMNS(...)`) rather than SQL, hitting
+pre-defined measures on the Direct Lake `ProviderAnalytics` semantic model.
+
+| # | Question | Expected measures |
+|---|----------|-------------------|
+| CSM1 | What is our overall 30-day readmission rate? | `[Readmission Rate]` |
+| CSM2 | Show readmission rate by encounter type. | `[Readmission Rate]`, `[High Risk Readmissions]` |
+| CSM3 | Show the monthly readmission rate trend for the last year. | `[Total Encounters]`, `[Readmission Rate]` over `dim_date` |
+| CSM4 | What is medication adherence by drug class? | `[Adherent Rate]`, `[Avg PDC Score]` |
+| CSM5 | Which providers are exceeding their RVU targets? | `[RVU Attainment %]`, `[Avg Actual RVU]`, `[Avg RVU Target]` |
+| CSM6 | Show me a quality scorecard by provider specialty. | `[Board Certified Rate]`, `[Avg Satisfaction Score]`, `[Avg Documentation Score]`, `[Value-Based Provider Rate]` |
+| CSM7 | Which DRGs have the worst margins? | `[DRG Margin]`, `[Total Charges]`, `[Total Cost]` |
+| CSM8 | How is telehealth adoption trending year over year? | `[Telehealth Rate]`, `[YoY Charge Growth]` |
+| CSM9 | How does SDOH risk tier correlate with readmissions? | `[Readmission Rate]`, `[High Risk SDOH Patients]` |
+| CSM10 | What is our chronic condition burden? | `[Chronic Patients]`, `[Chronic Rate]`, `[Patients with Chronic Conditions]` |
+| CSM11 | Are providers at panel capacity? | `[Avg Panel Size]`, `[Actual Panel Count]`, `[Panel Utilization %]` |
+| CSM12 | What are the most common chronic diagnoses? | `[Unique Diagnoses]`, `[Patients with Chronic Conditions]` |
+
+> **Routing tip:** Ask the same question two ways â€” *"What is the readmission rate?"* (â†’ DAX via
+> ProviderAnalytics) vs *"List the 20 highest-risk patients with their names and diagnoses"* (â†’ SQL via
+> `lh_gold_curated`). The agent should pick the right binding automatically.
+
+---
+
+## Revenue Cycle Agent â€” CFO Executive Summary (Phase 2)
+
+These questions exercise the new CFO fewshots added to **RevenueCycleAgent**:
+
+| # | Question |
+|---|----------|
+| R1 | What should I be worried about today as CFO? |
+| R2 | CFO executive summary: denial rate vs the 8% benchmark, collection rate vs 95%, days-in-AR vs 45-day target. |
+| R3 | Which payers deny the most and why? Show the top 3 with their primary denial reasons. |
+| R4 | How much are we losing to denials this quarter â€” total denied dollars plus at-risk pending claims. |
+| R5 | Which denial reasons have the best appeal ROI â€” where should we focus our appeals team? |
+| R6 | Show me the payer mix shift over the last 12 months â€” are we becoming more or less Commercial? |
+
+### RevenueCycleAgent â€” PayerAnalytics Semantic Model (DAX)
+
+These questions exercise the new **`semantic-model-PayerAnalytics`** binding on RevenueCycleAgent.
+The agent should respond with DAX, hitting pre-defined measures on the Direct Lake `PayerAnalytics`
+semantic model.
+
+| # | Question | Expected measures |
+|---|----------|-------------------|
+| RSM1 | What is our overall denial rate? | `[Denial Rate]`, `[Total Claims]`, `[At Risk Revenue]` |
+| RSM2 | What is the denial rate by payer? | `[Denial Rate]`, `[Avg Denial Risk]` sliced by `dim_payer[payer_name]` |
+| RSM3 | Compare collection rate across all payers. | `[Collection Rate]`, `[Net Collection Rate]`, `[Total Billed]`, `[Total Paid]` |
+| RSM4 | What is our total revenue at risk? | `[At Risk Revenue]`, `[High Risk Denials]` |
+| RSM5 | Show the monthly billed vs paid trend for the last 12 months. | `[Total Billed]`, `[Total Paid]`, `[Collection Rate]`, `[MTD Claims]` over `dim_date` |
+| RSM6 | Which payers are slowest to pay? | `[Avg Days to Payment]`, `[Collection Rate]` |
+| RSM7 | What does our AR aging look like? | `SUM(agg_days_in_ar[claim_count])`, `SUM(agg_days_in_ar[billed_amount])` by `[age_bucket]` |
+| RSM8 | Which payers have the best appeal ROI? | aggregations over `agg_appeal_outcomes` |
+| RSM9 | What is our payer mix by volume and revenue? | `[Total Payers]`, `[Total Claims]`, `[Total Billed]`, `[Collection Rate]` by `payer_type` |
+| RSM10 | Which DRGs have the worst margins? | `[Total Charges]`, `[Total Cost]`, `[Total Expected Reimbursement]` |
+| RSM11 | How are YTD charges trending versus prior year? | `[YTD Charges]`, `[PY Charges]`, `[YoY Charge Growth]` |
+| RSM12 | Which denial reasons drove the most revenue at risk last quarter? | `[At Risk Revenue]` sliced by `fact_claim[primary_denial_reason]` |
+
+> **Not-yet-backed tables:** Questions involving HEDIS / MLR / RAF / Star Ratings / authorizations
+> / capitation / premium / plan-level analytics will trigger a "data source not yet available"
+> response. The TMDL definitions exist for those domains, but the Delta backing in
+> `lh_gold_curated` is aspirational and not deployed in this environment.
+
 ---
 
 ## Fabric Data Agent (HealthcareHLSAgent)

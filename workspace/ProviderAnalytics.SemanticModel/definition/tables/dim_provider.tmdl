@@ -254,11 +254,11 @@ table dim_provider
 		formatString: 0
 		lineageTag: b1010001-0001-0001-0001-000000000033
 
-	measure 'Telehealth Enabled Rate' = DIVIDE(CALCULATE(COUNTROWS(dim_provider), dim_provider[telehealth_enabled] = TRUE()), COUNTROWS(dim_provider))
+	measure 'Telehealth Enabled Rate' = DIVIDE(COUNTROWS(FILTER(dim_provider, dim_provider[telehealth_enabled] = TRUE())), COUNTROWS(dim_provider))
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: b1010001-0001-0001-0001-000000000034
 
-	measure 'Board Certified Rate' = DIVIDE(CALCULATE(COUNTROWS(dim_provider), dim_provider[board_certified] = TRUE()), COUNTROWS(dim_provider))
+	measure 'Board Certified Rate' = DIVIDE(COUNTROWS(FILTER(dim_provider, dim_provider[board_certified] = TRUE())), COUNTROWS(dim_provider))
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: b1010001-0001-0001-0001-000000000035
 
@@ -270,7 +270,7 @@ table dim_provider
 		formatString: #,##0
 		lineageTag: b1010001-0001-0001-0001-000000000037
 
-	measure 'Value-Based Provider Rate' = DIVIDE(CALCULATE(COUNTROWS(dim_provider), dim_provider[contract_type] = "Value-Based"), COUNTROWS(dim_provider))
+	measure 'Value-Based Provider Rate' = DIVIDE(COUNTROWS(FILTER(dim_provider, dim_provider[contract_type] = "Value-Based")), COUNTROWS(dim_provider))
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: b1010001-0001-0001-0001-000000000038
 

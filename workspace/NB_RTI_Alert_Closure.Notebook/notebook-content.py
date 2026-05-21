@@ -155,10 +155,10 @@ def _kql_query(query):
 # ============================================================================
 _mttr_query = """
 let closures = alert_closure_events
-    | where event_timestamp > ago(24h)
+    | where closure_timestamp > ago(24h)
     | summarize
-        ack_time   = minif(event_timestamp, action_type == "ACKNOWLEDGED"),
-        close_time = minif(event_timestamp, action_type == "RESOLVED")
+        ack_time   = minif(closure_timestamp, action_taken == "ACKNOWLEDGED"),
+        close_time = minif(closure_timestamp, action_taken == "RESOLVED")
         by alert_id, alert_type, persona;
 let alerts_union = union
     (provider_alerts | extend persona = "CMO"),

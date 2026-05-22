@@ -1,11 +1,15 @@
+/// Claim fact. One row per submitted medical claim. Use denial_flag = 1 for denied claims; denial_risk_category
+/// is the preferred filter for risk (do not filter on the raw score).
 table fact_claim
 	lineageTag: b1080001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[fact_claim]
 
+	/// Count of claim records in fact_claim.
 	measure 'Total Claims' = COUNTROWS(fact_claim)
 		formatString: 0
 		lineageTag: b1080001-0001-0001-0001-000000000011
 
+	/// Percentage of claims with denial_flag = 1, computed as denied_claims / total_claims.
 	measure 'Denial Rate' =
 			VAR _num = CALCULATE(COUNTROWS(fact_claim), fact_claim[denial_flag] = 1)
 			VAR _den = COUNTROWS(fact_claim)
@@ -13,20 +17,24 @@ table fact_claim
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: b1080001-0001-0001-0001-000000000012
 
+	/// Sum of billed_amount across all claims (gross charges submitted to payers).
 	measure 'Total Billed' = SUM(fact_claim[billed_amount])
 		lineageTag: b1080001-0001-0001-0001-000000000013
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Average denial_risk_score across claims. Score is 0-1 from the upstream risk model.
 	measure 'Avg Denial Risk' = AVERAGE(fact_claim[denial_risk_score])
 		lineageTag: b1080001-0001-0001-0001-000000000014
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: provider denial count.
 	measure 'Provider Denial Count' = CALCULATE(COUNTROWS(fact_claim), fact_claim[denial_flag] = 1)
 		formatString: 0
 		lineageTag: b1080001-0001-0001-0001-000000000015
 
+	/// Claim business key.
 	column claim_id
 		dataType: string
 		lineageTag: b1080001-0001-0001-0001-000000000021
@@ -36,6 +44,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Date the claim was submitted, as YYYYMMDD integer. Join to dim_date.
 	column claim_date_key
 		dataType: int64
 		formatString: 0
@@ -46,6 +55,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_patient. Changes across SCD2 versions.
 	column patient_key
 		dataType: int64
 		formatString: 0
@@ -56,6 +66,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_provider.
 	column provider_key
 		dataType: int64
 		formatString: 0
@@ -66,6 +77,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column encounter_key
 		dataType: int64
 		formatString: 0
@@ -76,6 +88,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Claim type.
 	column claim_type
 		dataType: string
 		lineageTag: b1080001-0001-0001-0001-000000000026
@@ -85,6 +98,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Claim status: Submitted, Pending, Paid, Denied, Appealed.
 	column claim_status
 		dataType: string
 		lineageTag: b1080001-0001-0001-0001-000000000027
@@ -94,6 +108,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Gross amount billed to payer (charges submitted).
 	column billed_amount
 		dataType: double
 		lineageTag: b1080001-0001-0001-0001-000000000028
@@ -105,6 +120,7 @@ table fact_claim
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Amount actually paid by the payer.
 	column paid_amount
 		dataType: double
 		lineageTag: b1080001-0001-0001-0001-000000000029
@@ -116,6 +132,7 @@ table fact_claim
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// 1 = claim denied; 0 = paid or pending.
 	column denial_flag
 		dataType: int64
 		formatString: 0
@@ -126,6 +143,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Model-predicted probability of denial (0-1). Do NOT filter directly; use denial_risk_category.
 	column denial_risk_score
 		dataType: double
 		lineageTag: b1080001-0001-0001-0001-00000000002b
@@ -137,6 +155,7 @@ table fact_claim
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Denial risk band: High, Medium, Low. Preferred filter for risk.
 	column denial_risk_category
 		dataType: string
 		lineageTag: b1080001-0001-0001-0001-00000000002c
@@ -146,6 +165,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Free-text reason the claim was denied (e.g. Missing Authorization, Coding Error).
 	column primary_denial_reason
 		dataType: string
 		lineageTag: b1080001-0001-0001-0001-00000000002d
@@ -155,6 +175,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date
@@ -165,6 +186,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column claim_key
 		dataType: int64
 		formatString: 0

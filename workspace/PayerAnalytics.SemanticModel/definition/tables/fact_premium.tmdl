@@ -1,27 +1,34 @@
+/// Member premium payments. Monthly grain by (payer, plan, member). Used in MLR and revenue analyses.
 table fact_premium
 	lineageTag: c1100001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[fact_premium]
 
+	/// Measure: total premium revenue.
 	measure 'Total Premium Revenue' = SUM(fact_premium[premium_amount])
 		lineageTag: c1100001-0001-0001-0001-000000000011
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: member months.
 	measure 'Member Months' = COUNTROWS(fact_premium)
 		formatString: #,##0
 		lineageTag: c1100001-0001-0001-0001-000000000012
 
+	/// Measure: premium pmpm.
 	measure 'Premium PMPM' = DIVIDE([Total Premium Revenue], [Member Months])
 		lineageTag: c1100001-0001-0001-0001-000000000013
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: total subsidy.
 	measure 'Total Subsidy' = SUM(fact_premium[subsidy_amount])
 		lineageTag: c1100001-0001-0001-0001-000000000014
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: total member paid.
 	measure 'Total Member Paid' = SUM(fact_premium[member_paid])
 		lineageTag: c1100001-0001-0001-0001-000000000015
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Business key.
 	column premium_id
 		dataType: string
 		lineageTag: c1100001-0001-0001-0001-000000000021
@@ -30,6 +37,7 @@ table fact_premium
 		sourceColumn: premium_id
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column premium_key
 		dataType: int64
 		formatString: 0
@@ -39,6 +47,7 @@ table fact_premium
 		sourceColumn: premium_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Year month.
 	column year_month
 		dataType: string
 		lineageTag: c1100001-0001-0001-0001-000000000023
@@ -47,6 +56,7 @@ table fact_premium
 		sourceColumn: year_month
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column year_month_key
 		dataType: int64
 		formatString: 0
@@ -56,6 +66,7 @@ table fact_premium
 		sourceColumn: year_month_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column member_key
 		dataType: int64
 		formatString: 0
@@ -65,6 +76,7 @@ table fact_premium
 		sourceColumn: member_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_plan.
 	column plan_key
 		dataType: int64
 		formatString: 0
@@ -74,6 +86,7 @@ table fact_premium
 		sourceColumn: plan_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_payer.
 	column payer_key
 		dataType: int64
 		formatString: 0
@@ -83,6 +96,7 @@ table fact_premium
 		sourceColumn: payer_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Dollar amount.
 	column premium_amount
 		dataType: double
 		lineageTag: c1100001-0001-0001-0001-000000000028
@@ -92,6 +106,7 @@ table fact_premium
 		annotation SummarizationSetBy = Automatic
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Dollar amount.
 	column subsidy_amount
 		dataType: double
 		lineageTag: c1100001-0001-0001-0001-000000000029
@@ -101,6 +116,7 @@ table fact_premium
 		annotation SummarizationSetBy = Automatic
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Member paid.
 	column member_paid
 		dataType: double
 		lineageTag: c1100001-0001-0001-0001-00000000002a
@@ -110,6 +126,7 @@ table fact_premium
 		annotation SummarizationSetBy = Automatic
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date

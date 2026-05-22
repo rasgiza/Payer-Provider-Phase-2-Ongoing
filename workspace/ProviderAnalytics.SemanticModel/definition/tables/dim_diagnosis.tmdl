@@ -1,7 +1,10 @@
+/// Diagnosis dimension keyed by ICD-10 code. is_chronic flags long-term conditions used for chronic-care
+/// reporting.
 table dim_diagnosis
 	lineageTag: b1040001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[dim_diagnosis]
 
+	/// Surrogate key for joining to dim_diagnosis.
 	column diagnosis_key
 		dataType: int64
 		formatString: 0
@@ -12,6 +15,7 @@ table dim_diagnosis
 
 		annotation SummarizationSetBy = Automatic
 
+	/// ICD-10 diagnosis code (e.g. E11.9 for Type 2 diabetes without complications).
 	column icd_code
 		dataType: string
 		lineageTag: b1040001-0001-0001-0001-000000000012
@@ -21,6 +25,7 @@ table dim_diagnosis
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Human-readable ICD-10 description.
 	column icd_description
 		dataType: string
 		lineageTag: b1040001-0001-0001-0001-000000000013
@@ -30,6 +35,7 @@ table dim_diagnosis
 
 		annotation SummarizationSetBy = Automatic
 
+	/// High-level ICD-10 category (Diabetes, Hypertension, COPD, ...).
 	column icd_category
 		dataType: string
 		lineageTag: b1040001-0001-0001-0001-000000000014
@@ -39,6 +45,7 @@ table dim_diagnosis
 
 		annotation SummarizationSetBy = Automatic
 
+	/// 1 = chronic / maintenance condition or medication; 0 = acute.
 	column is_chronic
 		dataType: int64
 		formatString: 0

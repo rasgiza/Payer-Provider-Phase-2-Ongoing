@@ -1,0 +1,17 @@
+question,expected_answer,agent_answer,expected_label
+What is 2 + 2?,4,4,pass
+What is the capital of France?,Paris,Paris,pass
+What color is the sky on a clear day?,Blue,Blue,pass
+How many days are in a non-leap year?,365,365,pass
+What is 10% of 200?,20,20,pass
+What is the boiling point of water in Celsius?,100,100 degrees Celsius,pass
+Who wrote the play 'Hamlet'?,William Shakespeare,Shakespeare,pass
+What is the largest planet in our solar system?,Jupiter,Jupiter,pass
+What is 2 + 2?,4,5,fail
+What is the capital of France?,Paris,London,fail
+What color is the sky on a clear day?,Blue,Green,fail
+How many days are in a non-leap year?,365,366,fail
+What is 10% of 200?,20,50,fail
+What is the boiling point of water in Celsius?,100,212,fail
+Who wrote the play 'Hamlet'?,William Shakespeare,Charles Dickens,fail
+What is the largest planet in our solar system?,Jupiter,Mars,fail

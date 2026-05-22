@@ -1,7 +1,9 @@
+/// Pre-aggregated appeal outcomes by payer and denial reason. Used for appeal-success-rate dashboards.
 table agg_appeal_outcomes
 	lineageTag: c1100001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[agg_appeal_outcomes]
 
+	/// Display name of the payer.
 	column payer_name
 		dataType: string
 		lineageTag: c1100001-0001-0001-0001-000000000011
@@ -11,6 +13,7 @@ table agg_appeal_outcomes
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Denial reason.
 	column denial_reason
 		dataType: string
 		lineageTag: c1100001-0001-0001-0001-000000000012
@@ -20,6 +23,7 @@ table agg_appeal_outcomes
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Appeal outcome.
 	column appeal_outcome
 		dataType: string
 		lineageTag: c1100001-0001-0001-0001-000000000013
@@ -29,6 +33,7 @@ table agg_appeal_outcomes
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Count of records in the underlying grain.
 	column appeal_count
 		dataType: int64
 		formatString: 0
@@ -39,6 +44,7 @@ table agg_appeal_outcomes
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Sum of the underlying measure across the grain.
 	column total_amount_recovered
 		dataType: double
 		lineageTag: c1100001-0001-0001-0001-000000000015
@@ -50,6 +56,7 @@ table agg_appeal_outcomes
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Average of the underlying measure across the grain.
 	column avg_amount_recovered
 		dataType: double
 		lineageTag: c1100001-0001-0001-0001-000000000016

@@ -1,19 +1,24 @@
+/// Pre-aggregated HEDIS quality-measure compliance per (payer, plan, measurement year, measure).
 table agg_hedis_compliance
 	lineageTag: c1210001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[agg_hedis_compliance]
 
+	/// HEDIS compliance rate: numerator_met / denominator_eligible. Higher is better.
 	measure 'HEDIS Compliance %' = DIVIDE(SUM(agg_hedis_compliance[numerator_met]), SUM(agg_hedis_compliance[denominator_eligible]))
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: c1210001-0001-0001-0001-000000000011
 
+	/// Sum of denominator_eligible (members in the measure's denominator).
 	measure 'HEDIS Eligible Members' = SUM(agg_hedis_compliance[denominator_eligible])
 		formatString: #,##0
 		lineageTag: c1210001-0001-0001-0001-000000000012
 
+	/// Sum of numerator_met (members who satisfied the HEDIS measure).
 	measure 'HEDIS Numerator Met' = SUM(agg_hedis_compliance[numerator_met])
 		formatString: #,##0
 		lineageTag: c1210001-0001-0001-0001-000000000013
 
+	/// Business key.
 	column compliance_id
 		dataType: string
 		lineageTag: c1210001-0001-0001-0001-000000000021
@@ -22,6 +27,7 @@ table agg_hedis_compliance
 		sourceColumn: compliance_id
 		annotation SummarizationSetBy = Automatic
 
+	/// Measurement year.
 	column measurement_year
 		dataType: int64
 		formatString: 0
@@ -31,6 +37,7 @@ table agg_hedis_compliance
 		sourceColumn: measurement_year
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_payer.
 	column payer_key
 		dataType: int64
 		formatString: 0
@@ -40,6 +47,7 @@ table agg_hedis_compliance
 		sourceColumn: payer_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_plan.
 	column plan_key
 		dataType: int64
 		formatString: 0
@@ -49,6 +57,7 @@ table agg_hedis_compliance
 		sourceColumn: plan_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Business key.
 	column measure_id
 		dataType: string
 		lineageTag: c1210001-0001-0001-0001-000000000025
@@ -57,6 +66,7 @@ table agg_hedis_compliance
 		sourceColumn: measure_id
 		annotation SummarizationSetBy = Automatic
 
+	/// Measure name.
 	column measure_name
 		dataType: string
 		lineageTag: c1210001-0001-0001-0001-000000000026
@@ -65,6 +75,7 @@ table agg_hedis_compliance
 		sourceColumn: measure_name
 		annotation SummarizationSetBy = Automatic
 
+	/// Denominator eligible.
 	column denominator_eligible
 		dataType: int64
 		formatString: 0
@@ -74,6 +85,7 @@ table agg_hedis_compliance
 		sourceColumn: denominator_eligible
 		annotation SummarizationSetBy = Automatic
 
+	/// Numerator met.
 	column numerator_met
 		dataType: int64
 		formatString: 0
@@ -83,6 +95,7 @@ table agg_hedis_compliance
 		sourceColumn: numerator_met
 		annotation SummarizationSetBy = Automatic
 
+	/// Rate (0-1).
 	column compliance_rate
 		dataType: double
 		lineageTag: c1210001-0001-0001-0001-000000000029

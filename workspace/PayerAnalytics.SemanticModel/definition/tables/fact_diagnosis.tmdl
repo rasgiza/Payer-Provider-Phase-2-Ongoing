@@ -1,11 +1,15 @@
+/// Patient diagnosis fact. One row per (patient, diagnosis, encounter). diagnosis_type = 'Primary' identifies the
+/// principal diagnosis on an encounter.
 table fact_diagnosis
 	lineageTag: c10b0001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[fact_diagnosis]
 
+	/// Measure: unique diagnoses.
 	measure 'Unique Diagnoses' = DISTINCTCOUNT(fact_diagnosis[diagnosis_key])
 		formatString: 0
 		lineageTag: c10b0001-0001-0001-0001-000000000011
 
+	/// Measure: chronic diagnoses.
 	measure 'Chronic Diagnoses' =
 			CALCULATE(
 				DISTINCTCOUNT(fact_diagnosis[diagnosis_key]),
@@ -14,6 +18,7 @@ table fact_diagnosis
 		formatString: 0
 		lineageTag: c10b0001-0001-0001-0001-000000000012
 
+	/// Measure: patients with chronic conditions.
 	measure 'Patients with Chronic Conditions' =
 			CALCULATE(
 				DISTINCTCOUNT(fact_diagnosis[patient_key]),
@@ -22,6 +27,7 @@ table fact_diagnosis
 		formatString: 0
 		lineageTag: c10b0001-0001-0001-0001-000000000013
 
+	/// Surrogate join key.
 	column fact_diagnosis_key
 		dataType: int64
 		formatString: 0
@@ -32,6 +38,7 @@ table fact_diagnosis
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Business key.
 	column diagnosis_id
 		dataType: string
 		lineageTag: c10b0001-0001-0001-0001-000000000022
@@ -41,6 +48,7 @@ table fact_diagnosis
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column encounter_key
 		dataType: int64
 		formatString: 0
@@ -51,6 +59,7 @@ table fact_diagnosis
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column diagnosis_date_key
 		dataType: int64
 		formatString: 0
@@ -61,6 +70,7 @@ table fact_diagnosis
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_patient. Changes across SCD2 versions.
 	column patient_key
 		dataType: int64
 		formatString: 0
@@ -71,6 +81,7 @@ table fact_diagnosis
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_diagnosis.
 	column diagnosis_key
 		dataType: int64
 		formatString: 0
@@ -81,6 +92,7 @@ table fact_diagnosis
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column facility_key
 		dataType: int64
 		formatString: 0
@@ -91,6 +103,7 @@ table fact_diagnosis
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Icd code.
 	column icd_code
 		dataType: string
 		lineageTag: c10b0001-0001-0001-0001-000000000028
@@ -100,6 +113,7 @@ table fact_diagnosis
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Diagnosis sequence.
 	column diagnosis_sequence
 		dataType: int64
 		formatString: 0
@@ -110,6 +124,7 @@ table fact_diagnosis
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Diagnosis type.
 	column diagnosis_type
 		dataType: string
 		lineageTag: c10b0001-0001-0001-0001-00000000002a
@@ -119,6 +134,7 @@ table fact_diagnosis
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Present on admission.
 	column present_on_admission
 		dataType: string
 		lineageTag: c10b0001-0001-0001-0001-00000000002b
@@ -128,6 +144,7 @@ table fact_diagnosis
 
 		annotation SummarizationSetBy = Automatic
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date

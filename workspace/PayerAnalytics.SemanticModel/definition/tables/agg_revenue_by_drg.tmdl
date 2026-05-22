@@ -1,7 +1,9 @@
+/// Pre-aggregated revenue and margin by DRG (Diagnosis-Related Group). Used for service-line profitability.
 table agg_revenue_by_drg
 	lineageTag: c10e0001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[agg_revenue_by_drg]
 
+	/// Drg code.
 	column drg_code
 		dataType: string
 		lineageTag: c10e0001-0001-0001-0001-000000000011
@@ -11,6 +13,7 @@ table agg_revenue_by_drg
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Drg description.
 	column drg_description
 		dataType: string
 		lineageTag: c10e0001-0001-0001-0001-000000000012
@@ -20,6 +23,7 @@ table agg_revenue_by_drg
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Count of records in the underlying grain.
 	column encounter_count
 		dataType: int64
 		formatString: 0
@@ -30,6 +34,7 @@ table agg_revenue_by_drg
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Average of the underlying measure across the grain.
 	column avg_charges
 		dataType: double
 		lineageTag: c10e0001-0001-0001-0001-000000000014
@@ -41,6 +46,7 @@ table agg_revenue_by_drg
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Average of the underlying measure across the grain.
 	column avg_cost_to_deliver
 		dataType: double
 		lineageTag: c10e0001-0001-0001-0001-000000000015
@@ -52,6 +58,7 @@ table agg_revenue_by_drg
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Average of the underlying measure across the grain.
 	column avg_expected_reimbursement
 		dataType: double
 		lineageTag: c10e0001-0001-0001-0001-000000000016
@@ -63,6 +70,7 @@ table agg_revenue_by_drg
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Margin per case.
 	column margin_per_case
 		dataType: double
 		lineageTag: c10e0001-0001-0001-0001-000000000017
@@ -74,6 +82,7 @@ table agg_revenue_by_drg
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Percentage (0-1 unless otherwise noted).
 	column margin_pct
 		dataType: double
 		lineageTag: c10e0001-0001-0001-0001-000000000018

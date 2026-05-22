@@ -1,7 +1,10 @@
+/// Pre-aggregated Days-in-Accounts-Receivable by (claim date, payer). Lower is better; industry benchmark ~35-45
+/// days.
 table agg_days_in_ar
 	lineageTag: c10f0001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[agg_days_in_ar]
 
+	/// Date the claim was submitted, as YYYYMMDD integer. Join to dim_date.
 	column claim_date_key
 		dataType: int64
 		formatString: 0
@@ -12,6 +15,7 @@ table agg_days_in_ar
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Display name of the payer.
 	column payer_name
 		dataType: string
 		lineageTag: c10f0001-0001-0001-0001-000000000012
@@ -21,6 +25,7 @@ table agg_days_in_ar
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Count of records in the underlying grain.
 	column claim_count
 		dataType: int64
 		formatString: 0
@@ -31,6 +36,7 @@ table agg_days_in_ar
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Average of the underlying measure across the grain.
 	column avg_days_to_payment
 		dataType: double
 		lineageTag: c10f0001-0001-0001-0001-000000000014
@@ -42,6 +48,7 @@ table agg_days_in_ar
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Median of the underlying measure.
 	column median_days_to_payment
 		dataType: double
 		lineageTag: c10f0001-0001-0001-0001-000000000015
@@ -53,6 +60,7 @@ table agg_days_in_ar
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// 90th percentile of the underlying measure.
 	column p90_days_to_payment
 		dataType: double
 		lineageTag: c10f0001-0001-0001-0001-000000000016
@@ -64,6 +72,7 @@ table agg_days_in_ar
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Rate (0-1).
 	column avg_net_collection_rate
 		dataType: double
 		lineageTag: c10f0001-0001-0001-0001-000000000017

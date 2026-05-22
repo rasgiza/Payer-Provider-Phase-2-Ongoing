@@ -1,19 +1,25 @@
+/// Risk Adjustment Factor (RAF) score per member-year, used for Medicare Advantage risk adjustment.
 table agg_raf_score
 	lineageTag: c1240001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[agg_raf_score]
 
+	/// Average Risk Adjustment Factor across members. Higher RAF indicates a sicker population and more risk-adjusted
+	/// revenue.
 	measure 'Avg RAF Score' = AVERAGE(agg_raf_score[raf_score])
 		formatString: 0.00
 		lineageTag: c1240001-0001-0001-0001-000000000011
 
+	/// Average count of Hierarchical Condition Categories per member.
 	measure 'Avg HCC Count' = AVERAGE(agg_raf_score[hcc_count])
 		formatString: 0.0
 		lineageTag: c1240001-0001-0001-0001-000000000012
 
+	/// Distinct count of members with at least one HCC.
 	measure 'Members with HCCs' = CALCULATE(DISTINCTCOUNT(agg_raf_score[member_key]), agg_raf_score[hcc_count] > 0)
 		formatString: #,##0
 		lineageTag: c1240001-0001-0001-0001-000000000013
 
+	/// Business key.
 	column raf_id
 		dataType: string
 		lineageTag: c1240001-0001-0001-0001-000000000021
@@ -22,6 +28,7 @@ table agg_raf_score
 		sourceColumn: raf_id
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column member_key
 		dataType: int64
 		formatString: 0
@@ -31,6 +38,7 @@ table agg_raf_score
 		sourceColumn: member_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_payer.
 	column payer_key
 		dataType: int64
 		formatString: 0
@@ -40,6 +48,7 @@ table agg_raf_score
 		sourceColumn: payer_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_plan.
 	column plan_key
 		dataType: int64
 		formatString: 0
@@ -49,6 +58,7 @@ table agg_raf_score
 		sourceColumn: plan_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Measurement year.
 	column measurement_year
 		dataType: int64
 		formatString: 0
@@ -58,6 +68,7 @@ table agg_raf_score
 		sourceColumn: measurement_year
 		annotation SummarizationSetBy = Automatic
 
+	/// Count of records in the underlying grain.
 	column hcc_count
 		dataType: int64
 		formatString: 0
@@ -67,6 +78,7 @@ table agg_raf_score
 		sourceColumn: hcc_count
 		annotation SummarizationSetBy = Automatic
 
+	/// Hcc codes.
 	column hcc_codes
 		dataType: string
 		lineageTag: c1240001-0001-0001-0001-000000000027
@@ -75,6 +87,7 @@ table agg_raf_score
 		sourceColumn: hcc_codes
 		annotation SummarizationSetBy = Automatic
 
+	/// Model-produced score.
 	column demographic_score
 		dataType: double
 		lineageTag: c1240001-0001-0001-0001-000000000028
@@ -83,6 +96,7 @@ table agg_raf_score
 		sourceColumn: demographic_score
 		annotation SummarizationSetBy = Automatic
 
+	/// Model-produced score.
 	column disease_score
 		dataType: double
 		lineageTag: c1240001-0001-0001-0001-000000000029
@@ -91,6 +105,7 @@ table agg_raf_score
 		sourceColumn: disease_score
 		annotation SummarizationSetBy = Automatic
 
+	/// Model-produced score.
 	column raf_score
 		dataType: double
 		lineageTag: c1240001-0001-0001-0001-00000000002a

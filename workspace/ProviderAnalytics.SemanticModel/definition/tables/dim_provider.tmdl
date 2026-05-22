@@ -1,7 +1,10 @@
+/// Provider master dimension. One row per clinician (NPI). Use display_name for search and specialty / department
+/// for grouping.
 table dim_provider
 	lineageTag: b1010001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[dim_provider]
 
+	/// Provider business key.
 	column provider_id
 		dataType: string
 		lineageTag: b1010001-0001-0001-0001-000000000011
@@ -11,6 +14,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Provider first name.
 	column first_name
 		dataType: string
 		lineageTag: b1010001-0001-0001-0001-000000000012
@@ -20,6 +24,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Provider last name.
 	column last_name
 		dataType: string
 		lineageTag: b1010001-0001-0001-0001-000000000013
@@ -29,6 +34,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Provider display name (preferred field for name search).
 	column display_name
 		dataType: string
 		lineageTag: b1010001-0001-0001-0001-000000000014
@@ -38,6 +44,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// 10-digit National Provider Identifier.
 	column npi_number
 		dataType: string
 		lineageTag: b1010001-0001-0001-0001-000000000015
@@ -47,6 +54,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Clinical specialty (Cardiology, Endocrinology, Internal Medicine, ...).
 	column specialty
 		dataType: string
 		lineageTag: b1010001-0001-0001-0001-000000000016
@@ -56,6 +64,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Hospital department or service line.
 	column department
 		dataType: string
 		lineageTag: b1010001-0001-0001-0001-000000000017
@@ -65,6 +74,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Business key.
 	column facility_id
 		dataType: string
 		lineageTag: b1010001-0001-0001-0001-000000000018
@@ -74,6 +84,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// 1 = entity is active and selectable; 0 = retired.
 	column is_active
 		dataType: int64
 		formatString: 0
@@ -84,6 +95,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_provider.
 	column provider_key
 		dataType: int64
 		formatString: 0
@@ -94,6 +106,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// SCD2 flag — 1 = latest version of this entity; 0 = historical.
 	column is_current
 		dataType: int64
 		formatString: 0
@@ -104,6 +117,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Date column.
 	column effective_start_date
 		dataType: dateTime
 		formatString: General Date
@@ -114,6 +128,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Date column.
 	column effective_end_date
 		dataType: dateTime
 		formatString: General Date
@@ -124,6 +139,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date
@@ -134,6 +150,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Contract type.
 	column contract_type
 		dataType: string
 		lineageTag: b1010001-0001-0001-0001-000000000021
@@ -143,6 +160,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Fte status.
 	column fte_status
 		dataType: string
 		lineageTag: b1010001-0001-0001-0001-000000000022
@@ -152,6 +170,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Years experience.
 	column years_experience
 		dataType: int64
 		formatString: 0
@@ -162,6 +181,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Board certified.
 	column board_certified
 		dataType: boolean
 		formatString: """TRUE"";""TRUE"";""FALSE"""
@@ -172,6 +192,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Patient panel size.
 	column patient_panel_size
 		dataType: int64
 		formatString: #,##0
@@ -182,6 +203,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Annual rvu target.
 	column annual_rvu_target
 		dataType: int64
 		formatString: #,##0
@@ -192,6 +214,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Actual rvu.
 	column actual_rvu
 		dataType: int64
 		formatString: #,##0
@@ -202,6 +225,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Model-produced score.
 	column patient_satisfaction_score
 		dataType: double
 		formatString: 0.0
@@ -212,6 +236,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Telehealth enabled.
 	column telehealth_enabled
 		dataType: boolean
 		formatString: """TRUE"";""TRUE"";""FALSE"""
@@ -222,6 +247,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Model-produced score.
 	column documentation_score
 		dataType: int64
 		formatString: 0
@@ -232,6 +258,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Model-produced score.
 	column ehr_adoption_score
 		dataType: int64
 		formatString: 0
@@ -242,64 +269,79 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Measure: avg satisfaction score.
 	measure 'Avg Satisfaction Score' = AVERAGE(dim_provider[patient_satisfaction_score])
 		formatString: 0.0
 		lineageTag: b1010001-0001-0001-0001-000000000031
 
+	/// Measure: avg documentation score.
 	measure 'Avg Documentation Score' = AVERAGE(dim_provider[documentation_score])
 		formatString: 0
 		lineageTag: b1010001-0001-0001-0001-000000000032
 
+	/// Measure: avg ehr adoption score.
 	measure 'Avg EHR Adoption Score' = AVERAGE(dim_provider[ehr_adoption_score])
 		formatString: 0
 		lineageTag: b1010001-0001-0001-0001-000000000033
 
+	/// Measure: telehealth enabled rate.
 	measure 'Telehealth Enabled Rate' = DIVIDE(COUNTROWS(FILTER(dim_provider, dim_provider[telehealth_enabled] = TRUE())), COUNTROWS(dim_provider))
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: b1010001-0001-0001-0001-000000000034
 
+	/// Measure: board certified rate.
 	measure 'Board Certified Rate' = DIVIDE(COUNTROWS(FILTER(dim_provider, dim_provider[board_certified] = TRUE())), COUNTROWS(dim_provider))
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: b1010001-0001-0001-0001-000000000035
 
+	/// Measure: avg panel size.
 	measure 'Avg Panel Size' = AVERAGE(dim_provider[patient_panel_size])
 		formatString: #,##0
 		lineageTag: b1010001-0001-0001-0001-000000000036
 
+	/// Measure: avg rvu target.
 	measure 'Avg RVU Target' = AVERAGE(dim_provider[annual_rvu_target])
 		formatString: #,##0
 		lineageTag: b1010001-0001-0001-0001-000000000037
 
+	/// Measure: value-based provider rate.
 	measure 'Value-Based Provider Rate' = DIVIDE(COUNTROWS(FILTER(dim_provider, dim_provider[contract_type] = "Value-Based")), COUNTROWS(dim_provider))
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: b1010001-0001-0001-0001-000000000038
 
+	/// Measure: avg actual rvu.
 	measure 'Avg Actual RVU' = AVERAGE(dim_provider[actual_rvu])
 		formatString: #,##0
 		lineageTag: b1010001-0001-0001-0001-000000000039
 
+	/// Measure: rvu attainment %.
 	measure 'RVU Attainment %' = DIVIDE(SUM(dim_provider[actual_rvu]), SUM(dim_provider[annual_rvu_target]))
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: b1010001-0001-0001-0001-00000000003a
 
+	/// Measure: actual panel count.
 	measure 'Actual Panel Count' =
 			VAR _current_provider = SELECTEDVALUE(dim_provider[provider_key])
 			RETURN IF(ISBLANK(_current_provider), DIVIDE(DISTINCTCOUNT(fact_encounter[patient_key]), DISTINCTCOUNT(dim_provider[provider_key])), CALCULATE(DISTINCTCOUNT(fact_encounter[patient_key])))
 		formatString: #,##0
 		lineageTag: b1010001-0001-0001-0001-00000000003b
 
+	/// Measure: panel utilization %.
 	measure 'Panel Utilization %' = DIVIDE([Actual Panel Count], [Avg Panel Size])
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: b1010001-0001-0001-0001-00000000003c
 
+	/// Measure: total providers.
 	measure 'Total Providers' = CALCULATE(COUNTROWS(dim_provider), dim_provider[is_current] = 1)
 		formatString: 0
 		lineageTag: b1010001-0001-0001-0001-00000000003d
 
+	/// Measure: full-time providers.
 	measure 'Full-Time Providers' = CALCULATE(COUNTROWS(dim_provider), dim_provider[fte_status] = "Full-time", dim_provider[is_current] = 1)
 		formatString: 0
 		lineageTag: b1010001-0001-0001-0001-00000000003e
 
+	/// Measure: avg years experience.
 	measure 'Avg Years Experience' = AVERAGE(dim_provider[years_experience])
 		formatString: 0.0
 		lineageTag: b1010001-0001-0001-0001-00000000003f

@@ -1,7 +1,10 @@
+/// Medication dimension. drug_class and therapeutic_area are the preferred grouping fields; is_chronic flags
+/// maintenance medications.
 table dim_medication
 	lineageTag: b1050001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[dim_medication]
 
+	/// Surrogate key for joining to dim_medication.
 	column medication_key
 		dataType: int64
 		formatString: 0
@@ -12,6 +15,7 @@ table dim_medication
 
 		annotation SummarizationSetBy = Automatic
 
+	/// RxNorm clinical drug identifier.
 	column rxnorm_code
 		dataType: string
 		lineageTag: b1050001-0001-0001-0001-000000000012
@@ -21,6 +25,7 @@ table dim_medication
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Brand or generic name as dispensed.
 	column medication_name
 		dataType: string
 		lineageTag: b1050001-0001-0001-0001-000000000013
@@ -30,6 +35,7 @@ table dim_medication
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Generic (non-proprietary) name.
 	column generic_name
 		dataType: string
 		lineageTag: b1050001-0001-0001-0001-000000000014
@@ -39,6 +45,7 @@ table dim_medication
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Pharmacological class (e.g. Statin, ACE Inhibitor, Biguanide).
 	column drug_class
 		dataType: string
 		lineageTag: b1050001-0001-0001-0001-000000000015
@@ -48,6 +55,7 @@ table dim_medication
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Therapeutic area (Cardiovascular, Endocrine, Respiratory, ...).
 	column therapeutic_area
 		dataType: string
 		lineageTag: b1050001-0001-0001-0001-000000000016
@@ -57,6 +65,7 @@ table dim_medication
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Route of administration (Oral, IV, Topical, ...).
 	column route
 		dataType: string
 		lineageTag: b1050001-0001-0001-0001-000000000017
@@ -66,6 +75,7 @@ table dim_medication
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Dosage form (Tablet, Capsule, Solution, ...).
 	column form
 		dataType: string
 		lineageTag: b1050001-0001-0001-0001-000000000018
@@ -75,6 +85,7 @@ table dim_medication
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Drug strength as labeled (e.g. '500 mg').
 	column strength
 		dataType: string
 		lineageTag: b1050001-0001-0001-0001-000000000019
@@ -84,6 +95,7 @@ table dim_medication
 
 		annotation SummarizationSetBy = Automatic
 
+	/// 1 = chronic / maintenance condition or medication; 0 = acute.
 	column is_chronic
 		dataType: int64
 		formatString: 0
@@ -94,6 +106,7 @@ table dim_medication
 
 		annotation SummarizationSetBy = Automatic
 
+	/// 1 = entity is active and selectable; 0 = retired.
 	column is_active
 		dataType: int64
 		formatString: 0
@@ -104,6 +117,7 @@ table dim_medication
 
 		annotation SummarizationSetBy = Automatic
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date

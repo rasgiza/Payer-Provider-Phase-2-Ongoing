@@ -1,21 +1,26 @@
+/// Prescription fill fact. One row per dispensed prescription. Join to dim_medication for drug_class.
 table fact_prescription
 	lineageTag: b1090001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[fact_prescription]
 
+	/// Measure: total fills.
 	measure 'Total Fills' = COUNTROWS(fact_prescription)
 		formatString: 0
 		lineageTag: b1090001-0001-0001-0001-000000000011
 
+	/// Measure: total rx cost.
 	measure 'Total Rx Cost' = SUM(fact_prescription[total_cost])
 		lineageTag: b1090001-0001-0001-0001-000000000012
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: avg rx cost per fill.
 	measure 'Avg Rx Cost Per Fill' = DIVIDE([Total Rx Cost], [Total Fills])
 		lineageTag: b1090001-0001-0001-0001-000000000013
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: generic fill rate.
 	measure 'Generic Fill Rate' =
 			VAR _generic = CALCULATE(COUNTROWS(fact_prescription), fact_prescription[is_generic] = 1)
 			VAR _total = COUNTROWS(fact_prescription)
@@ -23,10 +28,12 @@ table fact_prescription
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: b1090001-0001-0001-0001-000000000014
 
+	/// Measure: unique medications prescribed.
 	measure 'Unique Medications Prescribed' = DISTINCTCOUNT(fact_prescription[medication_key])
 		formatString: 0
 		lineageTag: b1090001-0001-0001-0001-000000000015
 
+	/// Business key.
 	column prescription_id
 		dataType: string
 		lineageTag: b1090001-0001-0001-0001-000000000021
@@ -36,6 +43,7 @@ table fact_prescription
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Business key.
 	column prescription_group_id
 		dataType: string
 		lineageTag: b1090001-0001-0001-0001-000000000022
@@ -45,6 +53,7 @@ table fact_prescription
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column fill_date_key
 		dataType: int64
 		formatString: 0
@@ -55,6 +64,7 @@ table fact_prescription
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_patient. Changes across SCD2 versions.
 	column patient_key
 		dataType: int64
 		formatString: 0
@@ -65,6 +75,7 @@ table fact_prescription
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_provider.
 	column provider_key
 		dataType: int64
 		formatString: 0
@@ -75,6 +86,7 @@ table fact_prescription
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column encounter_key
 		dataType: int64
 		formatString: 0
@@ -85,6 +97,7 @@ table fact_prescription
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_medication.
 	column medication_key
 		dataType: int64
 		formatString: 0
@@ -95,6 +108,7 @@ table fact_prescription
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Fill number.
 	column fill_number
 		dataType: int64
 		formatString: 0
@@ -105,6 +119,7 @@ table fact_prescription
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Days supply.
 	column days_supply
 		dataType: int64
 		formatString: 0
@@ -115,6 +130,7 @@ table fact_prescription
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Quantity dispensed.
 	column quantity_dispensed
 		dataType: int64
 		formatString: 0
@@ -125,6 +141,7 @@ table fact_prescription
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Boolean flag (1 = true, 0 = false).
 	column is_generic
 		dataType: int64
 		formatString: 0
@@ -135,6 +152,7 @@ table fact_prescription
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Boolean flag (1 = true, 0 = false).
 	column is_chronic_medication
 		dataType: int64
 		formatString: 0
@@ -145,6 +163,7 @@ table fact_prescription
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Sum of the underlying measure across the grain.
 	column total_cost
 		dataType: double
 		lineageTag: b1090001-0001-0001-0001-00000000002d
@@ -156,6 +175,7 @@ table fact_prescription
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Payer paid.
 	column payer_paid
 		dataType: double
 		lineageTag: b1090001-0001-0001-0001-00000000002e
@@ -167,6 +187,7 @@ table fact_prescription
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Patient copay.
 	column patient_copay
 		dataType: double
 		lineageTag: b1090001-0001-0001-0001-00000000002f
@@ -178,6 +199,7 @@ table fact_prescription
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date
@@ -188,6 +210,7 @@ table fact_prescription
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column prescription_key
 		dataType: int64
 		formatString: 0

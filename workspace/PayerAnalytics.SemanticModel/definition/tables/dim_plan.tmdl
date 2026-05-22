@@ -1,15 +1,19 @@
+/// Health plan dimension. Distinguishes products (HMO, PPO, EPO, Medicare Advantage) within a payer.
 table dim_plan
 	lineageTag: c1020001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[dim_plan]
 
+	/// Measure: total plans.
 	measure 'Total Plans' = CALCULATE(COUNTROWS(dim_plan), dim_plan[is_active] = 1)
 		formatString: 0
 		lineageTag: c1020001-0001-0001-0001-000000000051
 
+	/// Measure: capitated plan count.
 	measure 'Capitated Plan Count' = CALCULATE(COUNTROWS(dim_plan), dim_plan[is_capitated] = TRUE())
 		formatString: 0
 		lineageTag: c1020001-0001-0001-0001-000000000052
 
+	/// Business key.
 	column plan_id
 		dataType: string
 		lineageTag: c1020001-0001-0001-0001-000000000011
@@ -18,6 +22,7 @@ table dim_plan
 		sourceColumn: plan_id
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_plan.
 	column plan_key
 		dataType: int64
 		formatString: 0
@@ -27,6 +32,7 @@ table dim_plan
 		sourceColumn: plan_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Plan name.
 	column plan_name
 		dataType: string
 		lineageTag: c1020001-0001-0001-0001-000000000013
@@ -35,6 +41,7 @@ table dim_plan
 		sourceColumn: plan_name
 		annotation SummarizationSetBy = Automatic
 
+	/// Line of business.
 	column line_of_business
 		dataType: string
 		lineageTag: c1020001-0001-0001-0001-000000000014
@@ -43,6 +50,7 @@ table dim_plan
 		sourceColumn: line_of_business
 		annotation SummarizationSetBy = Automatic
 
+	/// Plan type.
 	column plan_type
 		dataType: string
 		lineageTag: c1020001-0001-0001-0001-000000000015
@@ -51,6 +59,7 @@ table dim_plan
 		sourceColumn: plan_type
 		annotation SummarizationSetBy = Automatic
 
+	/// Metal tier.
 	column metal_tier
 		dataType: string
 		lineageTag: c1020001-0001-0001-0001-000000000016
@@ -59,6 +68,7 @@ table dim_plan
 		sourceColumn: metal_tier
 		annotation SummarizationSetBy = Automatic
 
+	/// State.
 	column state
 		dataType: string
 		lineageTag: c1020001-0001-0001-0001-000000000017
@@ -67,6 +77,7 @@ table dim_plan
 		sourceColumn: state
 		annotation SummarizationSetBy = Automatic
 
+	/// Network size.
 	column network_size
 		dataType: string
 		lineageTag: c1020001-0001-0001-0001-000000000018
@@ -75,6 +86,7 @@ table dim_plan
 		sourceColumn: network_size
 		annotation SummarizationSetBy = Automatic
 
+	/// Boolean flag (1 = true, 0 = false).
 	column is_capitated
 		dataType: boolean
 		formatString: """TRUE"";""TRUE"";""FALSE"""
@@ -84,6 +96,7 @@ table dim_plan
 		sourceColumn: is_capitated
 		annotation SummarizationSetBy = Automatic
 
+	/// Average of the underlying measure across the grain.
 	column avg_pmpm_premium
 		dataType: double
 		lineageTag: c1020001-0001-0001-0001-00000000001a
@@ -93,6 +106,7 @@ table dim_plan
 		annotation SummarizationSetBy = Automatic
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// 1 = entity is active and selectable; 0 = retired.
 	column is_active
 		dataType: int64
 		formatString: 0
@@ -102,6 +116,7 @@ table dim_plan
 		sourceColumn: is_active
 		annotation SummarizationSetBy = Automatic
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date

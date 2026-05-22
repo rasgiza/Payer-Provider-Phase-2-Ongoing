@@ -93,7 +93,7 @@ table agg_star_rating
 		dataType: double
 		lineageTag: c1220001-0001-0001-0001-000000000029
 		sourceLineageTag: weighted_score
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: weighted_score
 		annotation SummarizationSetBy = Automatic
 

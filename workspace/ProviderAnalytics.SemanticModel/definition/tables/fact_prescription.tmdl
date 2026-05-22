@@ -92,7 +92,7 @@ table fact_prescription
 		formatString: 0
 		lineageTag: b1090001-0001-0001-0001-000000000026
 		sourceLineageTag: encounter_key
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: encounter_key
 
 		annotation SummarizationSetBy = Automatic
@@ -147,7 +147,7 @@ table fact_prescription
 		formatString: 0
 		lineageTag: b1090001-0001-0001-0001-00000000002b
 		sourceLineageTag: is_generic
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: is_generic
 
 		annotation SummarizationSetBy = Automatic
@@ -158,7 +158,7 @@ table fact_prescription
 		formatString: 0
 		lineageTag: b1090001-0001-0001-0001-00000000002c
 		sourceLineageTag: is_chronic_medication
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: is_chronic_medication
 
 		annotation SummarizationSetBy = Automatic
@@ -216,7 +216,7 @@ table fact_prescription
 		formatString: 0
 		lineageTag: b1090001-0001-0001-0001-000000000031
 		sourceLineageTag: prescription_key
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: prescription_key
 
 		annotation SummarizationSetBy = Automatic

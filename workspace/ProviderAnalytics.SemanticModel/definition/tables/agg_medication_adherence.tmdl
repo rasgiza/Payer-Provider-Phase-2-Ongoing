@@ -137,7 +137,7 @@ table agg_medication_adherence
 		dataType: double
 		lineageTag: b10c0001-0001-0001-0001-00000000002b
 		sourceLineageTag: pdc_score
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: pdc_score
 
 		annotation SummarizationSetBy = Automatic
@@ -207,7 +207,7 @@ table agg_medication_adherence
 		formatString: 0
 		lineageTag: b10c0001-0001-0001-0001-000000000031
 		sourceLineageTag: is_chronic
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: is_chronic
 
 		annotation SummarizationSetBy = Automatic

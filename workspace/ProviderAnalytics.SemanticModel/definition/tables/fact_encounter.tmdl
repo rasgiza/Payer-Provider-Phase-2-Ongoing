@@ -36,18 +36,21 @@ table fact_encounter
 
 	/// Measure: total charges.
 	measure 'Total Charges' = SUM(fact_encounter[total_charges])
+		formatString: "\$#,0;(\$#,0);\$0"
 		lineageTag: b1070001-0001-0001-0001-000000000016
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	/// Measure: total cost.
 	measure 'Total Cost' = SUM(fact_encounter[total_cost])
+		formatString: "\$#,0;(\$#,0);\$0"
 		lineageTag: b1070001-0001-0001-0001-000000000017
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	/// Measure: avg cost per encounter.
 	measure 'Avg Cost Per Encounter' = DIVIDE([Total Cost], [Total Encounters])
+		formatString: "\$#,0;(\$#,0);\$0"
 		lineageTag: b1070001-0001-0001-0001-000000000018
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
@@ -134,7 +137,7 @@ table fact_encounter
 		formatString: 0
 		lineageTag: b1070001-0001-0001-0001-000000000032
 		sourceLineageTag: encounter_date_key
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: encounter_date_key
 
 		annotation SummarizationSetBy = Automatic
@@ -178,7 +181,7 @@ table fact_encounter
 		formatString: 0
 		lineageTag: b1070001-0001-0001-0001-000000000036
 		sourceLineageTag: facility_key
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: facility_key
 
 		annotation SummarizationSetBy = Automatic
@@ -254,7 +257,7 @@ table fact_encounter
 		formatString: 0
 		lineageTag: b1070001-0001-0001-0001-00000000003d
 		sourceLineageTag: readmission_flag
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: readmission_flag
 
 		annotation SummarizationSetBy = Automatic
@@ -264,7 +267,7 @@ table fact_encounter
 		dataType: double
 		lineageTag: b1070001-0001-0001-0001-00000000003e
 		sourceLineageTag: readmission_risk_score
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: readmission_risk_score
 
 		annotation SummarizationSetBy = Automatic
@@ -342,7 +345,7 @@ table fact_encounter
 		formatString: 0
 		lineageTag: b1070001-0001-0001-0001-000000000045
 		sourceLineageTag: encounter_key
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: encounter_key
 
 		annotation SummarizationSetBy = Automatic

@@ -19,12 +19,14 @@ table fact_claim
 
 	/// Sum of billed_amount across all claims (gross charges submitted to payers).
 	measure 'Total Billed' = SUM(fact_claim[billed_amount])
+		formatString: "\$#,0;(\$#,0);\$0"
 		lineageTag: c1090001-0001-0001-0001-000000000013
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	/// Sum of paid_amount across all claims (actual payer reimbursement received).
 	measure 'Total Paid' = SUM(fact_claim[paid_amount])
+		formatString: "\$#,0;(\$#,0);\$0"
 		lineageTag: c1090001-0001-0001-0001-000000000014
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
@@ -38,6 +40,7 @@ table fact_claim
 	/// Sum of billed_amount for claims with denial_risk_category = 'High'. Forward-looking measure of revenue exposed
 	/// to denial.
 	measure 'At Risk Revenue' = CALCULATE(SUM(fact_claim[billed_amount]), fact_claim[denial_risk_category] = "High")
+		formatString: "\$#,0;(\$#,0);\$0"
 		lineageTag: c1090001-0001-0001-0001-000000000016
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
@@ -70,6 +73,7 @@ table fact_claim
 
 	/// Sum of appeal_amount_recovered for claims that won an appeal.
 	measure 'Total Appeal Recovery' = SUM(fact_claim[appeal_amount_recovered])
+		formatString: "\$#,0;(\$#,0);\$0"
 		lineageTag: c1090001-0001-0001-0001-00000000001b
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
@@ -81,6 +85,7 @@ table fact_claim
 
 	/// Measure: paid by payment date.
 	measure 'Paid by Payment Date' = CALCULATE(SUM(fact_claim[paid_amount]), USERELATIONSHIP(fact_claim[payment_date_key], dim_date[date_key]))
+		formatString: "\$#,0;(\$#,0);\$0"
 		lineageTag: c1090001-0001-0001-0001-00000000001d
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
@@ -161,7 +166,7 @@ table fact_claim
 		formatString: 0
 		lineageTag: c1090001-0001-0001-0001-000000000027
 		sourceLineageTag: encounter_key
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: encounter_key
 
 		annotation SummarizationSetBy = Automatic
@@ -172,7 +177,7 @@ table fact_claim
 		formatString: 0
 		lineageTag: c1090001-0001-0001-0001-000000000028
 		sourceLineageTag: facility_key
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: facility_key
 
 		annotation SummarizationSetBy = Automatic
@@ -239,7 +244,7 @@ table fact_claim
 		formatString: 0
 		lineageTag: c1090001-0001-0001-0001-00000000002e
 		sourceLineageTag: denial_flag
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: denial_flag
 
 		annotation SummarizationSetBy = Automatic
@@ -249,7 +254,7 @@ table fact_claim
 		dataType: double
 		lineageTag: c1090001-0001-0001-0001-00000000002f
 		sourceLineageTag: denial_risk_score
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: denial_risk_score
 
 		annotation SummarizationSetBy = Automatic
@@ -359,7 +364,7 @@ table fact_claim
 		formatString: 0
 		lineageTag: c1090001-0001-0001-0001-000000000039
 		sourceLineageTag: claim_key
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: claim_key
 
 		annotation SummarizationSetBy = Automatic

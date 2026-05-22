@@ -19,6 +19,7 @@ table fact_claim
 
 	/// Sum of billed_amount across all claims (gross charges submitted to payers).
 	measure 'Total Billed' = SUM(fact_claim[billed_amount])
+		formatString: "\$#,0;(\$#,0);\$0"
 		lineageTag: b1080001-0001-0001-0001-000000000013
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
@@ -83,7 +84,7 @@ table fact_claim
 		formatString: 0
 		lineageTag: b1080001-0001-0001-0001-000000000025
 		sourceLineageTag: encounter_key
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: encounter_key
 
 		annotation SummarizationSetBy = Automatic
@@ -138,7 +139,7 @@ table fact_claim
 		formatString: 0
 		lineageTag: b1080001-0001-0001-0001-00000000002a
 		sourceLineageTag: denial_flag
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: denial_flag
 
 		annotation SummarizationSetBy = Automatic
@@ -148,7 +149,7 @@ table fact_claim
 		dataType: double
 		lineageTag: b1080001-0001-0001-0001-00000000002b
 		sourceLineageTag: denial_risk_score
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: denial_risk_score
 
 		annotation SummarizationSetBy = Automatic
@@ -192,7 +193,7 @@ table fact_claim
 		formatString: 0
 		lineageTag: b1080001-0001-0001-0001-00000000002f
 		sourceLineageTag: claim_key
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: claim_key
 
 		annotation SummarizationSetBy = Automatic

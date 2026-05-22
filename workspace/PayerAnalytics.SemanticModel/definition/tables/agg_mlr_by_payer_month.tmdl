@@ -12,11 +12,13 @@ table agg_mlr_by_payer_month
 
 	/// Sum of premium dollars collected from members in the period.
 	measure 'Premium Collected' = SUM(agg_mlr_by_payer_month[premium_collected])
+		formatString: "\$#,0;(\$#,0);\$0"
 		lineageTag: c1200001-0001-0001-0001-000000000012
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	/// Sum of claims paid out by the payer in the period.
 	measure 'Medical Paid' = SUM(agg_mlr_by_payer_month[medical_paid])
+		formatString: "\$#,0;(\$#,0);\$0"
 		lineageTag: c1200001-0001-0001-0001-000000000013
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 

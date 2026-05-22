@@ -112,7 +112,7 @@ table dim_plan
 		formatString: 0
 		lineageTag: c1020001-0001-0001-0001-00000000001b
 		sourceLineageTag: is_active
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: is_active
 		annotation SummarizationSetBy = Automatic
 

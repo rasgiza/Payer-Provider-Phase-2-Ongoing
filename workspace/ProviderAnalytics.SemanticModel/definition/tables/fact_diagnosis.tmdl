@@ -33,7 +33,7 @@ table fact_diagnosis
 		formatString: 0
 		lineageTag: b10a0001-0001-0001-0001-000000000021
 		sourceLineageTag: fact_diagnosis_key
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: fact_diagnosis_key
 
 		annotation SummarizationSetBy = Automatic
@@ -54,7 +54,7 @@ table fact_diagnosis
 		formatString: 0
 		lineageTag: b10a0001-0001-0001-0001-000000000023
 		sourceLineageTag: encounter_key
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: encounter_key
 
 		annotation SummarizationSetBy = Automatic
@@ -65,7 +65,7 @@ table fact_diagnosis
 		formatString: 0
 		lineageTag: b10a0001-0001-0001-0001-000000000024
 		sourceLineageTag: diagnosis_date_key
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: diagnosis_date_key
 
 		annotation SummarizationSetBy = Automatic
@@ -98,7 +98,7 @@ table fact_diagnosis
 		formatString: 0
 		lineageTag: b10a0001-0001-0001-0001-000000000027
 		sourceLineageTag: facility_key
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: facility_key
 
 		annotation SummarizationSetBy = Automatic

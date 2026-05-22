@@ -32,7 +32,7 @@ table dim_date
 		formatString: 0
 		lineageTag: c1040001-0001-0001-0001-000000000013
 		sourceLineageTag: day_of_week
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: day_of_week
 
 		annotation SummarizationSetBy = Automatic
@@ -53,7 +53,7 @@ table dim_date
 		formatString: 0
 		lineageTag: c1040001-0001-0001-0001-000000000015
 		sourceLineageTag: day_of_month
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: day_of_month
 
 		annotation SummarizationSetBy = Automatic
@@ -64,7 +64,7 @@ table dim_date
 		formatString: 0
 		lineageTag: c1040001-0001-0001-0001-000000000016
 		sourceLineageTag: day_of_year
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: day_of_year
 
 		annotation SummarizationSetBy = Automatic
@@ -75,7 +75,7 @@ table dim_date
 		formatString: 0
 		lineageTag: c1040001-0001-0001-0001-000000000017
 		sourceLineageTag: week_of_year
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: week_of_year
 
 		annotation SummarizationSetBy = Automatic
@@ -86,7 +86,7 @@ table dim_date
 		formatString: 0
 		lineageTag: c1040001-0001-0001-0001-000000000018
 		sourceLineageTag: month_number
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: month_number
 
 		annotation SummarizationSetBy = Automatic
@@ -107,7 +107,7 @@ table dim_date
 		formatString: 0
 		lineageTag: c1040001-0001-0001-0001-00000000001a
 		sourceLineageTag: quarter
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: quarter
 
 		annotation SummarizationSetBy = Automatic
@@ -118,7 +118,7 @@ table dim_date
 		formatString: 0
 		lineageTag: c1040001-0001-0001-0001-00000000001b
 		sourceLineageTag: year
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: year
 
 		annotation SummarizationSetBy = Automatic
@@ -129,7 +129,7 @@ table dim_date
 		formatString: 0
 		lineageTag: c1040001-0001-0001-0001-00000000001c
 		sourceLineageTag: is_weekend
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: is_weekend
 
 		annotation SummarizationSetBy = Automatic
@@ -140,7 +140,7 @@ table dim_date
 		formatString: 0
 		lineageTag: c1040001-0001-0001-0001-00000000001d
 		sourceLineageTag: is_holiday
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: is_holiday
 
 		annotation SummarizationSetBy = Automatic
@@ -151,7 +151,7 @@ table dim_date
 		formatString: 0
 		lineageTag: c1040001-0001-0001-0001-00000000001e
 		sourceLineageTag: fiscal_year
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: fiscal_year
 
 		annotation SummarizationSetBy = Automatic
@@ -162,7 +162,7 @@ table dim_date
 		formatString: 0
 		lineageTag: c1040001-0001-0001-0001-00000000001f
 		sourceLineageTag: fiscal_quarter
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: fiscal_quarter
 
 		annotation SummarizationSetBy = Automatic

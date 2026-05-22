@@ -51,7 +51,7 @@ table dim_diagnosis
 		formatString: 0
 		lineageTag: c1050001-0001-0001-0001-000000000015
 		sourceLineageTag: is_chronic
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: is_chronic
 
 		annotation SummarizationSetBy = Automatic

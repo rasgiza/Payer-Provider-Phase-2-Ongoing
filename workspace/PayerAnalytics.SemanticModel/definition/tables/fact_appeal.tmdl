@@ -10,6 +10,7 @@ table fact_appeal
 
 	/// Measure: appeal recovery $.
 	measure 'Appeal Recovery $' = SUM(fact_appeal[appeal_amount_recovered])
+		formatString: "\$#,0;(\$#,0);\$0"
 		lineageTag: c1130001-0001-0001-0001-000000000012
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 

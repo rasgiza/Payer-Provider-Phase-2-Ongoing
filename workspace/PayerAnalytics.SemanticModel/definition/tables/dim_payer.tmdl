@@ -118,7 +118,7 @@ table dim_payer
 		formatString: 0
 		lineageTag: c1010001-0001-0001-0001-000000000019
 		sourceLineageTag: is_active
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: is_active
 
 		annotation SummarizationSetBy = Automatic

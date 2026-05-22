@@ -5,6 +5,7 @@ table fact_premium
 
 	/// Measure: total premium revenue.
 	measure 'Total Premium Revenue' = SUM(fact_premium[premium_amount])
+		formatString: "\$#,0;(\$#,0);\$0"
 		lineageTag: c1100001-0001-0001-0001-000000000011
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 

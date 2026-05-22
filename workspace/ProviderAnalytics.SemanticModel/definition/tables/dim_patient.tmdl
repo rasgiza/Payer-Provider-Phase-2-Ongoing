@@ -197,7 +197,7 @@ table dim_patient
 		formatString: 0
 		lineageTag: b1020001-0001-0001-0001-00000000002f
 		sourceLineageTag: age
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: age
 
 		annotation SummarizationSetBy = Automatic
@@ -229,7 +229,7 @@ table dim_patient
 		formatString: 0
 		lineageTag: b1020001-0001-0001-0001-000000000032
 		sourceLineageTag: is_current
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: is_current
 
 		annotation SummarizationSetBy = Automatic

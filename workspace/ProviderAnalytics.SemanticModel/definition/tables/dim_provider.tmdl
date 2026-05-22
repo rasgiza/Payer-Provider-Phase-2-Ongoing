@@ -90,7 +90,7 @@ table dim_provider
 		formatString: 0
 		lineageTag: b1010001-0001-0001-0001-000000000019
 		sourceLineageTag: is_active
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: is_active
 
 		annotation SummarizationSetBy = Automatic
@@ -112,7 +112,7 @@ table dim_provider
 		formatString: 0
 		lineageTag: b1010001-0001-0001-0001-00000000001b
 		sourceLineageTag: is_current
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: is_current
 
 		annotation SummarizationSetBy = Automatic

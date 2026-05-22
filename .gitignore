@@ -31,3 +31,7 @@ desktop.ini
 
 # Temp fix/debug scripts
 _scratch/
+
+.git-commit-msg.txt
+.pr-body.md
+

@@ -1,15 +1,20 @@
+/// Bridge between providers and payer contracts. Resolves the many-to-many between dim_provider and dim_payer for
+/// in-network analysis.
 table bridge_provider_contract
 	lineageTag: c1140001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[bridge_provider_contract]
 
+	/// Total number of provider-payer contract rows in the bridge.
 	measure 'Contract Count' = COUNTROWS(bridge_provider_contract)
 		formatString: 0
 		lineageTag: c1140001-0001-0001-0001-000000000011
 
+	/// Percentage of contract rows with is_in_network = TRUE.
 	measure 'In-Network Contract Rate' = DIVIDE(CALCULATE(COUNTROWS(bridge_provider_contract), bridge_provider_contract[is_in_network] = TRUE()), COUNTROWS(bridge_provider_contract))
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: c1140001-0001-0001-0001-000000000012
 
+	/// Business key.
 	column contract_id
 		dataType: string
 		lineageTag: c1140001-0001-0001-0001-000000000021
@@ -18,6 +23,7 @@ table bridge_provider_contract
 		sourceColumn: contract_id
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_provider.
 	column provider_key
 		dataType: int64
 		formatString: 0
@@ -27,6 +33,7 @@ table bridge_provider_contract
 		sourceColumn: provider_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_payer.
 	column payer_key
 		dataType: int64
 		formatString: 0
@@ -36,6 +43,7 @@ table bridge_provider_contract
 		sourceColumn: payer_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Contract type.
 	column contract_type
 		dataType: string
 		lineageTag: c1140001-0001-0001-0001-000000000024
@@ -44,6 +52,7 @@ table bridge_provider_contract
 		sourceColumn: contract_type
 		annotation SummarizationSetBy = Automatic
 
+	/// Date column.
 	column effective_date
 		dataType: dateTime
 		formatString: General Date
@@ -53,6 +62,7 @@ table bridge_provider_contract
 		sourceColumn: effective_date
 		annotation SummarizationSetBy = Automatic
 
+	/// Date column.
 	column termination_date
 		dataType: dateTime
 		formatString: General Date
@@ -62,6 +72,7 @@ table bridge_provider_contract
 		sourceColumn: termination_date
 		annotation SummarizationSetBy = Automatic
 
+	/// Fee schedule pct medicare.
 	column fee_schedule_pct_medicare
 		dataType: double
 		lineageTag: c1140001-0001-0001-0001-000000000027
@@ -70,6 +81,7 @@ table bridge_provider_contract
 		sourceColumn: fee_schedule_pct_medicare
 		annotation SummarizationSetBy = Automatic
 
+	/// Percentage (0-1 unless otherwise noted).
 	column withhold_pct
 		dataType: double
 		lineageTag: c1140001-0001-0001-0001-000000000028
@@ -78,6 +90,7 @@ table bridge_provider_contract
 		sourceColumn: withhold_pct
 		annotation SummarizationSetBy = Automatic
 
+	/// Percentage (0-1 unless otherwise noted).
 	column quality_bonus_pct
 		dataType: double
 		lineageTag: c1140001-0001-0001-0001-000000000029
@@ -86,6 +99,7 @@ table bridge_provider_contract
 		sourceColumn: quality_bonus_pct
 		annotation SummarizationSetBy = Automatic
 
+	/// Boolean flag (1 = true, 0 = false).
 	column is_in_network
 		dataType: boolean
 		formatString: """TRUE"";""TRUE"";""FALSE"""
@@ -95,6 +109,7 @@ table bridge_provider_contract
 		sourceColumn: is_in_network
 		annotation SummarizationSetBy = Automatic
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date

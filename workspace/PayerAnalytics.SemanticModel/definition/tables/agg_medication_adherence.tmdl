@@ -1,7 +1,10 @@
+/// Pre-aggregated medication adherence per (patient, medication, measurement period). pdc_score is the Proportion
+/// of Days Covered; adherent at >= 0.80.
 table agg_medication_adherence
 	lineageTag: c10d0001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[agg_medication_adherence]
 
+	/// Percentage of patient-medication rows where adherence_category = 'Adherent' (PDC >= 0.80).
 	measure 'Adherent Rate' =
 			VAR _num = CALCULATE(COUNTROWS(agg_medication_adherence), agg_medication_adherence[adherence_category] = "Adherent")
 			VAR _den = COUNTROWS(agg_medication_adherence)
@@ -10,11 +13,13 @@ table agg_medication_adherence
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Average Proportion of Days Covered across patient-medication rows. Range 0-1; >= 0.80 is adherent.
 	measure 'Avg PDC Score' = AVERAGE(agg_medication_adherence[pdc_score])
 		lineageTag: c10d0001-0001-0001-0001-000000000052
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Surrogate key for joining to dim_patient. Changes across SCD2 versions.
 	column patient_key
 		dataType: int64
 		formatString: 0
@@ -25,6 +30,7 @@ table agg_medication_adherence
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_medication.
 	column medication_key
 		dataType: int64
 		formatString: 0
@@ -35,6 +41,7 @@ table agg_medication_adherence
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Drug class.
 	column drug_class
 		dataType: string
 		lineageTag: c10d0001-0001-0001-0001-000000000013
@@ -44,6 +51,7 @@ table agg_medication_adherence
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Therapeutic area.
 	column therapeutic_area
 		dataType: string
 		lineageTag: c10d0001-0001-0001-0001-000000000014
@@ -53,6 +61,7 @@ table agg_medication_adherence
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Measurement period start.
 	column measurement_period_start
 		dataType: int64
 		formatString: 0
@@ -63,6 +72,7 @@ table agg_medication_adherence
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Measurement period end.
 	column measurement_period_end
 		dataType: int64
 		formatString: 0
@@ -73,6 +83,7 @@ table agg_medication_adherence
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Sum of the underlying measure across the grain.
 	column total_fills
 		dataType: int64
 		formatString: 0
@@ -83,6 +94,7 @@ table agg_medication_adherence
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Sum of the underlying measure across the grain.
 	column total_days_supply
 		dataType: int64
 		formatString: 0
@@ -93,6 +105,7 @@ table agg_medication_adherence
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Days in period.
 	column days_in_period
 		dataType: int64
 		formatString: 0
@@ -103,6 +116,7 @@ table agg_medication_adherence
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Covered days.
 	column covered_days
 		dataType: int64
 		formatString: 0
@@ -113,6 +127,7 @@ table agg_medication_adherence
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Model-produced score.
 	column pdc_score
 		dataType: double
 		lineageTag: c10d0001-0001-0001-0001-00000000001b
@@ -124,6 +139,7 @@ table agg_medication_adherence
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Adherence category.
 	column adherence_category
 		dataType: string
 		lineageTag: c10d0001-0001-0001-0001-00000000001c
@@ -133,6 +149,7 @@ table agg_medication_adherence
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Sum of the underlying measure across the grain.
 	column total_medication_cost
 		dataType: double
 		lineageTag: c10d0001-0001-0001-0001-00000000001d
@@ -144,6 +161,7 @@ table agg_medication_adherence
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Sum of the underlying measure across the grain.
 	column total_payer_cost
 		dataType: double
 		lineageTag: c10d0001-0001-0001-0001-00000000001e
@@ -155,6 +173,7 @@ table agg_medication_adherence
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Sum of the underlying measure across the grain.
 	column total_patient_cost
 		dataType: double
 		lineageTag: c10d0001-0001-0001-0001-00000000001f
@@ -166,6 +185,7 @@ table agg_medication_adherence
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Gap days.
 	column gap_days
 		dataType: int64
 		formatString: 0
@@ -176,6 +196,7 @@ table agg_medication_adherence
 
 		annotation SummarizationSetBy = Automatic
 
+	/// 1 = chronic / maintenance condition or medication; 0 = acute.
 	column is_chronic
 		dataType: int64
 		formatString: 0
@@ -186,6 +207,7 @@ table agg_medication_adherence
 
 		annotation SummarizationSetBy = Automatic
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date

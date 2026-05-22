@@ -1,0 +1,13 @@
+question,sm_name,expected_dax,notes
+What is the overall denial rate across all claims?,PayerAnalytics,"EVALUATE ROW(""Denial Rate"", [Denial Rate])",Top-line claim denial KPI.
+Which payer has the highest denial rate? Show the payer name and denial rate.,PayerAnalytics,"EVALUATE TOPN(1, SUMMARIZECOLUMNS(dim_payer[payer_name], ""Denial Rate"", [Denial Rate]), [Denial Rate], DESC)",Tests grouping by payer + ordering.
+What is the total billed amount across all claims?,PayerAnalytics,"EVALUATE ROW(""Total Billed"", [Total Billed])",Tests currency sum.
+What is the collection rate (paid / billed) overall?,PayerAnalytics,"EVALUATE ROW(""Collection Rate"", [Collection Rate])",Ratio measure.
+What is the average days to payment overall?,PayerAnalytics,"EVALUATE ROW(""Avg Days to Payment"", [Avg Days to Payment])",AR latency.
+How many patients are in the system?,PayerAnalytics,"EVALUATE ROW(""Total Patients"", [Total Patients])",Should use is_current=1.
+What is the average PDC score across all medication adherence rows?,PayerAnalytics,"EVALUATE ROW(""Avg PDC"", [Avg PDC Score])",Adherence KPI.
+How many patients are in the High SDOH risk tier?,PayerAnalytics,"EVALUATE ROW(""High Risk Patients"", CALCULATE(COUNTROWS(dim_patient), RELATED(dim_sdoh[risk_tier]) = ""High""))",Cross-table SDOH filter.
+What is the medical loss ratio (MLR%) overall?,PayerAnalytics,"EVALUATE ROW(""MLR"", [MLR %])",ACA compliance KPI.
+What is the HEDIS compliance rate overall?,PayerAnalytics,"EVALUATE ROW(""HEDIS"", [HEDIS Compliance %])",Quality KPI.
+How many providers have specialty 'Cardiology'?,ProviderAnalytics,"EVALUATE ROW(""Cardiologists"", CALCULATE(COUNTROWS(dim_provider), dim_provider[specialty] = ""Cardiology""))",Provider filter.
+What is the average length of stay for inpatient encounters?,ProviderAnalytics,"EVALUATE ROW(""Avg LOS"", CALCULATE(AVERAGE(fact_encounter[length_of_stay]), fact_encounter[encounter_type] = ""Inpatient""))",Encounter analytics.

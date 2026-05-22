@@ -1,11 +1,14 @@
+/// Overall Medicare Star Rating (1-5 stars) per (payer, measurement year). Drives plan bonus payments.
 table agg_star_rating_overall
 	lineageTag: c1230001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[agg_star_rating_overall]
 
+	/// Overall CMS Star Rating for the payer-year (1-5 stars). Drives Medicare Advantage bonus payments.
 	measure 'Overall Star Score' = AVERAGE(agg_star_rating_overall[overall_star_score])
 		formatString: 0.00
 		lineageTag: c1230001-0001-0001-0001-000000000011
 
+	/// Surrogate key for joining to dim_payer.
 	column payer_key
 		dataType: int64
 		formatString: 0
@@ -15,6 +18,7 @@ table agg_star_rating_overall
 		sourceColumn: payer_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Measurement year.
 	column measurement_year
 		dataType: int64
 		formatString: 0
@@ -24,6 +28,7 @@ table agg_star_rating_overall
 		sourceColumn: measurement_year
 		annotation SummarizationSetBy = Automatic
 
+	/// Model-produced score.
 	column overall_star_score
 		dataType: double
 		lineageTag: c1230001-0001-0001-0001-000000000023
@@ -32,6 +37,7 @@ table agg_star_rating_overall
 		sourceColumn: overall_star_score
 		annotation SummarizationSetBy = Automatic
 
+	/// Sum of the underlying measure across the grain.
 	column total_weight
 		dataType: int64
 		formatString: 0
@@ -41,6 +47,7 @@ table agg_star_rating_overall
 		sourceColumn: total_weight
 		annotation SummarizationSetBy = Automatic
 
+	/// Count of records in the underlying grain.
 	column measure_count
 		dataType: int64
 		formatString: 0

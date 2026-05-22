@@ -1,7 +1,10 @@
+/// Social Determinants of Health dimension at the ZIP-code level. Always filter by risk_tier
+/// ('High'/'Medium'/'Low'), never by raw social_vulnerability_index.
 table dim_sdoh
 	lineageTag: c1070001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[dim_sdoh]
 
+	/// Surrogate join key.
 	column sdoh_key
 		dataType: int64
 		formatString: 0
@@ -12,6 +15,7 @@ table dim_sdoh
 
 		annotation SummarizationSetBy = Automatic
 
+	/// 5-digit ZIP code (community).
 	column zip_code
 		dataType: string
 		lineageTag: c1070001-0001-0001-0001-000000000012
@@ -21,6 +25,7 @@ table dim_sdoh
 
 		annotation SummarizationSetBy = Automatic
 
+	/// State.
 	column state
 		dataType: string
 		lineageTag: c1070001-0001-0001-0001-000000000013
@@ -30,6 +35,7 @@ table dim_sdoh
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Census poverty rate for the ZIP (0-1).
 	column poverty_rate
 		dataType: double
 		lineageTag: c1070001-0001-0001-0001-000000000014
@@ -41,6 +47,7 @@ table dim_sdoh
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// 1 = ZIP designated a food desert; 0 otherwise.
 	column food_desert_flag
 		dataType: int64
 		formatString: 0
@@ -51,6 +58,7 @@ table dim_sdoh
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Transportation access score (higher = better access).
 	column transportation_score
 		dataType: double
 		lineageTag: c1070001-0001-0001-0001-000000000016
@@ -62,6 +70,7 @@ table dim_sdoh
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Rate (0-1).
 	column housing_instability_rate
 		dataType: double
 		lineageTag: c1070001-0001-0001-0001-000000000017
@@ -73,6 +82,7 @@ table dim_sdoh
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Census uninsured rate for the ZIP (0-1).
 	column uninsured_rate
 		dataType: double
 		lineageTag: c1070001-0001-0001-0001-000000000018
@@ -84,6 +94,7 @@ table dim_sdoh
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Percentage (0-1 unless otherwise noted).
 	column broadband_access_pct
 		dataType: double
 		lineageTag: c1070001-0001-0001-0001-000000000019
@@ -95,6 +106,7 @@ table dim_sdoh
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Median of the underlying measure.
 	column median_household_income
 		dataType: int64
 		formatString: 0
@@ -105,6 +117,7 @@ table dim_sdoh
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Population.
 	column population
 		dataType: int64
 		formatString: 0
@@ -115,6 +128,7 @@ table dim_sdoh
 
 		annotation SummarizationSetBy = Automatic
 
+	/// SVI 0-1 (this dataset 0.05-0.53). Do NOT filter on this directly; use risk_tier.
 	column social_vulnerability_index
 		dataType: double
 		lineageTag: c1070001-0001-0001-0001-00000000001c
@@ -126,6 +140,8 @@ table dim_sdoh
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// SDOH risk tier: High (SVI >= 0.30), Medium (0.15-0.30), Low (< 0.15). Always filter SDOH by this string, NOT
+	/// the raw SVI.
 	column risk_tier
 		dataType: string
 		lineageTag: c1070001-0001-0001-0001-00000000001d
@@ -135,6 +151,7 @@ table dim_sdoh
 
 		annotation SummarizationSetBy = Automatic
 
+	/// 1 = entity is active and selectable; 0 = retired.
 	column is_active
 		dataType: int64
 		formatString: 0
@@ -145,6 +162,7 @@ table dim_sdoh
 
 		annotation SummarizationSetBy = Automatic
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date

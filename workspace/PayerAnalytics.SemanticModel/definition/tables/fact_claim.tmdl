@@ -1,11 +1,15 @@
+/// Claim fact. One row per submitted medical claim. Use denial_flag = 1 for denied claims; denial_risk_category
+/// is the preferred filter for risk (do not filter on the raw score).
 table fact_claim
 	lineageTag: c1090001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[fact_claim]
 
+	/// Count of claim records in fact_claim.
 	measure 'Total Claims' = COUNTROWS(fact_claim)
 		formatString: 0
 		lineageTag: c1090001-0001-0001-0001-000000000011
 
+	/// Percentage of claims with denial_flag = 1, computed as denied_claims / total_claims.
 	measure 'Denial Rate' =
 			VAR _num = CALCULATE(COUNTROWS(fact_claim), fact_claim[denial_flag] = 1)
 			VAR _den = COUNTROWS(fact_claim)
@@ -13,40 +17,50 @@ table fact_claim
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: c1090001-0001-0001-0001-000000000012
 
+	/// Sum of billed_amount across all claims (gross charges submitted to payers).
 	measure 'Total Billed' = SUM(fact_claim[billed_amount])
 		lineageTag: c1090001-0001-0001-0001-000000000013
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Sum of paid_amount across all claims (actual payer reimbursement received).
 	measure 'Total Paid' = SUM(fact_claim[paid_amount])
 		lineageTag: c1090001-0001-0001-0001-000000000014
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Total Paid divided by Total Billed. Gross collection rate; lower than Net Collection Rate by the contractual
+	/// write-offs.
 	measure 'Collection Rate' = DIVIDE([Total Paid], [Total Billed])
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: c1090001-0001-0001-0001-000000000015
 
+	/// Sum of billed_amount for claims with denial_risk_category = 'High'. Forward-looking measure of revenue exposed
+	/// to denial.
 	measure 'At Risk Revenue' = CALCULATE(SUM(fact_claim[billed_amount]), fact_claim[denial_risk_category] = "High")
 		lineageTag: c1090001-0001-0001-0001-000000000016
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Average denial_risk_score across claims. Score is 0-1 from the upstream risk model.
 	measure 'Avg Denial Risk' = AVERAGE(fact_claim[denial_risk_score])
 		lineageTag: c1090001-0001-0001-0001-000000000017
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Average days from claim submission to payment receipt.
 	measure 'Avg Days to Payment' = AVERAGE(fact_claim[days_to_payment])
 		lineageTag: c1090001-0001-0001-0001-000000000018
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Average of the row-level net_collection_rate field (paid / allowed). Industry benchmark 95-99%.
 	measure 'Net Collection Rate' = AVERAGE(fact_claim[net_collection_rate])
 		lineageTag: c1090001-0001-0001-0001-000000000019
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Won appeals divided by total appeals (Won + Lost). Excludes claims never appealed.
 	measure 'Appeal Success Rate' =
 			VAR _won = CALCULATE(COUNTROWS(fact_claim), fact_claim[appeal_outcome] = "Won")
 			VAR _total = CALCULATE(COUNTROWS(fact_claim), fact_claim[appeal_outcome] <> BLANK())
@@ -54,24 +68,29 @@ table fact_claim
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: c1090001-0001-0001-0001-00000000001a
 
+	/// Sum of appeal_amount_recovered for claims that won an appeal.
 	measure 'Total Appeal Recovery' = SUM(fact_claim[appeal_amount_recovered])
 		lineageTag: c1090001-0001-0001-0001-00000000001b
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: mtd claims.
 	measure 'MTD Claims' = CALCULATE([Total Claims], DATESMTD(dim_date[full_date]))
 		formatString: 0
 		lineageTag: c1090001-0001-0001-0001-00000000001c
 
+	/// Measure: paid by payment date.
 	measure 'Paid by Payment Date' = CALCULATE(SUM(fact_claim[paid_amount]), USERELATIONSHIP(fact_claim[payment_date_key], dim_date[date_key]))
 		lineageTag: c1090001-0001-0001-0001-00000000001d
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: high risk denials.
 	measure 'High Risk Denials' = CALCULATE(COUNTROWS(fact_claim), fact_claim[denial_risk_category] = "High")
 		formatString: 0
 		lineageTag: c1090001-0001-0001-0001-00000000001e
 
+	/// Claim business key.
 	column claim_id
 		dataType: string
 		lineageTag: c1090001-0001-0001-0001-000000000021
@@ -81,6 +100,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Date the claim was submitted, as YYYYMMDD integer. Join to dim_date.
 	column claim_date_key
 		dataType: int64
 		formatString: 0
@@ -91,6 +111,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column payment_date_key
 		dataType: int64
 		formatString: 0
@@ -101,6 +122,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_patient. Changes across SCD2 versions.
 	column patient_key
 		dataType: int64
 		formatString: 0
@@ -111,6 +133,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_provider.
 	column provider_key
 		dataType: int64
 		formatString: 0
@@ -121,6 +144,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_payer.
 	column payer_key
 		dataType: int64
 		formatString: 0
@@ -131,6 +155,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column encounter_key
 		dataType: int64
 		formatString: 0
@@ -141,6 +166,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column facility_key
 		dataType: int64
 		formatString: 0
@@ -151,6 +177,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Claim type.
 	column claim_type
 		dataType: string
 		lineageTag: c1090001-0001-0001-0001-000000000029
@@ -160,6 +187,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Claim status: Submitted, Pending, Paid, Denied, Appealed.
 	column claim_status
 		dataType: string
 		lineageTag: c1090001-0001-0001-0001-00000000002a
@@ -169,6 +197,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Gross amount billed to payer (charges submitted).
 	column billed_amount
 		dataType: double
 		lineageTag: c1090001-0001-0001-0001-00000000002b
@@ -180,6 +209,7 @@ table fact_claim
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Amount the payer agrees is allowable per contract.
 	column allowed_amount
 		dataType: double
 		lineageTag: c1090001-0001-0001-0001-00000000002c
@@ -191,6 +221,7 @@ table fact_claim
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Amount actually paid by the payer.
 	column paid_amount
 		dataType: double
 		lineageTag: c1090001-0001-0001-0001-00000000002d
@@ -202,6 +233,7 @@ table fact_claim
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// 1 = claim denied; 0 = paid or pending.
 	column denial_flag
 		dataType: int64
 		formatString: 0
@@ -212,6 +244,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Model-predicted probability of denial (0-1). Do NOT filter directly; use denial_risk_category.
 	column denial_risk_score
 		dataType: double
 		lineageTag: c1090001-0001-0001-0001-00000000002f
@@ -223,6 +256,7 @@ table fact_claim
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Denial risk band: High, Medium, Low. Preferred filter for risk.
 	column denial_risk_category
 		dataType: string
 		lineageTag: c1090001-0001-0001-0001-000000000030
@@ -232,6 +266,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Free-text reason the claim was denied (e.g. Missing Authorization, Coding Error).
 	column primary_denial_reason
 		dataType: string
 		lineageTag: c1090001-0001-0001-0001-000000000031
@@ -241,6 +276,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// System-suggested remediation action for the denial.
 	column recommended_action
 		dataType: string
 		lineageTag: c1090001-0001-0001-0001-000000000032
@@ -250,6 +286,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Days from claim submission to payment.
 	column days_to_payment
 		dataType: int64
 		formatString: 0
@@ -260,6 +297,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Row-level net collection rate (paid / allowed).
 	column net_collection_rate
 		dataType: double
 		lineageTag: c1090001-0001-0001-0001-000000000034
@@ -271,6 +309,7 @@ table fact_claim
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Date column.
 	column appeal_date
 		dataType: dateTime
 		formatString: General Date
@@ -281,6 +320,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Appeal result: Won, Lost, In Progress, or blank if not appealed.
 	column appeal_outcome
 		dataType: string
 		lineageTag: c1090001-0001-0001-0001-000000000036
@@ -290,6 +330,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Dollars recovered via a successful appeal.
 	column appeal_amount_recovered
 		dataType: double
 		lineageTag: c1090001-0001-0001-0001-000000000037
@@ -301,6 +342,7 @@ table fact_claim
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date
@@ -311,6 +353,7 @@ table fact_claim
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column claim_key
 		dataType: int64
 		formatString: 0

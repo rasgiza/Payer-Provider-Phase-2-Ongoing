@@ -1,19 +1,26 @@
+/// Medical Loss Ratio aggregated by payer and year-month. MLR % = medical_paid / premium_collected; ACA minimums
+/// are 80% (individual/small group) and 85% (large group).
 table agg_mlr_by_payer_month
 	lineageTag: c1200001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[agg_mlr_by_payer_month]
 
+	/// Medical Loss Ratio: medical_paid / premium_collected. ACA requires >= 80% individual/small group and >= 85%
+	/// large group.
 	measure 'MLR %' = DIVIDE(SUM(agg_mlr_by_payer_month[medical_paid]), SUM(agg_mlr_by_payer_month[premium_collected]))
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: c1200001-0001-0001-0001-000000000011
 
+	/// Sum of premium dollars collected from members in the period.
 	measure 'Premium Collected' = SUM(agg_mlr_by_payer_month[premium_collected])
 		lineageTag: c1200001-0001-0001-0001-000000000012
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Sum of claims paid out by the payer in the period.
 	measure 'Medical Paid' = SUM(agg_mlr_by_payer_month[medical_paid])
 		lineageTag: c1200001-0001-0001-0001-000000000013
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Surrogate key for joining to dim_payer.
 	column payer_key
 		dataType: int64
 		formatString: 0
@@ -23,6 +30,7 @@ table agg_mlr_by_payer_month
 		sourceColumn: payer_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Year month.
 	column year_month
 		dataType: string
 		lineageTag: c1200001-0001-0001-0001-000000000022
@@ -31,6 +39,7 @@ table agg_mlr_by_payer_month
 		sourceColumn: year_month
 		annotation SummarizationSetBy = Automatic
 
+	/// Premium collected.
 	column premium_collected
 		dataType: double
 		lineageTag: c1200001-0001-0001-0001-000000000023
@@ -40,6 +49,7 @@ table agg_mlr_by_payer_month
 		annotation SummarizationSetBy = Automatic
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Medical paid.
 	column medical_paid
 		dataType: double
 		lineageTag: c1200001-0001-0001-0001-000000000024
@@ -49,6 +59,7 @@ table agg_mlr_by_payer_month
 		annotation SummarizationSetBy = Automatic
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Billed.
 	column billed
 		dataType: double
 		lineageTag: c1200001-0001-0001-0001-000000000025
@@ -58,6 +69,7 @@ table agg_mlr_by_payer_month
 		annotation SummarizationSetBy = Automatic
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Count of records in the underlying grain.
 	column claim_count
 		dataType: int64
 		formatString: 0
@@ -67,6 +79,7 @@ table agg_mlr_by_payer_month
 		sourceColumn: claim_count
 		annotation SummarizationSetBy = Automatic
 
+	/// Percentage (0-1 unless otherwise noted).
 	column mlr_pct
 		dataType: double
 		lineageTag: c1200001-0001-0001-0001-000000000027
@@ -75,6 +88,7 @@ table agg_mlr_by_payer_month
 		sourceColumn: mlr_pct
 		annotation SummarizationSetBy = Automatic
 
+	/// Payer business key.
 	column payer_id
 		dataType: string
 		lineageTag: c1200001-0001-0001-0001-000000000028
@@ -83,6 +97,7 @@ table agg_mlr_by_payer_month
 		sourceColumn: payer_id
 		annotation SummarizationSetBy = Automatic
 
+	/// Display name of the payer.
 	column payer_name
 		dataType: string
 		lineageTag: c1200001-0001-0001-0001-000000000029
@@ -91,6 +106,7 @@ table agg_mlr_by_payer_month
 		sourceColumn: payer_name
 		annotation SummarizationSetBy = Automatic
 
+	/// Payer category: Commercial, Government (Medicare/Medicaid/TRICARE), or Self-Pay.
 	column payer_type
 		dataType: string
 		lineageTag: c1200001-0001-0001-0001-00000000002a

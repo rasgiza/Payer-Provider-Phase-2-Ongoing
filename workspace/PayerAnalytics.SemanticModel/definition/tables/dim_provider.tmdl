@@ -1,7 +1,10 @@
+/// Provider master dimension. One row per clinician (NPI). Use display_name for search and specialty / department
+/// for grouping.
 table dim_provider
 	lineageTag: c1020001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[dim_provider]
 
+	/// Provider business key.
 	column provider_id
 		dataType: string
 		lineageTag: c1020001-0001-0001-0001-000000000011
@@ -11,6 +14,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Provider first name.
 	column first_name
 		dataType: string
 		lineageTag: c1020001-0001-0001-0001-000000000012
@@ -20,6 +24,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Provider last name.
 	column last_name
 		dataType: string
 		lineageTag: c1020001-0001-0001-0001-000000000013
@@ -29,6 +34,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Provider display name (preferred field for name search).
 	column display_name
 		dataType: string
 		lineageTag: c1020001-0001-0001-0001-000000000014
@@ -38,6 +44,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// 10-digit National Provider Identifier.
 	column npi_number
 		dataType: string
 		lineageTag: c1020001-0001-0001-0001-000000000015
@@ -47,6 +54,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Clinical specialty (Cardiology, Endocrinology, Internal Medicine, ...).
 	column specialty
 		dataType: string
 		lineageTag: c1020001-0001-0001-0001-000000000016
@@ -56,6 +64,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Hospital department or service line.
 	column department
 		dataType: string
 		lineageTag: c1020001-0001-0001-0001-000000000017
@@ -65,6 +74,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Business key.
 	column facility_id
 		dataType: string
 		lineageTag: c1020001-0001-0001-0001-000000000018
@@ -74,6 +84,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// 1 = entity is active and selectable; 0 = retired.
 	column is_active
 		dataType: int64
 		formatString: 0
@@ -84,6 +95,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_provider.
 	column provider_key
 		dataType: int64
 		formatString: 0
@@ -94,6 +106,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// SCD2 flag — 1 = latest version of this entity; 0 = historical.
 	column is_current
 		dataType: int64
 		formatString: 0
@@ -104,6 +117,7 @@ table dim_provider
 
 		annotation SummarizationSetBy = Automatic
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date

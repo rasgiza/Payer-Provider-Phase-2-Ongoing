@@ -1,11 +1,15 @@
+/// Encounter fact. One row per inpatient or outpatient visit. readmission_risk_category and encounter_type are
+/// the canonical filters.
 table fact_encounter
 	lineageTag: b1070001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[fact_encounter]
 
+	/// Measure: total encounters.
 	measure 'Total Encounters' = COUNTROWS(fact_encounter)
 		formatString: 0
 		lineageTag: b1070001-0001-0001-0001-000000000011
 
+	/// Measure: readmission rate.
 	measure 'Readmission Rate' =
 			VAR _num = CALCULATE(COUNTROWS(fact_encounter), fact_encounter[readmission_flag] = 1)
 			VAR _den = COUNTROWS(fact_encounter)
@@ -13,45 +17,54 @@ table fact_encounter
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: b1070001-0001-0001-0001-000000000012
 
+	/// Measure: high risk readmissions.
 	measure 'High Risk Readmissions' = CALCULATE(COUNTROWS(fact_encounter), fact_encounter[readmission_risk_category] = "High")
 		formatString: 0
 		lineageTag: b1070001-0001-0001-0001-000000000013
 
+	/// Measure: avg length of stay.
 	measure 'Avg Length of Stay' = AVERAGE(fact_encounter[length_of_stay])
 		lineageTag: b1070001-0001-0001-0001-000000000014
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: avg readmission risk.
 	measure 'Avg Readmission Risk' = AVERAGE(fact_encounter[readmission_risk_score])
 		lineageTag: b1070001-0001-0001-0001-000000000015
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: total charges.
 	measure 'Total Charges' = SUM(fact_encounter[total_charges])
 		lineageTag: b1070001-0001-0001-0001-000000000016
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: total cost.
 	measure 'Total Cost' = SUM(fact_encounter[total_cost])
 		lineageTag: b1070001-0001-0001-0001-000000000017
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: avg cost per encounter.
 	measure 'Avg Cost Per Encounter' = DIVIDE([Total Cost], [Total Encounters])
 		lineageTag: b1070001-0001-0001-0001-000000000018
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: avg drg weight.
 	measure 'Avg DRG Weight' = AVERAGE(fact_encounter[drg_weight])
 		lineageTag: b1070001-0001-0001-0001-000000000019
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: total expected reimbursement.
 	measure 'Total Expected Reimbursement' = SUM(fact_encounter[expected_reimbursement])
 		lineageTag: b1070001-0001-0001-0001-00000000001a
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: drg margin.
 	measure 'DRG Margin' =
 			VAR _reimburse = [Total Expected Reimbursement]
 			VAR _cost = [Total Cost]
@@ -60,6 +73,7 @@ table fact_encounter
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: quality score.
 	measure 'Quality Score' =
 			VAR _readmit_score = 1 - [Readmission Rate]
 			VAR _adherent_score = [Adherent Rate]
@@ -69,19 +83,23 @@ table fact_encounter
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: inpatient encounters.
 	measure 'Inpatient Encounters' = CALCULATE(COUNTROWS(fact_encounter), fact_encounter[encounter_type] = "Inpatient")
 		formatString: 0
 		lineageTag: b1070001-0001-0001-0001-00000000001d
 
+	/// Measure: emergency encounters.
 	measure 'Emergency Encounters' = CALCULATE(COUNTROWS(fact_encounter), fact_encounter[encounter_type] = "Emergency")
 		formatString: 0
 		lineageTag: b1070001-0001-0001-0001-00000000001e
 
+	/// Measure: py charges.
 	measure 'PY Charges' = CALCULATE(SUM(fact_encounter[total_charges]), SAMEPERIODLASTYEAR(dim_date[full_date]))
 		lineageTag: b1070001-0001-0001-0001-00000000001f
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: yoy charge growth.
 	measure 'YoY Charge Growth' =
 			VAR _cy = [Total Charges]
 			VAR _py = [PY Charges]
@@ -90,14 +108,17 @@ table fact_encounter
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: telehealth encounters.
 	measure 'Telehealth Encounters' = CALCULATE(COUNTROWS(fact_encounter), fact_encounter[encounter_type] = "Telehealth")
 		formatString: 0
 		lineageTag: b1070001-0001-0001-0001-000000000021
 
+	/// Measure: telehealth rate.
 	measure 'Telehealth Rate' = DIVIDE([Telehealth Encounters], [Total Encounters])
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: b1070001-0001-0001-0001-000000000022
 
+	/// Encounter business key.
 	column encounter_id
 		dataType: string
 		lineageTag: b1070001-0001-0001-0001-000000000031
@@ -107,6 +128,7 @@ table fact_encounter
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Date the encounter occurred, as YYYYMMDD integer. Join to dim_date.
 	column encounter_date_key
 		dataType: int64
 		formatString: 0
@@ -117,6 +139,7 @@ table fact_encounter
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column discharge_date_key
 		dataType: int64
 		formatString: 0
@@ -127,6 +150,7 @@ table fact_encounter
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_patient. Changes across SCD2 versions.
 	column patient_key
 		dataType: int64
 		formatString: 0
@@ -137,6 +161,7 @@ table fact_encounter
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_provider.
 	column provider_key
 		dataType: int64
 		formatString: 0
@@ -147,6 +172,7 @@ table fact_encounter
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column facility_key
 		dataType: int64
 		formatString: 0
@@ -157,6 +183,7 @@ table fact_encounter
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Encounter type: Inpatient, Outpatient, Emergency, Observation.
 	column encounter_type
 		dataType: string
 		lineageTag: b1070001-0001-0001-0001-000000000037
@@ -166,6 +193,7 @@ table fact_encounter
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Admission type.
 	column admission_type
 		dataType: string
 		lineageTag: b1070001-0001-0001-0001-000000000038
@@ -175,6 +203,7 @@ table fact_encounter
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Discharge disposition.
 	column discharge_disposition
 		dataType: string
 		lineageTag: b1070001-0001-0001-0001-000000000039
@@ -184,6 +213,7 @@ table fact_encounter
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Length of stay in days (inpatient only).
 	column length_of_stay
 		dataType: int64
 		formatString: 0
@@ -194,6 +224,7 @@ table fact_encounter
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Total billed charges for the encounter.
 	column total_charges
 		dataType: double
 		lineageTag: b1070001-0001-0001-0001-00000000003b
@@ -205,6 +236,7 @@ table fact_encounter
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Total cost to deliver the encounter (provider-side).
 	column total_cost
 		dataType: double
 		lineageTag: b1070001-0001-0001-0001-00000000003c
@@ -216,6 +248,7 @@ table fact_encounter
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Boolean flag (1 = true, 0 = false).
 	column readmission_flag
 		dataType: int64
 		formatString: 0
@@ -226,6 +259,7 @@ table fact_encounter
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Model probability of 30-day readmission (0-1). Do NOT filter directly; use readmission_risk_category.
 	column readmission_risk_score
 		dataType: double
 		lineageTag: b1070001-0001-0001-0001-00000000003e
@@ -237,6 +271,7 @@ table fact_encounter
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Readmission risk band: High, Medium, Low. Preferred filter for risk.
 	column readmission_risk_category
 		dataType: string
 		lineageTag: b1070001-0001-0001-0001-00000000003f
@@ -246,6 +281,7 @@ table fact_encounter
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Drg code.
 	column drg_code
 		dataType: string
 		lineageTag: b1070001-0001-0001-0001-000000000040
@@ -255,6 +291,7 @@ table fact_encounter
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Drg description.
 	column drg_description
 		dataType: string
 		lineageTag: b1070001-0001-0001-0001-000000000041
@@ -264,6 +301,7 @@ table fact_encounter
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Drg weight.
 	column drg_weight
 		dataType: double
 		lineageTag: b1070001-0001-0001-0001-000000000042
@@ -275,6 +313,7 @@ table fact_encounter
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Expected reimbursement.
 	column expected_reimbursement
 		dataType: double
 		lineageTag: b1070001-0001-0001-0001-000000000043
@@ -286,6 +325,7 @@ table fact_encounter
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date
@@ -296,6 +336,7 @@ table fact_encounter
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column encounter_key
 		dataType: int64
 		formatString: 0

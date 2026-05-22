@@ -1,15 +1,19 @@
+/// Claim appeal fact. One row per appeal of a denied claim, with appeal_outcome and amount_recovered.
 table fact_appeal
 	lineageTag: c1130001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[fact_appeal]
 
+	/// Measure: total appeals.
 	measure 'Total Appeals' = COUNTROWS(fact_appeal)
 		formatString: 0
 		lineageTag: c1130001-0001-0001-0001-000000000011
 
+	/// Measure: appeal recovery $.
 	measure 'Appeal Recovery $' = SUM(fact_appeal[appeal_amount_recovered])
 		lineageTag: c1130001-0001-0001-0001-000000000012
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: appeal win rate.
 	measure 'Appeal Win Rate' =
 			VAR _won = CALCULATE(COUNTROWS(fact_appeal), fact_appeal[appeal_outcome] = "Won")
 			VAR _total = COUNTROWS(fact_appeal)
@@ -17,6 +21,7 @@ table fact_appeal
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: c1130001-0001-0001-0001-000000000013
 
+	/// Business key.
 	column appeal_id
 		dataType: string
 		lineageTag: c1130001-0001-0001-0001-000000000021
@@ -25,6 +30,7 @@ table fact_appeal
 		sourceColumn: appeal_id
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column appeal_key
 		dataType: int64
 		formatString: 0
@@ -34,6 +40,7 @@ table fact_appeal
 		sourceColumn: appeal_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column claim_key
 		dataType: int64
 		formatString: 0
@@ -43,6 +50,7 @@ table fact_appeal
 		sourceColumn: claim_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Business key.
 	column claim_id
 		dataType: string
 		lineageTag: c1130001-0001-0001-0001-000000000024
@@ -51,6 +59,7 @@ table fact_appeal
 		sourceColumn: claim_id
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column member_key
 		dataType: int64
 		formatString: 0
@@ -60,6 +69,7 @@ table fact_appeal
 		sourceColumn: member_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_payer.
 	column payer_key
 		dataType: int64
 		formatString: 0
@@ -69,6 +79,7 @@ table fact_appeal
 		sourceColumn: payer_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column submit_date_key
 		dataType: int64
 		formatString: 0
@@ -78,6 +89,7 @@ table fact_appeal
 		sourceColumn: submit_date_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column decision_date_key
 		dataType: int64
 		formatString: 0
@@ -87,6 +99,7 @@ table fact_appeal
 		sourceColumn: decision_date_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Appeal level.
 	column appeal_level
 		dataType: string
 		lineageTag: c1130001-0001-0001-0001-000000000029
@@ -95,6 +108,7 @@ table fact_appeal
 		sourceColumn: appeal_level
 		annotation SummarizationSetBy = Automatic
 
+	/// Appeal level num.
 	column appeal_level_num
 		dataType: int64
 		formatString: 0
@@ -104,6 +118,7 @@ table fact_appeal
 		sourceColumn: appeal_level_num
 		annotation SummarizationSetBy = Automatic
 
+	/// Appeal outcome.
 	column appeal_outcome
 		dataType: string
 		lineageTag: c1130001-0001-0001-0001-00000000002b
@@ -112,6 +127,7 @@ table fact_appeal
 		sourceColumn: appeal_outcome
 		annotation SummarizationSetBy = Automatic
 
+	/// Appeal amount recovered.
 	column appeal_amount_recovered
 		dataType: double
 		lineageTag: c1130001-0001-0001-0001-00000000002c
@@ -121,6 +137,7 @@ table fact_appeal
 		annotation SummarizationSetBy = Automatic
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Appeal reason.
 	column appeal_reason
 		dataType: string
 		lineageTag: c1130001-0001-0001-0001-00000000002d
@@ -129,6 +146,7 @@ table fact_appeal
 		sourceColumn: appeal_reason
 		annotation SummarizationSetBy = Automatic
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date

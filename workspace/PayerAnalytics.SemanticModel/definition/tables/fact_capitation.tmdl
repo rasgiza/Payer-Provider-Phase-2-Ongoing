@@ -1,19 +1,25 @@
+/// Provider capitation payments. Monthly per-member-per-month (PMPM) payments from payer to provider under
+/// value-based contracts.
 table fact_capitation
 	lineageTag: c1120001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[fact_capitation]
 
+	/// Measure: total capitation paid.
 	measure 'Total Capitation Paid' = SUM(fact_capitation[capitation_pmpm])
 		lineageTag: c1120001-0001-0001-0001-000000000011
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: avg capitation pmpm.
 	measure 'Avg Capitation PMPM' = AVERAGE(fact_capitation[capitation_pmpm])
 		lineageTag: c1120001-0001-0001-0001-000000000012
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Measure: avg withhold %.
 	measure 'Avg Withhold %' = AVERAGE(fact_capitation[withhold_pct])
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: c1120001-0001-0001-0001-000000000013
 
+	/// Business key.
 	column capitation_id
 		dataType: string
 		lineageTag: c1120001-0001-0001-0001-000000000021
@@ -22,6 +28,7 @@ table fact_capitation
 		sourceColumn: capitation_id
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column capitation_key
 		dataType: int64
 		formatString: 0
@@ -31,6 +38,7 @@ table fact_capitation
 		sourceColumn: capitation_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Year month.
 	column year_month
 		dataType: string
 		lineageTag: c1120001-0001-0001-0001-000000000023
@@ -39,6 +47,7 @@ table fact_capitation
 		sourceColumn: year_month
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column member_key
 		dataType: int64
 		formatString: 0
@@ -48,6 +57,7 @@ table fact_capitation
 		sourceColumn: member_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_provider.
 	column provider_key
 		dataType: int64
 		formatString: 0
@@ -57,6 +67,7 @@ table fact_capitation
 		sourceColumn: provider_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_payer.
 	column payer_key
 		dataType: int64
 		formatString: 0
@@ -66,6 +77,7 @@ table fact_capitation
 		sourceColumn: payer_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_plan.
 	column plan_key
 		dataType: int64
 		formatString: 0
@@ -75,6 +87,7 @@ table fact_capitation
 		sourceColumn: plan_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Capitation pmpm.
 	column capitation_pmpm
 		dataType: double
 		lineageTag: c1120001-0001-0001-0001-000000000028
@@ -84,6 +97,7 @@ table fact_capitation
 		annotation SummarizationSetBy = Automatic
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Percentage (0-1 unless otherwise noted).
 	column withhold_pct
 		dataType: double
 		lineageTag: c1120001-0001-0001-0001-000000000029
@@ -92,6 +106,7 @@ table fact_capitation
 		sourceColumn: withhold_pct
 		annotation SummarizationSetBy = Automatic
 
+	/// Bonus eligible.
 	column bonus_eligible
 		dataType: boolean
 		formatString: """TRUE"";""TRUE"";""FALSE"""
@@ -101,6 +116,7 @@ table fact_capitation
 		sourceColumn: bonus_eligible
 		annotation SummarizationSetBy = Automatic
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date

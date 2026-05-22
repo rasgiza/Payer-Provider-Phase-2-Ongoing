@@ -1,7 +1,10 @@
+/// Date dimension with day, week, month, quarter, fiscal year attributes. Use date_key (YYYYMMDD integer) to
+/// join.
 table dim_date
 	lineageTag: b1030001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[dim_date]
 
+	/// Date key in YYYYMMDD integer form (e.g. 20250515). Join to dim_date.
 	column date_key
 		dataType: int64
 		formatString: 0
@@ -12,6 +15,7 @@ table dim_date
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Calendar date (date type).
 	column full_date
 		dataType: dateTime
 		formatString: General Date
@@ -22,6 +26,7 @@ table dim_date
 
 		annotation SummarizationSetBy = Automatic
 
+	/// ISO weekday number (1=Monday … 7=Sunday).
 	column day_of_week
 		dataType: int64
 		formatString: 0
@@ -32,6 +37,7 @@ table dim_date
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Weekday name (Monday, Tuesday, …).
 	column day_name
 		dataType: string
 		lineageTag: b1030001-0001-0001-0001-000000000014
@@ -41,6 +47,7 @@ table dim_date
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Day of month (1-31).
 	column day_of_month
 		dataType: int64
 		formatString: 0
@@ -51,6 +58,7 @@ table dim_date
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Day of year (1-366).
 	column day_of_year
 		dataType: int64
 		formatString: 0
@@ -61,6 +69,7 @@ table dim_date
 
 		annotation SummarizationSetBy = Automatic
 
+	/// ISO week number (1-53).
 	column week_of_year
 		dataType: int64
 		formatString: 0
@@ -71,6 +80,7 @@ table dim_date
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Month number (1-12).
 	column month_number
 		dataType: int64
 		formatString: 0
@@ -81,6 +91,7 @@ table dim_date
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Month name (January, February, …).
 	column month_name
 		dataType: string
 		lineageTag: b1030001-0001-0001-0001-000000000019
@@ -90,6 +101,7 @@ table dim_date
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Calendar quarter (Q1-Q4).
 	column quarter
 		dataType: int64
 		formatString: 0
@@ -100,6 +112,7 @@ table dim_date
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Calendar year (4-digit).
 	column year
 		dataType: int64
 		formatString: 0
@@ -110,6 +123,7 @@ table dim_date
 
 		annotation SummarizationSetBy = Automatic
 
+	/// 1 = Saturday or Sunday; 0 otherwise.
 	column is_weekend
 		dataType: int64
 		formatString: 0
@@ -120,6 +134,7 @@ table dim_date
 
 		annotation SummarizationSetBy = Automatic
 
+	/// 1 = US federal holiday; 0 otherwise.
 	column is_holiday
 		dataType: int64
 		formatString: 0
@@ -130,6 +145,7 @@ table dim_date
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Fiscal year aligned to the organization's reporting calendar.
 	column fiscal_year
 		dataType: int64
 		formatString: 0
@@ -140,6 +156,7 @@ table dim_date
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Fiscal quarter within fiscal year.
 	column fiscal_quarter
 		dataType: int64
 		formatString: 0

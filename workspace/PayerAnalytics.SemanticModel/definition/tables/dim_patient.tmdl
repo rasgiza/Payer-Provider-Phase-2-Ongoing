@@ -1,11 +1,15 @@
+/// Patient master dimension. One row per patient, SCD2-versioned by effective_start_date / effective_end_date.
+/// Filter to is_current = 1 for the current view of a patient.
 table dim_patient
 	lineageTag: c1030001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[dim_patient]
 
+	/// Count of current patients (is_current = 1). SCD2 dimension — only counts the latest version of each patient.
 	measure 'Total Patients' = CALCULATE(COUNTROWS(dim_patient), dim_patient[is_current] = 1)
 		formatString: 0
 		lineageTag: c1030001-0001-0001-0001-000000000011
 
+	/// Distinct count of patients with at least one chronic diagnosis (dim_diagnosis.is_chronic = 1).
 	measure 'Chronic Patients' =
 			CALCULATE(
 				DISTINCTCOUNT(fact_diagnosis[patient_key]),
@@ -14,11 +18,13 @@ table dim_patient
 		formatString: 0
 		lineageTag: c1030001-0001-0001-0001-000000000012
 
+	/// Average age across the current patient roster.
 	measure 'Avg Patient Age' = AVERAGE(dim_patient[age])
 		lineageTag: c1030001-0001-0001-0001-000000000013
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	/// Patient business key. Stable across SCD2 versions.
 	column patient_id
 		dataType: string
 		lineageTag: c1030001-0001-0001-0001-000000000021
@@ -28,6 +34,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Patient first name.
 	column first_name
 		dataType: string
 		lineageTag: c1030001-0001-0001-0001-000000000022
@@ -37,6 +44,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Patient last name.
 	column last_name
 		dataType: string
 		lineageTag: c1030001-0001-0001-0001-000000000023
@@ -46,6 +54,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Patient date of birth.
 	column date_of_birth
 		dataType: dateTime
 		formatString: General Date
@@ -56,6 +65,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Patient gender (M / F / Other).
 	column gender
 		dataType: string
 		lineageTag: c1030001-0001-0001-0001-000000000025
@@ -65,6 +75,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Street address. PII — hide from non-clinical users.
 	column address
 		dataType: string
 		lineageTag: c1030001-0001-0001-0001-000000000026
@@ -74,6 +85,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Patient city.
 	column city
 		dataType: string
 		lineageTag: c1030001-0001-0001-0001-000000000027
@@ -86,6 +98,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Patient state (US 2-letter code).
 	column state
 		dataType: string
 		lineageTag: c1030001-0001-0001-0001-000000000028
@@ -98,6 +111,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Patient 5-digit ZIP. Join to dim_sdoh for community-level SDOH.
 	column zip_code
 		dataType: string
 		lineageTag: c1030001-0001-0001-0001-000000000029
@@ -110,6 +124,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Patient phone. PII.
 	column phone
 		dataType: string
 		lineageTag: c1030001-0001-0001-0001-00000000002a
@@ -119,6 +134,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Patient email. PII.
 	column email
 		dataType: string
 		lineageTag: c1030001-0001-0001-0001-00000000002b
@@ -128,6 +144,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Self-reported insurance type (Commercial, Medicare, Medicaid, Self-Pay, Uninsured).
 	column insurance_type
 		dataType: string
 		lineageTag: c1030001-0001-0001-0001-00000000002c
@@ -137,6 +154,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Self-reported insurance plan name.
 	column insurance_provider
 		dataType: string
 		lineageTag: c1030001-0001-0001-0001-00000000002d
@@ -146,6 +164,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Patient insurance policy / member ID. PII.
 	column insurance_policy_number
 		dataType: string
 		lineageTag: c1030001-0001-0001-0001-00000000002e
@@ -155,6 +174,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Patient age in years as of report date.
 	column age
 		dataType: int64
 		formatString: 0
@@ -165,6 +185,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Banded age cohort (e.g. 0-17, 18-44, 45-64, 65+).
 	column age_group
 		dataType: string
 		lineageTag: c1030001-0001-0001-0001-000000000030
@@ -174,6 +195,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_patient. Changes across SCD2 versions.
 	column patient_key
 		dataType: int64
 		formatString: 0
@@ -184,6 +206,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// SCD2 flag — 1 = latest version of this entity; 0 = historical.
 	column is_current
 		dataType: int64
 		formatString: 0
@@ -194,6 +217,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// SCD2 — date this version of the patient record became current.
 	column effective_start_date
 		dataType: dateTime
 		formatString: General Date
@@ -204,6 +228,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// SCD2 — date this version was superseded.
 	column effective_end_date
 		dataType: dateTime
 		formatString: General Date
@@ -214,6 +239,7 @@ table dim_patient
 
 		annotation SummarizationSetBy = Automatic
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date

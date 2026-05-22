@@ -1,11 +1,14 @@
+/// Prior-authorization fact. One row per auth request with status, decision date, and turnaround time.
 table fact_authorization
 	lineageTag: c1110001-0001-0001-0001-000000000001
 	sourceLineageTag: [dbo].[fact_authorization]
 
+	/// Measure: total auths.
 	measure 'Total Auths' = COUNTROWS(fact_authorization)
 		formatString: 0
 		lineageTag: c1110001-0001-0001-0001-000000000011
 
+	/// Measure: pa approval rate.
 	measure 'PA Approval Rate' =
 			VAR _approved = CALCULATE(COUNTROWS(fact_authorization), fact_authorization[auth_outcome] = "Approved")
 			VAR _decided = CALCULATE(COUNTROWS(fact_authorization), fact_authorization[auth_outcome] <> BLANK())
@@ -13,6 +16,7 @@ table fact_authorization
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: c1110001-0001-0001-0001-000000000012
 
+	/// Measure: pa denial rate.
 	measure 'PA Denial Rate' =
 			VAR _denied = CALCULATE(COUNTROWS(fact_authorization), fact_authorization[auth_outcome] = "Denied")
 			VAR _decided = CALCULATE(COUNTROWS(fact_authorization), fact_authorization[auth_outcome] <> BLANK())
@@ -20,10 +24,12 @@ table fact_authorization
 		formatString: 0.0%;-0.0%;0.0%
 		lineageTag: c1110001-0001-0001-0001-000000000013
 
+	/// Measure: avg decision tat (hrs).
 	measure 'Avg Decision TAT (hrs)' = AVERAGE(fact_authorization[decision_tat_hours])
 		formatString: 0.0
 		lineageTag: c1110001-0001-0001-0001-000000000014
 
+	/// Business key.
 	column auth_id
 		dataType: string
 		lineageTag: c1110001-0001-0001-0001-000000000021
@@ -32,6 +38,7 @@ table fact_authorization
 		sourceColumn: auth_id
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column auth_key
 		dataType: int64
 		formatString: 0
@@ -41,6 +48,7 @@ table fact_authorization
 		sourceColumn: auth_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column submit_date_key
 		dataType: int64
 		formatString: 0
@@ -50,6 +58,7 @@ table fact_authorization
 		sourceColumn: submit_date_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column decision_date_key
 		dataType: int64
 		formatString: 0
@@ -59,6 +68,7 @@ table fact_authorization
 		sourceColumn: decision_date_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate join key.
 	column member_key
 		dataType: int64
 		formatString: 0
@@ -68,6 +78,7 @@ table fact_authorization
 		sourceColumn: member_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_provider.
 	column provider_key
 		dataType: int64
 		formatString: 0
@@ -77,6 +88,7 @@ table fact_authorization
 		sourceColumn: provider_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Surrogate key for joining to dim_payer.
 	column payer_key
 		dataType: int64
 		formatString: 0
@@ -86,6 +98,7 @@ table fact_authorization
 		sourceColumn: payer_key
 		annotation SummarizationSetBy = Automatic
 
+	/// Business key.
 	column claim_id
 		dataType: string
 		lineageTag: c1110001-0001-0001-0001-000000000028
@@ -94,6 +107,7 @@ table fact_authorization
 		sourceColumn: claim_id
 		annotation SummarizationSetBy = Automatic
 
+	/// Cpt code.
 	column cpt_code
 		dataType: string
 		lineageTag: c1110001-0001-0001-0001-000000000029
@@ -102,6 +116,7 @@ table fact_authorization
 		sourceColumn: cpt_code
 		annotation SummarizationSetBy = Automatic
 
+	/// Primary diagnosis code.
 	column primary_diagnosis_code
 		dataType: string
 		lineageTag: c1110001-0001-0001-0001-00000000002a
@@ -110,6 +125,7 @@ table fact_authorization
 		sourceColumn: primary_diagnosis_code
 		annotation SummarizationSetBy = Automatic
 
+	/// Auth outcome.
 	column auth_outcome
 		dataType: string
 		lineageTag: c1110001-0001-0001-0001-00000000002b
@@ -118,6 +134,7 @@ table fact_authorization
 		sourceColumn: auth_outcome
 		annotation SummarizationSetBy = Automatic
 
+	/// Decision tat hours.
 	column decision_tat_hours
 		dataType: double
 		lineageTag: c1110001-0001-0001-0001-00000000002c
@@ -126,6 +143,7 @@ table fact_authorization
 		sourceColumn: decision_tat_hours
 		annotation SummarizationSetBy = Automatic
 
+	/// Auth units requested.
 	column auth_units_requested
 		dataType: int64
 		formatString: 0
@@ -135,6 +153,7 @@ table fact_authorization
 		sourceColumn: auth_units_requested
 		annotation SummarizationSetBy = Automatic
 
+	/// Auth units approved.
 	column auth_units_approved
 		dataType: int64
 		formatString: 0
@@ -144,6 +163,7 @@ table fact_authorization
 		sourceColumn: auth_units_approved
 		annotation SummarizationSetBy = Automatic
 
+	/// ETL load audit timestamp. Internal — hide from end users.
 	column _load_timestamp
 		dataType: dateTime
 		formatString: General Date
